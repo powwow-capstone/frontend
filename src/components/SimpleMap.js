@@ -6,7 +6,7 @@ import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
 require('dotenv').config()
 
-var apiKey = process.env.GOOGLE_KEY;
+var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
 const GMap = compose(
     withProps({
