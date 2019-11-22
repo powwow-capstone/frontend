@@ -4,6 +4,7 @@ import coordinates2 from './CoordinatesAlameda'
 import axios from "axios";
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
+require('dotenv').config()
 
 var apiKey = process.env.GOOGLE_KEY;
 
