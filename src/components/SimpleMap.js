@@ -9,7 +9,7 @@ require('dotenv').config()
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 const GMap = compose(
     withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=${apiKey}",
+		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
         loadingElement: <div style={{ height: `200%` }} />,
         containerElement: <div style={{ height: `500px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
