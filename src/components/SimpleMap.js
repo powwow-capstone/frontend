@@ -37,7 +37,7 @@ class SimpleMap extends Component
 	}
 	refreshList = () => {
 		axios
-			.get("http://localhost:5000/field")
+			.get("https://space-monitor-backend.herokuapp.com/api/fields")
 			.then(res => this.setState({ fieldDataList: res.data }))
 			.catch(err => console.log(err));
 	};
