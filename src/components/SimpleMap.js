@@ -7,7 +7,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-go
 require('dotenv').config()
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
-
+console.log('apiKey!', apiKey);
 const GMap = compose(
     withProps({
 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=",
