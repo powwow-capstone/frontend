@@ -17,7 +17,7 @@ class Test extends Component {
     }
     refreshList = () => {
         axios
-            .get("http://localhost:5000/weather")
+            .get("https://space-monitor-backend.herokuapp.com/weather")
             .then(res => this.setState({ weatherdataList: res.data }))
             .catch(err => console.log(err));
     };
