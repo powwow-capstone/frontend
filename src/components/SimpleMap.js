@@ -5,7 +5,7 @@ import axios from "axios";
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
 
-var apiKey = process.env.GOOGLE_KEY;
+var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
 const GMap = compose(
     withProps({
