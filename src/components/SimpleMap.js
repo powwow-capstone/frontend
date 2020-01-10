@@ -6,11 +6,10 @@ import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
 
 var apiKey = process.env.GOOGLE_KEY;
-console.log('apiKey!', apiKey);
 
 const GMap = compose(
     withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=",
+		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
         loadingElement: <div style={{ height: `200%` }} />,
         containerElement: <div style={{ height: `500px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
