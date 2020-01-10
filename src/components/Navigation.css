@@ -7,3 +7,12 @@
     color: red;
     text-decoration: none;
   }
+ 
+ .fixed_img {
+  width: 90px;
+  height: 90px;
+}
+
+body {
+	background-color: hsl(195, 88%, 77%, 0.2);
+}

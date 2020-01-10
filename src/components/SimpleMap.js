@@ -4,12 +4,13 @@ import coordinates2 from './CoordinatesAlameda'
 import axios from "axios";
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
-require('dotenv').config()
 
-var apiKey = process.env.REACT_APP_GOOGLE_KEY;
+var apiKey = process.env.GOOGLE_KEY;
+console.log('apiKey!', apiKey);
+
 const GMap = compose(
     withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
+		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=",
         loadingElement: <div style={{ height: `200%` }} />,
         containerElement: <div style={{ height: `500px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
@@ -18,7 +19,7 @@ const GMap = compose(
     withGoogleMap
 
 )((props) =>
-	<GoogleMap defaultZoom={7} defaultCenter={{ lat: 34.4208, lng: -119.6982 }}>
+	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
 		{props.polygons}
 	</GoogleMap>	
 		
@@ -37,7 +38,7 @@ class SimpleMap extends Component
 	}
 	refreshList = () => {
 		axios
-			.get("https://space-monitor-backend.herokuapp.com/api/fields")
+			.get("http://localhost:5000/field")
 			.then(res => this.setState({ fieldDataList: res.data }))
 			.catch(err => console.log(err));
 	};

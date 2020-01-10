@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './Navigation.css';
- 
+import imageLogo from './images/imageLogo.png';
 import { NavLink } from 'react-router-dom';
- 
+
 class Navigation extends Component {
 	constructor(props) {
     super(props);
@@ -18,21 +18,25 @@ class Navigation extends Component {
   render() {
 	const show = (this.state.menu) ? "show" : "" ;
     return (
-      <nav class="navbar navbar-expand-sm navbar-light bg-light">
-		  <a class="navbar-brand">
-		  <NavLink to="/" style={{color: 'black'}}>SpaceMonitor</NavLink>
-		  </a>
+
+      <nav class="navbar navbar-expand-sm navbar-light" > 
+		<a class="navbar-brand">
+			<NavLink to="/" >
+			   <img src={imageLogo} alt = "Logo" className="fixed_img"/>
+			</NavLink>
+		</a>
 		  <button class="navbar-toggler" type="button" onClick={ this.toggleMenu }>
 			<span class="navbar-toggler-icon"></span>
-		  </button>
-		  <div class={"collapse navbar-collapse " + show}>
-			
+		   </button>
+
+		  <div class={"collapse navbar-collapse " + show} >
 		  </div>
-			<form class="form-inline my-2 my-lg-0">
-			  <button class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">
+		  
+			<form class="form-inline my-2 my-lg-0" >
+			  <button class="btn btn-outline-info my-2 my-sm-0 mr-1" type="submit" >
 			  <NavLink to="/login">Login</NavLink>
 			  </button>
-			  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+			  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">
 			  <NavLink to="/signup">Signup</NavLink>
 			  </button>
 		   </form>
