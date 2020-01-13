@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Navigation.css';
-import imageLogo from './images/imageLogo.png';
+import imageLogo from '../../images/imageLogo.png';
 import { NavLink } from 'react-router-dom';
 
 class Navigation extends Component {

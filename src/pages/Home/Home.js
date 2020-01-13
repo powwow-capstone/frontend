@@ -1,7 +1,6 @@
 import React from 'react';
-import Analysis from './Analysis'
-import SimpleMap from './SimpleMap'
-import Test from './db_test'
+import Analysis from '../components/Report/Analysis'
+import SimpleMap from '../components/Map/SimpleMap'
 
 
 const home = () => {
@@ -14,9 +13,6 @@ const home = () => {
             <div className="col-md-12 mt-5">
               <Analysis />
             </div>
-          <div className="col-md-12 mt-5">
-            <Test />
-          </div>
           </div>
         </div>
       );

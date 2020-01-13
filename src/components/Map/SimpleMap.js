@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import coordinates1 from './CoordinatesSB'
-import coordinates2 from './CoordinatesAlameda'
+import coordinates1 from '../../stubs/CoordinatesSB'
+import coordinates2 from '../../stubs/CoordinatesAlameda'
 import axios from "axios";
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
 
-var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
 const GMap = compose(
     withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
+		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=",
         loadingElement: <div style={{ height: `200%` }} />,
         containerElement: <div style={{ height: `500px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
