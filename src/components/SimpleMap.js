@@ -1,16 +1,13 @@
-import React, { Component, useState } from 'react';
-import coordinates1 from './Coordinates1' 
-import coordinates2 from './CoordinatesAlameda'
+import React, { Component, useState, setState, state } from 'react';
 import axios from "axios";
 import { compose, withProps } from "recompose"
-//import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
-import ReactMapGL from "react-map-gl"	
-import ReactMapboxGl, { Layer, GeoJSONLayer, Popup, Feature, Marker } from "react-mapbox-gl"	 //"react-map-gl"
+import ReactMapboxGl, { GeoJSONLayer, Popup, Marker } from "react-mapbox-gl"	 
 import ReactDOM from 'react-dom'
 import geojsonObject from "./result.json";
 import "./styles.css";
 
 const position = [-119.12841033320983, 35.63854513496408];
+
 const Map = ReactMapboxGl({
   accessToken: "KEY"
 });
@@ -27,16 +24,15 @@ class SimpleMap extends React.Component {
 			showPopup: false
 		};
 	}
-/*
-  showPopup () {
-		this.clicked = !this.clicked;
-  }*/
-   state = {
-    showPopup: true
-  };
+
+  myClick(){
+	  this.setState ({
+		  showPopup: !this.state.showPopup
+	  });
+  }
+
  
 	render(){
-	const {showPopup} = this.state;
 	return (
     <div>
 	 <Map			
@@ -55,39 +51,48 @@ class SimpleMap extends React.Component {
 			   fillPaint={{
                 "fill-color": "#ff0000"
               }}
-			 
-			/>
+			  lineOnClick  = {this.myClick.bind(this)}/>
+			  
 			<Marker
 			  coordinates={position}
 			  anchor="bottom"
-			  onClick = {this.state = {showPopup: true}}>
+			  onClick = {this.myClick.bind(this)}>
 			  <div class="mapMarkerStyle"></div>
 			</Marker>
 			
-			{showPopup && <Popup
+			{this.state.showPopup && <Popup
 			  coordinates={position}
 			  offset={{
 				'bottom-left': [12, -38],  'bottom': [0, -38], 'bottom-right': [-12, -38]
 			  }}
-			  OnClick={false}>
+			  OnClick={this.myClick.bind(this)}>
 			  <h1>Popup</h1>
 			</Popup>}	 
-			
-			
-			{/*showPopup && <Popup
-					longitude={showPopup.longitude}
-					latitude={showPopup.latitude}
-				  closeButton={true}
-				  closeOnClick={false}
-				  onClose={() => this.setState({showPopup: false})}
-				  anchor="top" >
-				  <div>You are here</div>
-				</Popup>*/}
 				
 		</Map>	
-        
+		<div className="btn-group dropright mt-2 mr-2">
+			<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+				Filter by Crop
+			</button>
+			<div className="dropdown-menu">
+				<button className="dropdown-item" type="button">Almond</button>
+				<button className="dropdown-item" type="button">Pistachio</button>
+				<button className="dropdown-item" type="button">Something</button>
+			</div>
+		</div>
+        <div className="btn-group dropright mt-2">
+			<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+				Filter by Year
+			</button>
+			<div className="dropdown-menu">
+				<button className="dropdown-item" type="button">year1</button>
+				<button className="dropdown-item" type="button">year2</button>
+				<button className="dropdown-item" type="button">year3</button>
+			</div>
+		</div>
 	</div>
 	
+
 	);
 	}
 }
