@@ -1,6 +1,6 @@
 import React from 'react';
-import Analysis from '../components/Report/Analysis'
-import SimpleMap from '../components/Map/SimpleMap'
+import Analysis from '../../components/Report/Analysis'
+import SimpleMap from '../../components/Map/SimpleMap'
 
 
 const home = () => {
