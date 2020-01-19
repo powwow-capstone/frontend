@@ -20,6 +20,7 @@ const GMap = compose(
 )((props) =>
 	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
 		{props.polygons}
+		{props.markers}
 	</GoogleMap>	
 		
 )
@@ -42,7 +43,10 @@ class SimpleMap extends Component
 			.catch(err => console.log(err));
 	};
 	drawPolygons = () => {
+		console.log(this.state.fieldDataList);
 		var polygons = []
+		var markers = []
+		var locations = []
 		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
 			var colorPolygon = "#FF0000"
 			if (this.state.fieldDataList[i].efficiency == 1)
@@ -62,16 +66,30 @@ class SimpleMap extends Component
 					}}
 				/>
 			);
+			markers.push(
+				<Marker
+					key={this.state.fieldDataList[i].id}
+					position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
+				/>
+
+			);
 		}
-		
-		return polygons;
+
+		locations.push(polygons);
+		locations.push(markers);
+
+		console.log(locations);
+
+		return locations;
 	};
 
 	render() {
 
+		var locations = this.drawPolygons();
+
 		return (
 			<div>
-				<GMap polygons={this.drawPolygons()} />
+				<GMap polygons={locations[0]} markers={locations[1]}/>
 				<div className="btn-group dropright mt-2 mr-2">
 					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
 						Filter by Crop
