@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import coordinates1 from './CoordinatesSB'
-import coordinates2 from './CoordinatesAlameda'
+// import coordinates1 from '../../stubs/CoordinatesSB'
+// import coordinates2 from '../../stubs/CoordinatesAlameda'
 import axios from "axios";
 import { compose, withProps } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker,Polygon } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
 const GMap = compose(
-    withProps({
+	withProps({
 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
-        loadingElement: <div style={{ height: `200%` }} />,
-        containerElement: <div style={{ height: `500px` }} />,
-        mapElement: <div style={{ height: `100%` }} />,
-    }),
-    withScriptjs,
-    withGoogleMap
+		loadingElement: <div style={{ height: `200%` }} />,
+		containerElement: <div style={{ height: `500px` }} />,
+		mapElement: <div style={{ height: `100%` }} />,
+	}),
+	withScriptjs,
+	withGoogleMap
 
 )((props) =>
 	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
@@ -25,8 +25,7 @@ const GMap = compose(
 		
 )
 
-class SimpleMap extends Component
-{
+class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -49,8 +48,7 @@ class SimpleMap extends Component
 		var locations = []
 		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
 			var colorPolygon = "#FF0000"
-			if (this.state.fieldDataList[i].efficiency == 1)
-			{
+			if (this.state.fieldDataList[i].efficiency == 1) {
 				colorPolygon = "#00FF00";
 			}
 			polygons.push(
@@ -83,6 +81,25 @@ class SimpleMap extends Component
 		return locations;
 	};
 
+	drawInfoWindows = () => {
+		var infoWindows = []
+		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
+			if (i == 0)
+			{
+				console.log(this.state.fieldDataList[i].centroid);
+			}
+			infoWindows.push( 
+				<InfoWindow
+					defaultPosition={{ lng: this.state.fieldDataList[i].centroid, lat: this.state.fieldDataList[i].centroid }}
+					>
+					<h1 class="text">Here should be something useful </h1>
+				</InfoWindow>
+			);
+		}
+		return infoWindows
+
+	}	
+
 	render() {
 
 		var locations = this.drawPolygons();
@@ -112,7 +129,7 @@ class SimpleMap extends Component
 					</div>
 				</div>
 			</div>
-			
+
 		)
 	}
 }
