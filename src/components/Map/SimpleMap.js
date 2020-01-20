@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-// import coordinates1 from '../../stubs/CoordinatesSB'
-// import coordinates2 from '../../stubs/CoordinatesAlameda'
 import axios from "axios";
-import { compose, withProps } from "recompose"
+import { compose, withProps, withHandlers } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
+import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -14,13 +13,26 @@ const GMap = compose(
 		containerElement: <div style={{ height: `500px` }} />,
 		mapElement: <div style={{ height: `100%` }} />,
 	}),
+	withHandlers({
+		onMarkerClustererClick: () => (markerClusterer) => {
+			const clickedMarkers = markerClusterer.getMarkers()
+			console.log(clickedMarkers.length);
+		},
+	}),
 	withScriptjs,
 	withGoogleMap
 
 )((props) =>
 	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
+		<MarkerClusterer
+      		onClick={props.onMarkerClustererClick}
+      		averageCenter
+      		enableRetinaIcons
+      		gridSize={60}
+    	>
+      		{props.markers}
+    	</MarkerClusterer>
 		{props.polygons}
-		{props.markers}
 	</GoogleMap>	
 		
 )
@@ -42,7 +54,6 @@ class SimpleMap extends Component {
 			.catch(err => console.log(err));
 	};
 	drawPolygons = () => {
-		console.log(this.state.fieldDataList);
 		var polygons = []
 		var markers = []
 		var locations = []
@@ -76,18 +87,12 @@ class SimpleMap extends Component {
 		locations.push(polygons);
 		locations.push(markers);
 
-		console.log(locations);
-
 		return locations;
 	};
 
 	drawInfoWindows = () => {
 		var infoWindows = []
 		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
-			if (i == 0)
-			{
-				console.log(this.state.fieldDataList[i].centroid);
-			}
 			infoWindows.push( 
 				<InfoWindow
 					defaultPosition={{ lng: this.state.fieldDataList[i].centroid, lat: this.state.fieldDataList[i].centroid }}
