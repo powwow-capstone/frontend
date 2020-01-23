@@ -5,9 +5,9 @@ import MyDocument from './MyDocument';
 const Analysis = () =>  {
       return (
         <div className="card">
-          <h5 className="card-header">Water Efficiency</h5>
+          <h5 className="card-header">Filter options</h5>
           <div className="card-body">
-            <p className="card-text">analysis text goes here!</p>
+            <p className="card-text">Filter options goes here!</p>
             <PDFDownloadLink 
               document={<MyDocument data={'analysis text goes here'}/>}
               fileName="efficiencyAnalysis.pdf"

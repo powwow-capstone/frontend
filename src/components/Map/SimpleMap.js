@@ -12,7 +12,7 @@ const GMap = compose(
 	withProps({
 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
 		loadingElement: <div style={{ height: `200%` }} />,
-		containerElement: <div style={{ height: `500px` }} />,
+		containerElement: <div style={{ height: `100%` }} />,
 		mapElement: <div style={{ height: `100%` }} />,
 	}),
 	withScriptjs,
@@ -31,6 +31,7 @@ class SimpleMap extends Component {
 		super(props);
 		this.state = {
 			fieldDataList: [],
+			categoriesToDisplay: {},
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
@@ -44,6 +45,8 @@ class SimpleMap extends Component {
 			.then(res => this.setState({ fieldDataList: res.data }))
 			.catch(err => console.log(err));
 	};
+
+	
 
 	openSidebar(open) {
 		this.setState({ sidebarVisibility: open });
@@ -59,29 +62,53 @@ class SimpleMap extends Component {
 			if (this.state.fieldDataList[i].efficiency == 1) {
 				colorPolygon = "#00FF00";
 			}
+			var features = this.state.fieldDataList.features;
+			var draw = true;
 
-			polygons.push(
-				<Polygon
-					key={this.state.fieldDataList[i].id}
-					path={this.state.fieldDataList[i].coordinates.coordinates}
-					options={{
-						fillColor: colorPolygon,
-						fillOpacity: 0.4,
-						strokeColor: "FF0000",
-						strokeOpacity: 1,
-						strokeWeight: 1
-					}}
-					
-				/>
-			);
-			markers.push(
-				<Marker
-					key={this.state.fieldDataList[i].id}
-					onClick={() => this.openSidebar(true)}
-					position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
-				/>
+			// If this.state.categoriesToDisplay has length = 0, then display everything
+			// Else only display the data who belong to categories stored within this.state.categoriesToDisplay
+			if (this.state.categoriesToDisplay.length > 0)
+			{
+				for(var j = 0; j < features.length; ++j)
+				{
+					if ( features[j].name in this.state.categoriesToDisplay &&
+						  !this.state.categoriesToDisplay[ features[j].name ].includes(features[j].value))
+					{
+						// If you have selected this category to filter on, 
+						// then the value of the feature must be stored within this.state.categoriesToDisplay
+						// Otherwise, do not draw this feature
+						draw = false;
+						break;
+					}
+				}
+			}
 
-			);
+			if (draw)
+			{
+
+				polygons.push(
+					<Polygon
+						key={this.state.fieldDataList[i].id}
+						path={this.state.fieldDataList[i].coordinates.coordinates}
+						options={{
+							fillColor: colorPolygon,
+							fillOpacity: 0.4,
+							strokeColor: "FF0000",
+							strokeOpacity: 1,
+							strokeWeight: 1
+						}}
+						
+					/>
+				);
+				markers.push(
+					<Marker
+						key={this.state.fieldDataList[i].id}
+						onClick={() => this.openSidebar(true)}
+						position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
+					/>
+
+				);
+			}
 		}
 
 		locations.push(polygons);
@@ -114,7 +141,7 @@ class SimpleMap extends Component {
 						<GMap polygons={locations[0]} markers={locations[1]}/>
 					</Sidebar>
 				</div>
-				<div className="btn-group dropright mt-2 mr-2">
+				{/* <div className="btn-group dropright mt-2 mr-2">
 					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
 						Filter by Crop
 					</button>
@@ -134,7 +161,7 @@ class SimpleMap extends Component {
 						<button className="dropdown-item" type="button">year2</button>
 						<button className="dropdown-item" type="button">year3</button>
 					</div>
-				</div>
+				</div> */}
 			</div>
 
 		)
