@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-// import coordinates1 from '../../stubs/CoordinatesSB'
-// import coordinates2 from '../../stubs/CoordinatesAlameda'
-import axios from "axios";
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-google-maps"
 import Sidebar from "react-sidebar";
@@ -30,21 +27,21 @@ class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			fieldDataList: [],
+			fieldDataList: this.props.data,
 			categoriesToDisplay: {},
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 	}
-	componentDidMount() {
-		this.refreshList();
-	}
-	refreshList() {
-		axios
-			.get( "http://localhost:5000/api/fields")
-			.then(res => this.setState({ fieldDataList: res.data }))
-			.catch(err => console.log(err));
-	};
+	// componentDidMount() {
+	// 	this.refreshList();
+	// }
+	// refreshList() {
+	// 	axios
+	// 		.get( "http://localhost:5000/api/fields")
+	// 		.then(res => this.setState({ fieldDataList: res.data }))
+	// 		.catch(err => console.log(err));
+	// };
 
 	
 
