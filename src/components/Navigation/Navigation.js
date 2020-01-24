@@ -20,11 +20,7 @@ class Navigation extends Component {
     return (
 
       <nav class="navbar navbar-expand-sm navbar-light" > 
-		<a class="navbar-brand">
-			<NavLink to="/" >
-			   <img src={imageLogo} alt = "Logo" className="fixed_img"/>
-			</NavLink>
-		</a>
+		
 		  <button class="navbar-toggler" type="button" onClick={ this.toggleMenu }>
 			<span class="navbar-toggler-icon"></span>
 		   </button>

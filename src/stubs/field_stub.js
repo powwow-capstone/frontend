@@ -1,28 +1,32 @@
+var field_stub = [
 {
-    "id": 1,
-    "centroid" : [34, -119.5],
-    "features" : [
+    id: 1,
+    features : [
         {
-            "name" : "efficiency", "value" : 0
+            name : "efficiency", value : 0
         },
         {
-            "name" : "water depth", "value" : 17
+            name : "water depth", value : 17
         },
         {
-            "name" : "acreage", "value" : 3000
+            name : "acreage", value : 3000
         }
 
     ],
-    "categories" : [
+    categories : [
         {
-            "category_name" : "crop", "value" : "almonds"
+            category_name : "crop", value : "almonds"
         },
         {
-            "category_name" : "crop type", "value" : "nuts"
+            category_name : "crop type", value : "nuts"
         }
     ],
-    "coordinates" : {
-        "coordinates" : [
+    centroid: [
+        34,
+        -119.5
+    ],
+    coordinates : {
+        coordinates : [
             { "lng": -119.575927734375, "lat": 34.4122238159181
             },
             { "lng": -119.607498168945, "lat": 34.4196891784669
@@ -52,7 +56,8 @@
             { "lng": -119.044441223145, "lat": 33.4661102294922
             }
         ]
-    }
-
-    
+    }  
 }
+];
+
+export default field_stub;

@@ -27,11 +27,17 @@ class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			fieldDataList: this.props.data,
+			fieldDataList: props.data,
 			categoriesToDisplay: {},
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
+
+		console.log("field data list");
+		console.log(this.state.fieldDataList);
+		console.log("props");
+		console.log(props);
+	
 	}
 	// componentDidMount() {
 	// 	this.refreshList();
@@ -50,6 +56,7 @@ class SimpleMap extends Component {
 	}
 
 	drawPolygons() {
+
 		console.log(this.state.fieldDataList);
 		var polygons = []
 		var markers = []
