@@ -15,84 +15,10 @@ class Home extends Component {
     this.state = {
 
       // Stub the data while the server is down
-      data: [
-        {
-          id: 1,
-          features: [
-            {
-              name: "efficiency", value: 0
-            },
-            {
-              name: "water depth", value: 17
-            },
-            {
-              name: "acreage", value: 3000
-            }
-
-          ],
-          categories: [
-            {
-              category_name: "crop", value: "almonds"
-            },
-            {
-              category_name: "crop type", value: "nuts"
-            }
-          ],
-          centroid: [
-            34,
-            -119.5
-          ],
-          coordinates: {
-            coordinates: [
-              {
-                "lng": -119.575927734375, "lat": 34.4122238159181
-              },
-              {
-                "lng": -119.607498168945, "lat": 34.4196891784669
-              },
-              {
-                "lng": -119.71142578125, "lat": 34.3953247070312
-              },
-              {
-                "lng": -120.194259643555, "lat": 34.4703941345215
-              },
-              {
-                "lng": -120.626663208008, "lat": 34.5563888549805
-              },
-              {
-                "lng": -120.627197265625, "lat": 34.7391662597657
-              },
-              {
-                "lng": -120.532302856445, "lat": 34.9839515686036
-              },
-              {
-                "lng": -119.671508789062, "lat": 34.0188903808594
-              },
-              {
-                "lng": -119.713531494141, "lat": 33.9627227783203
-              },
-              {
-                "lng": -119.834724426269, "lat": 34.0636100769044
-              },
-              {
-                "lng": -120.334594726562, "lat": 34.0597229003907
-              },
-              {
-                "lng": -120.112319946289, "lat": 33.894515991211
-              },
-              {
-                "lng": -120.116111755371, "lat": 34.0216674804688
-              },
-              {
-                "lng": -119.044441223145, "lat": 33.4661102294922
-              }
-            ]
-          }
-        }
-      ],
-
+      data: field_stub,
       features: [],
-      categories: {}
+      categories: {},
+      category_selection: {}
     };
   }
 
@@ -100,9 +26,14 @@ class Home extends Component {
     // this.loadData();
 
     this.getAllUniqueFeatures();
-
-
+    this.getAllCategories();
+    console.log("Categories:");
+    console.log(this.state.categories);
   };
+
+  handleChange() {
+    console.log("CHANGE!");
+  }
 
   loadData() {
     axios
@@ -127,6 +58,101 @@ class Home extends Component {
       this.setState({features : feature_labels}) 
     }
   }
+
+  getAllCategories() {
+
+    if (this.state.data.length > 0)
+    {
+      var category_id = 1;
+      var category_selection = {}
+      var category_labels = {};
+      for(var i = 0; i < this.state.data; ++i)
+      {        
+
+        var categories = this.state.data[i].categories;
+        for (var j = 0; j < categories.length; ++j)
+        {
+          if ( ! (categories[j].category_name in category_labels ) )
+          {
+            category_labels[categories[j].category_name] = {}; 
+            category_labels[categories[j].category_name]["type"] = categories[j].type;
+            category_labels[categories[j].category_name]["values"] = [];
+            category_labels[categories[j].category_name]["id"] = category_id;
+            category_selection[category_id] = false;
+            category_id = category_id + 1;
+          }
+          var category_val = categories[j].value;
+          if (!(category_val in category_labels[categories[j].category_name]["values"]) )
+          {
+            category_labels[categories[j].category_name]["values"].push(category_val);
+          }
+        }
+      }
+
+      this.setState(
+        {
+          categories : category_labels,
+          category_selection : category_selection
+        }
+      );
+    }
+  }
+
+  /*
+  createCategoryCheckboxes()
+  {
+    
+    var category_checkboxes = [];
+    for( var category_name in this.state.categories)
+    {
+      category_checkboxes.push(
+        <input type="checkbox" onChange={this.handleChange} />
+      );
+      category_checkboxes.push(
+        category_name
+      ); 
+      var type = this.state.categories[category_name]["type"];
+      var values = this.state.categories[category_name]["values"];
+      var id = this.state.categories[category_name]["id"];
+
+      if (type == "string")
+      {
+        // For strings, each checkbox has a dropdown menu
+        category_checkboxes.push(
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+        ); 
+        var dropdown_options = []
+        for (var i = 0; i < values.length; ++i) {
+          dropdown_options.push(
+            <a class="dropdown-item" href="#">values[i]</a>
+          ); 
+        }
+        category_checkboxes.push(
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">dropdown_options</div>
+        );
+
+      }
+      else
+      {
+        // For ints, the user inputs a min and a max
+        category_checkboxes.push(
+          <div>
+            <div className="row">
+              Min: <input type="Text" id="num2" />
+            </div>
+            <div className="row">
+              Max: <input type="Text" id="num3" />
+            </div>
+          </div>
+        ); 
+      }
+      
+    }
+
+    return category_checkboxes;
+    
+  }
+  */
 
   createFeatureRadioButtons() {
     var feature_buttons = [];
@@ -155,25 +181,62 @@ class Home extends Component {
             </div>
             <div className="col-md-3">
               <div className="col-12">
-                <img src={imageLogo} alt="Logo" className="fixed_img center" />
+                  <img src={imageLogo} alt="Logo" className="fixed_img center" />
               </div>
               <div className="col-12">
                 <Analysis  />
-                <div className="card">
-                  <h5 className="card-header">Features</h5>
-                  <div className="card-body">
-                    <div className="card-text">
-                    <form>
-                      {this.createFeatureRadioButtons()}
-                      
-                    </form>
+              </div>
+            <div></div>
+                <div className="col-12">
+                  <div className="card">
+                    <h5 className="card-header">Categories</h5>
+                    <div className="card-body">
+                      <div className="card-text">
+                        <form>
+
+                          <div className="row">
+                          <input type="checkbox" id="myCheck" onChange={this.handleChange}/>
+                            Crop <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">Oranges</a>
+                              <a class="dropdown-item" href="#">Almonds</a>
+                              <a class="dropdown-item" href="#">Kiwi</a>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                          <input type="checkbox" id="myCheck" onChange={this.handleChange} /> Acreage
+                          </div>
+                          <div>
+                            <div className="row">
+                              Min: <input type="Text" id="num2" /> 
+                            </div>
+                            <div className="row">
+                              Max: <input type="Text" id="num3" />
+                            </div>
+                          </div>
+                          
+                        </form>
+                      </div>
+
                     </div>
-                      
                   </div>
                 </div>
-              </div>
+
+                <div className="col-12">
+                  <div className="card">
+                    <h5 className="card-header">Features</h5>
+                    <div className="card-body">
+                      <div className="card-text">
+                        <form>
+                          {this.createFeatureRadioButtons()}
+                        </form>
+                      </div>
+                        
+                    </div>
+                  </div>
+                </div>
             </div>
-            
           </div>
         </div>
     );

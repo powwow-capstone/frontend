@@ -7,18 +7,17 @@ var field_stub = [
         },
         {
             name : "water depth", value : 17
-        },
-        {
-            name : "acreage", value : 3000
         }
-
     ],
     categories : [
         {
-            category_name : "crop", value : "almonds"
+            category_name : "crop", type: "string",  value : "almonds"
         },
         {
-            category_name : "crop type", value : "nuts"
+            category_name : "crop type", type: "string",  value : "nuts"
+        },
+        {
+            category_name : "acreage", type: "real", value: 3000
         }
     ],
     centroid: [
