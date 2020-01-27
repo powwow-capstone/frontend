@@ -62,7 +62,8 @@ class SimpleMap extends Component {
 					}
 				}
 
-				if (this.props.data[i].efficiency == 1) {
+				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
+				if (feature_value <= 5 || feature_value >= 95) {
 					colorPolygon = "#00FF00";
 				}
 				else {
