@@ -21,6 +21,7 @@ class Home extends Component {
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
+    this.submitFilters = this.submitFilters.bind(this);
   }
 
   componentDidMount() {
@@ -41,8 +42,6 @@ class Home extends Component {
     {
       selected_categories_cpy[category] = value;
       this.setState({ selected_categories: selected_categories_cpy });
-      console.log("Selected categories");
-      console.log(this.state.selected_categories);
     }
     else
     {
@@ -59,16 +58,12 @@ class Home extends Component {
     }
     selected_categories_cpy[category][min_max] = value;
     this.setState({ selected_categories: selected_categories_cpy });
-    console.log("Selected categories");
-    console.log(this.state.selected_categories);
   }
 
   handleCheckboxDeselect(category) {
     var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
     delete selected_categories_cpy[category];
     this.setState({ selected_categories: selected_categories_cpy });
-    console.log("Selected categories");
-    console.log(this.state.selected_categories);
   }
 
   submitFilters() {
@@ -79,7 +74,7 @@ class Home extends Component {
 
     // Retrieve the selected feature
     var new_displayed_data = []
-    var all_data = JSON.parse(JSON.stringify(this.state.data));
+    const all_data = JSON.parse(JSON.stringify(this.state.data));
 
     for (var i = 0; i < all_data.length; ++i)
     {
@@ -148,11 +143,11 @@ class Home extends Component {
               <div className="col-12">
                 <Analysis  />
               </div>
-              <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
-              <FeatureSelection data={this.state.data} />
-              <div className="row">
-                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Primary</Button>
-              </div>
+=               <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <FeatureSelection data={this.state.data} />
+                <div className="row">
+                  <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Submit</Button>
+                </div>
             </div>
           </div>
         </div>

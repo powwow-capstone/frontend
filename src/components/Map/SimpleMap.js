@@ -27,14 +27,14 @@ class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			fieldDataList: props.data,
+			// fieldDataList: props.data,
 			categoriesToDisplay: {},
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 
 		// console.log("field data list");
-		// console.log(this.state.fieldDataList);
+		// console.log(this.props.data);
 		// console.log("props");
 		// console.log(props);
 	
@@ -57,16 +57,16 @@ class SimpleMap extends Component {
 
 	drawPolygons() {
 
-		console.log(this.state.fieldDataList);
+		console.log(this.props.data);
 		var polygons = []
 		var markers = []
 		var locations = []
-		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
+		for (var i = 0; i < this.props.data.length; ++i) {
 			var colorPolygon = "#FF0000"
-			if (this.state.fieldDataList[i].efficiency == 1) {
+			if (this.props.data[i].efficiency == 1) {
 				colorPolygon = "#00FF00";
 			}
-			var features = this.state.fieldDataList.features;
+			var features = this.props.data.features;
 			var draw = true;
 
 			// If this.state.categoriesToDisplay has length = 0, then display everything
@@ -92,8 +92,8 @@ class SimpleMap extends Component {
 
 				polygons.push(
 					<Polygon
-						key={this.state.fieldDataList[i].id}
-						path={this.state.fieldDataList[i].coordinates.coordinates}
+						key={this.props.data[i].id}
+						path={this.props.data[i].coordinates.coordinates}
 						options={{
 							fillColor: colorPolygon,
 							fillOpacity: 0.4,
@@ -106,9 +106,9 @@ class SimpleMap extends Component {
 				);
 				markers.push(
 					<Marker
-						key={this.state.fieldDataList[i].id}
+						key={this.props.data[i].id}
 						onClick={() => this.openSidebar(true)}
-						position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
+						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1]}}
 					/>
 
 				);
