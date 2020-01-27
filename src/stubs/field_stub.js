@@ -3,10 +3,10 @@ var field_stub = [
     id: 1,
     features : [
         {
-            name : "efficiency", value : 0
+            name : "efficiency", value : 0, percentile : 0
         },
         {
-            name : "water depth", value : 17
+            name : "water depth", value : 17, percentile : 17
         }
     ],
     categories : [
@@ -41,10 +41,10 @@ var field_stub = [
         id: 2,
         features: [
             {
-                name: "efficiency", value: 50
+                name: "efficiency", value: 50, percentile: 24
             },
             {
-                name: "water depth", value: 99
+                name: "water depth", value: 900, percentile : 99
             }
         ],
         categories: [

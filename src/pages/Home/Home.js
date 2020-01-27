@@ -28,7 +28,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    // this.loadData();
+    this.loadData();
   };
 
 
