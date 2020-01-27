@@ -33,10 +33,10 @@ class SimpleMap extends Component {
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 
-		console.log("field data list");
-		console.log(this.state.fieldDataList);
-		console.log("props");
-		console.log(props);
+		// console.log("field data list");
+		// console.log(this.state.fieldDataList);
+		// console.log("props");
+		// console.log(props);
 	
 	}
 	// componentDidMount() {
@@ -117,8 +117,6 @@ class SimpleMap extends Component {
 
 		locations.push(polygons);
 		locations.push(markers);
-
-		console.log(locations);
 
 		return locations;
 	};
