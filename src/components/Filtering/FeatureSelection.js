@@ -24,7 +24,7 @@ class FeatureSelection extends Component {
             for (var i = 0; i < features.length; ++i) {
                 feature_labels.push(features[i].name);
             }
-
+            
             this.setState({ features: feature_labels })
         }
     }

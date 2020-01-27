@@ -125,6 +125,7 @@ class SimpleMap extends Component {
 
 	render() {
 
+		console.log("Render map");
 		var locations = this.drawPolygons();
 
 		return (

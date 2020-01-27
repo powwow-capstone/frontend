@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import { Button } from 'reactstrap';
 import Analysis from '../../components/Report/Analysis'
 import SimpleMap from '../../components/Map/SimpleMap'
 import imageLogo from '../../images/imageLogo.png';
@@ -15,10 +16,11 @@ class Home extends Component {
 
       data: field_stub,            // This contains all data from the server
       displayed_data : field_stub, // This contains a subset of data that will be displayed on the map
-      features: [],
-      categories: {},
-      category_visibility: {}
+      selected_categories : {},
     };
+    this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
+    this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
+    this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
   }
 
   componentDidMount() {
@@ -33,38 +35,102 @@ class Home extends Component {
       .catch (err => console.log(err));
   }
 
-  getAllUniqueFeatures() {
-    // Extract all the different features from the data
-    // All data should have the same features, so all the different feature labels can be found
-    // from the first element of this.state.data
-    if (this.state.data.length > 0)
+  handleCategoryDropdownSelection(category, value) {
+    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    if (value != "NULL")
     {
-      var features = this.state.data[0].features;
-      var feature_labels = []
-      for(var i = 0; i < features.length; ++i)
-      {
-        feature_labels.push( features[i].name );
-      }
-
-      this.setState({features : feature_labels}) 
+      selected_categories_cpy[category] = value;
+      this.setState({ selected_categories: selected_categories_cpy });
+      console.log("Selected categories");
+      console.log(this.state.selected_categories);
+    }
+    else
+    {
+      this.handleCheckboxDeselect(category);
     }
   }
 
-  createFeatureRadioButtons() {
-    var feature_buttons = [];
-    for(var i = 0; i < this.state.features.length; ++i)
+  handleCategoryMinMaxInput(category, min_max, value) {
+    // min_max will equal either "MIN" or "MAX"
+    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    if (!(category in selected_categories_cpy))
     {
-      feature_buttons.push(
-        <div className="radio">
-          <label>
-            <input type="radio" name="features" value={this.state.features[i]} />
-              {this.state.features[i]}
-            </label>
-        </div>
-      );
+      selected_categories_cpy[category] = {};
+    }
+    selected_categories_cpy[category][min_max] = value;
+    this.setState({ selected_categories: selected_categories_cpy });
+    console.log("Selected categories");
+    console.log(this.state.selected_categories);
+  }
+
+  handleCheckboxDeselect(category) {
+    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    delete selected_categories_cpy[category];
+    this.setState({ selected_categories: selected_categories_cpy });
+    console.log("Selected categories");
+    console.log(this.state.selected_categories);
+  }
+
+  submitFilters() {
+    console.log("SUBMIT");
+    console.log(this.state.selected_categories);
+    // Retrieve all the selected categories
+
+
+    // Retrieve the selected feature
+    var new_displayed_data = []
+    var all_data = JSON.parse(JSON.stringify(this.state.data));
+
+    for (var i = 0; i < all_data.length; ++i)
+    {
+      var include_datapoint = true;
+      const categories = all_data[i].categories;
+      for (var j = 0; j < categories.length; ++j)
+      {
+        const category_name = categories[j].category_name;
+        const type = categories[j].type;
+        const value = categories[j].value;
+
+        if (category_name in this.state.selected_categories)
+        {
+          if (type == "string")
+          {
+            if (value != this.state.selected_categories[category_name])
+            {
+              include_datapoint = false;
+            }
+          }
+          else
+          {
+            if ("MIN" in this.state.selected_categories[category_name])
+            {
+              if (value < this.state.selected_categories[category_name]["MIN"])
+              {
+                include_datapoint = false;
+              }
+            }
+            if ("MAX" in this.state.selected_categories[category_name])
+            {
+              if (value > this.state.selected_categories[category_name]["MAX"]) {
+                include_datapoint = false;
+              }
+            }
+          }
+        }
+      }
+      if (include_datapoint)
+      {
+        // console.log("Include datapoint: ");
+        // console.log(all_data[i]);
+        new_displayed_data.push(all_data[i]);
+      }
+      
     }
 
-    return feature_buttons;
+    this.setState({ displayed_data: new_displayed_data });
+
+    // Run algorithm on selected feature
+
   }
 
   render() {
@@ -82,10 +148,11 @@ class Home extends Component {
               <div className="col-12">
                 <Analysis  />
               </div>
-            
-              <CategoryFiltering data={this.state.data}/>
+              <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               <FeatureSelection data={this.state.data} />
-
+              <div className="row">
+                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Primary</Button>
+              </div>
             </div>
           </div>
         </div>

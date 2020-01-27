@@ -1,6 +1,5 @@
 import React from 'react';
 import { Component } from 'react';
-import { Dropdown, Container, Header, List  } from 'semantic-ui-react'
 
 class CategoryFiltering extends Component {
     constructor(props) {
@@ -13,12 +12,12 @@ class CategoryFiltering extends Component {
     }
     componentDidMount() {
         this.getAllCategories();
-
     }
 
     getAllCategories() {
 
         if (this.state.data.length > 0) {
+            
             var category_labels = {}
             var category_visibility = {}
             var category_id = 1;
@@ -37,10 +36,13 @@ class CategoryFiltering extends Component {
                         category_id = category_id + 1;
                     }
                     var category_val = categories[j].value;
-                    if (!(category_val in category_labels[categories[j].category_name]["values"])) {
-                        category_labels[categories[j].category_name]["values"].push(category_val);
-                    }
+                    category_labels[categories[j].category_name]["values"].push(category_val);
                 }
+            }
+
+            for (var key in category_labels)
+            {
+                category_labels[key]["values"] = [...new Set(category_labels[key]["values"])];
             }
 
             this.setState({ categories: category_labels });
@@ -50,29 +52,49 @@ class CategoryFiltering extends Component {
     }
 
 
-    handleChange(category) {
+    handleChange(category, e) {
 
-        var category_visible = this.state.category_visibility[category];
-        var all_category_visibilities = this.state.category_visibility;
+        const category_visible = this.state.category_visibility[category];
+        var all_category_visibilities = JSON.parse(JSON.stringify(this.state.category_visibility));
         all_category_visibilities[category] = !category_visible;
-        this.setState({ category_visibility: all_category_visibilities });
 
+        if (! (document.getElementById(category).checked) )
+        {
+            this.props.handleDeselect(category);
+        }
+
+        this.setState({ category_visibility: all_category_visibilities });
         // console.log(this.state.category_visibility[category]);
         // console.log(this.state.category_visibility);
     }
 
+    handleSelection(category, event) {
+        const text = event.target.value;
+        this.props.handleSelection(category, text);
+    }
+
+    handleMinMaxInput(category, min_max, event) {
+        // min_max will equal either "MIN" or "MAX"
+
+        const text = event.target.value;
+        this.props.handleInput(category, min_max, text);
+    }
+
+    handleDeselect(category) {
+        this.props.handleDeselect(category);
+    }
+
     createDropdownSelection(options) {
         var dropdown_selection = [];
+        dropdown_selection.push(
+            <option value="NULL" selected >Select</option>
+        );
         for (var i = 0; i < options.length; ++i) {
             // dropdown_selection.push(
             //     <a class="dropdown-item" href="#">{options[i]}</a>
             // );
             dropdown_selection.push(
-                {
-                    key : options[i],
-                    text : options[i],
-                    value : options[i]
-                }
+            <option value={options[i]} >{options[i]}</option>
             );
         }
         return dropdown_selection;
@@ -80,39 +102,29 @@ class CategoryFiltering extends Component {
 
 
     createCategoryCheckboxes() {
-        console.log("Create checkboxes");
-        console.log(this.state.categories);
+        // console.log("Create checkboxes");
+        // console.log(this.state.categories);
         var category_checkboxes = [];
         for (const category_name in this.state.categories) {
-            console.log("Category name: " + category_name);
-            var type = this.state.categories[category_name]["type"];
-            var values = this.state.categories[category_name]["values"];
-            var id = this.state.categories[category_name]["id"];
+            // console.log("Category name: " + category_name);
+            const type = this.state.categories[category_name]["type"];
+            const values = this.state.categories[category_name]["values"];
+            const id = this.state.categories[category_name]["id"];
 
             if (type == "string") {
-                // const dropdown_content = this.state.category_visibility[category_name]
-                //     ? <div>
-                //         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
-                //         <div class="dropdown-menu" id={category_name + "_selection"} aria-labelledby="dropdownMenuButton" >
-                //             {this.createDropdownSelection(values)}
-                //         </div>
-                //     </div>
-                //     : null;
-            
                 const dropdown_content = this.state.category_visibility[category_name]
-                    ? <Dropdown
-                        placeholder='Select'
-                        fluid
-                        search
-                        selection
-                        options={this.createDropdownSelection(values)}
-                    />
+                    ? <div>
+                        <select class="selectpicker" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
+                            {this.createDropdownSelection(values)}
+                        </select>
+                    </div>
                     : null;
+            
 
                 // For strings, each checkbox has a dropdown menu
                 category_checkboxes.push(
                     <div className="row">
-                        <input type="checkbox" id={category_name} onChange={() => this.handleChange(category_name)} />
+                        <input type="checkbox" id={category_name} onChange={(e) => this.handleChange(category_name, e)} />
                         {category_name}
                         {dropdown_content}
                     </div>
@@ -123,10 +135,10 @@ class CategoryFiltering extends Component {
                 const textbox_content = this.state.category_visibility[category_name]
                     ? <div>
                         <div className="row">
-                            Min: <input type="Text" id={category_name + "_min"} />
+                            Min: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
                         </div>
                         <div className="row">
-                            Max: <input type="Text" id={category_name + "_max"} />
+                            Max: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_max"} />
                         </div>
                     </div>
                     : null;
