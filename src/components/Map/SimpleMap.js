@@ -27,27 +27,11 @@ class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// fieldDataList: props.data,
-			categoriesToDisplay: {},
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
-
-		// console.log("field data list");
-		// console.log(this.props.data);
-		// console.log("props");
-		// console.log(props);
 	
 	}
-	// componentDidMount() {
-	// 	this.refreshList();
-	// }
-	// refreshList() {
-	// 	axios
-	// 		.get( "http://localhost:5000/api/fields")
-	// 		.then(res => this.setState({ fieldDataList: res.data }))
-	// 		.catch(err => console.log(err));
-	// };
 
 	
 
@@ -57,35 +41,36 @@ class SimpleMap extends Component {
 
 	drawPolygons() {
 
-		console.log(this.props.data);
+		// console.log(this.props.data);
+
 		var polygons = []
 		var markers = []
 		var locations = []
 		for (var i = 0; i < this.props.data.length; ++i) {
-			var colorPolygon = "#FF0000"
-			if (this.props.data[i].efficiency == 1) {
-				colorPolygon = "#00FF00";
-			}
-			var features = this.props.data.features;
-			var draw = true;
-
-			// If this.state.categoriesToDisplay has length = 0, then display everything
-			// Else only display the data who belong to categories stored within this.state.categoriesToDisplay
-			if (this.state.categoriesToDisplay.length > 0)
+			
+			var colorPolygon = "#FFFFFF";  // default coloring
+			if (this.props.selectedFeature != null)
 			{
-				for(var j = 0; j < features.length; ++j)
+				var features = this.props.data[i].features;
+				var feature_value = 0;
+				for (var j = 0; j < features.length; j++)
 				{
-					if ( features[j].name in this.state.categoriesToDisplay &&
-						  !this.state.categoriesToDisplay[ features[j].name ].includes(features[j].value))
+					if (features[j].name == this.props.selectedFeature)
 					{
-						// If you have selected this category to filter on, 
-						// then the value of the feature must be stored within this.state.categoriesToDisplay
-						// Otherwise, do not draw this feature
-						draw = false;
+						feature_value = features[j].value;
 						break;
 					}
 				}
+
+				if (this.props.data[i].efficiency == 1) {
+					colorPolygon = "#00FF00";
+				}
+				else {
+					colorPolygon = "#FF0000";
+				}
 			}
+			
+			var draw = true;
 
 			if (draw)
 			{
@@ -144,31 +129,14 @@ class SimpleMap extends Component {
 						<GMap polygons={locations[0]} markers={locations[1]}/>
 					</Sidebar>
 				</div>
-				{/* <div className="btn-group dropright mt-2 mr-2">
-					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-						Filter by Crop
-					</button>
-					<div className="dropdown-menu">
-						<button className="dropdown-item" type="button">Almond</button>
-						<button className="dropdown-item" type="button">Pistachio</button>
-						<button className="dropdown-item" type="button">Something</button>
-					</div>
-				</div>
-
-				<div className="btn-group dropright mt-2">
-					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-						Filter by Year
-					</button>
-					<div className="dropdown-menu">
-						<button className="dropdown-item" type="button">year1</button>
-						<button className="dropdown-item" type="button">year2</button>
-						<button className="dropdown-item" type="button">year3</button>
-					</div>
-				</div> */}
 			</div>
 
 		)
 	}
+}
+
+SimpleMap.defaultProps = {
+	selectedFeature: null
 }
 
 export default SimpleMap;

@@ -24,19 +24,26 @@ class FeatureSelection extends Component {
             for (var i = 0; i < features.length; ++i) {
                 feature_labels.push(features[i].name);
             }
-            
+
             this.setState({ features: feature_labels })
         }
+    }
+
+    handleChange(feature, event)
+    {
+        var val = event.target.value;
+        this.props.handleSelection(val);
     }
 
     createFeatureRadioButtons() {
         var feature_buttons = [];
         for (var i = 0; i < this.state.features.length; ++i) {
+            const feature = this.state.features[i];
             feature_buttons.push(
                 <div className="radio">
                     <label>
-                        <input type="radio" name="features" value={this.state.features[i]} />
-                        {this.state.features[i]}
+                        <input type="radio" name="features" value={feature} onChange={(e) => this.handleChange(feature, e)} />
+                        {feature}
                     </label>
                 </div>
             );

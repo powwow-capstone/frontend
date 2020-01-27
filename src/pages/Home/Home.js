@@ -17,11 +17,14 @@ class Home extends Component {
       data: field_stub,            // This contains all data from the server
       displayed_data : field_stub, // This contains a subset of data that will be displayed on the map
       selected_categories : {},
+      selected_feature_temp : null,
+      selected_feature: null
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
+    this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
   }
 
   componentDidMount() {
@@ -66,9 +69,14 @@ class Home extends Component {
     this.setState({ selected_categories: selected_categories_cpy });
   }
 
+  handleRadioButtonSelection(feature) {
+    this.setState( {selected_feature_temp : feature} )
+  }
+
   submitFilters() {
     console.log("SUBMIT");
     console.log(this.state.selected_categories);
+    console.log(this.selected_feature_temp);
     // Retrieve all the selected categories
 
 
@@ -122,9 +130,10 @@ class Home extends Component {
       
     }
 
-    this.setState({ displayed_data: new_displayed_data });
+    
 
-    // Run algorithm on selected feature
+    this.setState({ displayed_data: new_displayed_data });
+    this.setState({ selected_feature : this.state.selected_feature_temp }); // I'm pretty sure this isn't the best way to do this
 
   }
 
@@ -134,20 +143,21 @@ class Home extends Component {
           <div className="row">
 
             <div className="col-md-9">
-              <SimpleMap data={this.state.displayed_data}/>
+              <SimpleMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature}/>
             </div>
             <div className="col-md-3">
               <div className="col-12">
                   <img src={imageLogo} alt="Logo" className="fixed_img center" />
               </div>
-              <div className="col-12">
-                <Analysis  />
+              <div className="container row">
+                <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
               </div>
+              <div className="container row">
 =               <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
-                <FeatureSelection data={this.state.data} />
-                <div className="row">
-                  <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Submit</Button>
-                </div>
+              </div>
+              <div className="container row">
+                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Change Categories</Button>
+              </div>
             </div>
           </div>
         </div>
