@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-google-maps"
+import { compose, withProps, withHandlers } from "recompose"
+import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "react-sidebar";
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
@@ -12,13 +13,26 @@ const GMap = compose(
 		containerElement: <div style={{ height: `100%` }} />,
 		mapElement: <div style={{ height: `100%` }} />,
 	}),
+	withHandlers({
+		onMarkerClustererClick: () => (markerClusterer) => {
+			const clickedMarkers = markerClusterer.getMarkers()
+			console.log(clickedMarkers.length);
+		},
+	}),
 	withScriptjs,
 	withGoogleMap
 
 )((props) =>
 	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
+		<MarkerClusterer
+      		onClick={props.onMarkerClustererClick}
+      		averageCenter
+      		enableRetinaIcons
+      		gridSize={60}
+    	>
+      		{props.markers}
+    	</MarkerClusterer>
 		{props.polygons}
-		{props.markers}
 	</GoogleMap>	
 		
 )
@@ -32,8 +46,6 @@ class SimpleMap extends Component {
 		this.openSidebar = this.openSidebar.bind(this);
 	
 	}
-
-	
 
 	openSidebar(open) {
 		this.setState({ sidebarVisibility: open });
@@ -63,6 +75,7 @@ class SimpleMap extends Component {
 				}
 
 				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
+				// Hard code this threshold for now
 				if (feature_percentile <= 5 || feature_percentile >= 95) {
 					colorPolygon = "#00FF00";
 				}
@@ -72,6 +85,10 @@ class SimpleMap extends Component {
 			}
 			
 			var draw = true;
+			if (this.props.data[i] == null || this.props.data[i].coordinates == null)
+			{
+				draw = false;
+			}
 
 			if (draw)
 			{
@@ -107,7 +124,20 @@ class SimpleMap extends Component {
 		return locations;
 	};
 
-	
+	// drawInfoWindows = () => {
+	// 	var infoWindows = []
+	// 	for (var i = 0; i < this.state.fieldDataList.length; ++i) {
+	// 		infoWindows.push( 
+	// 			<InfoWindow
+	// 				defaultPosition={{ lng: this.state.fieldDataList[i].centroid, lat: this.state.fieldDataList[i].centroid }}
+	// 				>
+	// 				<h1 class="text">Here should be something useful </h1>
+	// 			</InfoWindow>
+	// 		);
+	// 	}
+	// 	return infoWindows
+
+	// }	
 
 	render() {
 

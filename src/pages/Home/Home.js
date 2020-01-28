@@ -14,8 +14,8 @@ class Home extends Component {
     super(props);
     this.state = {
 
-      data: field_stub,            // This contains all data from the server
-      displayed_data : field_stub, // This contains a subset of data that will be displayed on the map
+      data: [],            // This contains all data from the server
+      displayed_data : [], // This contains a subset of data that will be displayed on the map
       selected_categories : {},
       selected_feature_temp : null,
       selected_feature: null
@@ -25,10 +25,13 @@ class Home extends Component {
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
     this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
+
   }
 
   componentDidMount() {
-    this.loadData();
+      this.loadData();
+    // Problem: The componentDidMount() of the children will run before the parent
+    // But the children depend on data from the API call
   };
 
 
@@ -37,6 +40,23 @@ class Home extends Component {
       .get("http://localhost:5000/api/fields")
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
       .catch (err => console.log(err));
+  }
+
+  getAllUniqueFeatures() {
+    // Extract all the different features from the data
+    // All data should have the same features, so all the different feature labels can be found
+    // from the first element of this.props.data
+    console.log("Get all unique features");
+    console.log(this.props.data.length);
+    if (this.props.data.length > 0) {
+      var features = this.props.data[0].features;
+      var feature_labels = []
+      for (var i = 0; i < features.length; ++i) {
+        feature_labels.push(features[i].name);
+      }
+
+      this.setState({ features: feature_labels })
+    }
   }
 
   handleCategoryDropdownSelection(category, value) {
@@ -138,6 +158,8 @@ class Home extends Component {
   }
 
   render() {
+    console.log("Render home");
+    console.log(this.state.data);
     return (
         <div className="mt-5">
           <div className="row">
@@ -156,7 +178,7 @@ class Home extends Component {
 =               <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="container row">
-                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Change Categories</Button>
+                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
               </div>
             </div>
           </div>

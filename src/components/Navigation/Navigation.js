@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Navigation.css';
 import imageLogo from '../../images/imageLogo.png';
 import { NavLink } from 'react-router-dom';
+import GoogleLogin from 'react-google-login';
 
 class Navigation extends Component {
 	constructor(props) {
@@ -29,12 +30,17 @@ class Navigation extends Component {
 		  </div>
 		  
 			<form class="form-inline my-2 my-lg-0" >
-			  <button class="btn btn-outline-info my-2 my-sm-0 mr-1" type="submit" >
+			<GoogleLogin
+				clientId="779203911044-dtcm94n9lukj7d50nqfhchoqre4511k9.apps.googleusercontent.com"
+				buttonText="Login"
+				cookiePolicy={'single_host_origin'}
+			/>
+			  {/* <button class="btn btn-outline-info my-2 my-sm-0 mr-1" type="submit" >
 			  <NavLink to="/login">Login</NavLink>
 			  </button>
 			  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">
 			  <NavLink to="/signup">Signup</NavLink>
-			  </button>
+			  </button> */}
 		   </form>
 	   </nav>
     );

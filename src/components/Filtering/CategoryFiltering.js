@@ -5,10 +5,10 @@ class CategoryFiltering extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: props.data,          
             categories: {},
             category_visibility: {}
         };
+        
     }
     componentDidMount() {
         this.getAllCategories();
@@ -16,13 +16,13 @@ class CategoryFiltering extends Component {
 
     getAllCategories() {
 
-        if (this.state.data.length > 0) {
+        if (this.props.data.length > 0) {
             
             var category_labels = {}
             var category_visibility = {}
             var category_id = 1;
             console.log("Adding to category labels");
-            for (var i = 0; i < this.state.data.length; ++i) {
+            for (var i = 0; i < this.props.data.length; ++i) {
 
                 var categories = this.state.data[i].categories;
 

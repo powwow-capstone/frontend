@@ -5,10 +5,10 @@ class FeatureSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
-            data: props.data,           
             features: [],
         };
+        // console.log("Feature selection data");
+        // console.log(props.data);
     }
     componentDidMount() {
         this.getAllUniqueFeatures();
@@ -17,9 +17,11 @@ class FeatureSelection extends Component {
     getAllUniqueFeatures() {
         // Extract all the different features from the data
         // All data should have the same features, so all the different feature labels can be found
-        // from the first element of this.state.data
-        if (this.state.data.length > 0) {
-            var features = this.state.data[0].features;
+        // from the first element of this.props.data
+        console.log("Get all unique features");
+        console.log(this.props.data.length);
+        if (this.props.data.length > 0) {
+            var features = this.props.data[0].features;
             var feature_labels = []
             for (var i = 0; i < features.length; ++i) {
                 feature_labels.push(features[i].name);
