@@ -13,7 +13,6 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
       data: null,            // This contains all data from the server
       displayed_data: [], // This contains a subset of data that will be displayed on the map
       selected_feature: null
@@ -41,13 +40,9 @@ class Home extends Component {
   }
 
   handleCategoryDropdownSelection(category, value) {
-    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
     if (value != "NULL")
     {
       this.selected_categories[category] = value;
-
-      // selected_categories_cpy[category] = value;
-      // this.setState({ selected_categories: selected_categories_cpy });
     }
     else
     {
@@ -57,13 +52,7 @@ class Home extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
-    // if (!(category in selected_categories_cpy))
-    // {
-    //   selected_categories_cpy[category] = {};
-    // }
-    // selected_categories_cpy[category][min_max] = value;
-    // this.setState({ selected_categories: selected_categories_cpy });
+
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
@@ -73,14 +62,10 @@ class Home extends Component {
 
   handleCheckboxDeselect(category) {
     delete this.selected_categories[category];
-    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
-    // delete selected_categories_cpy[category];
-    // this.setState({ selected_categories: selected_categories_cpy });
   }
 
   handleRadioButtonSelection(feature) {
     this.selected_feature_temp = feature;
-    // this.setState( {selected_feature_temp : feature} )
   }
 
   submitFilters() {
@@ -133,8 +118,6 @@ class Home extends Component {
       }
       if (include_datapoint)
       {
-        // console.log("Include datapoint: ");
-        // console.log(all_data[i]);
         new_displayed_data.push(all_data[i]);
       }
       
@@ -143,13 +126,12 @@ class Home extends Component {
     
 
     this.setState({ displayed_data: new_displayed_data });
-    this.setState({ selected_feature : this.selected_feature_temp }); // I'm pretty sure this isn't the best way to do this
+    this.setState({ selected_feature : this.selected_feature_temp }); 
 
   }
 
   render() {
-    // console.log("Render home");
-    // console.log(this.state.data);
+
     return (
         <div className="mt-5">
           <div className="row">
