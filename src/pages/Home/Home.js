@@ -15,9 +15,7 @@ class Home extends Component {
     this.state = {
 
       data: null,            // This contains all data from the server
-      displayed_data : [], // This contains a subset of data that will be displayed on the map
-      selected_categories : {},
-      selected_feature_temp : null,
+      displayed_data: [], // This contains a subset of data that will be displayed on the map
       selected_feature: null
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
@@ -25,13 +23,13 @@ class Home extends Component {
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
     this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
+    this.selected_feature_temp = null;
+    this.selected_categories = {}
 
   }
 
   componentDidMount() {
       this.loadData();
-    // Problem: The componentDidMount() of the children will run before the parent
-    // But the children depend on data from the API call
   };
 
 
@@ -43,11 +41,13 @@ class Home extends Component {
   }
 
   handleCategoryDropdownSelection(category, value) {
-    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
     if (value != "NULL")
     {
-      selected_categories_cpy[category] = value;
-      this.setState({ selected_categories: selected_categories_cpy });
+      this.selected_categories[category] = value;
+
+      // selected_categories_cpy[category] = value;
+      // this.setState({ selected_categories: selected_categories_cpy });
     }
     else
     {
@@ -57,28 +57,35 @@ class Home extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
-    if (!(category in selected_categories_cpy))
+    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    // if (!(category in selected_categories_cpy))
+    // {
+    //   selected_categories_cpy[category] = {};
+    // }
+    // selected_categories_cpy[category][min_max] = value;
+    // this.setState({ selected_categories: selected_categories_cpy });
+    if (!(category in this.selected_categories))
     {
-      selected_categories_cpy[category] = {};
+      this.selected_categories[category] = {}
     }
-    selected_categories_cpy[category][min_max] = value;
-    this.setState({ selected_categories: selected_categories_cpy });
+    this.selected_category[category][min_max] = value;
   }
 
   handleCheckboxDeselect(category) {
-    var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
-    delete selected_categories_cpy[category];
-    this.setState({ selected_categories: selected_categories_cpy });
+    delete this.selected_categories[category];
+    // var selected_categories_cpy = JSON.parse(JSON.stringify(this.state.selected_categories));
+    // delete selected_categories_cpy[category];
+    // this.setState({ selected_categories: selected_categories_cpy });
   }
 
   handleRadioButtonSelection(feature) {
-    this.setState( {selected_feature_temp : feature} )
+    this.selected_feature_temp = feature;
+    // this.setState( {selected_feature_temp : feature} )
   }
 
   submitFilters() {
     console.log("SUBMIT");
-    console.log(this.state.selected_categories);
+    console.log(this.selected_categories);
     console.log(this.selected_feature_temp);
     // Retrieve all the selected categories
 
@@ -97,27 +104,27 @@ class Home extends Component {
         const type = categories[j].type;
         const value = categories[j].value;
 
-        if (category_name in this.state.selected_categories)
+        if (category_name in this.selected_categories)
         {
           if (type == "string")
           {
-            if (value != this.state.selected_categories[category_name])
+            if (value != this.selected_categories[category_name])
             {
               include_datapoint = false;
             }
           }
           else
           {
-            if ("MIN" in this.state.selected_categories[category_name])
+            if ("MIN" in this.selected_categories[category_name])
             {
-              if (value < this.state.selected_categories[category_name]["MIN"])
+              if (value < this.selected_categories[category_name]["MIN"])
               {
                 include_datapoint = false;
               }
             }
-            if ("MAX" in this.state.selected_categories[category_name])
+            if ("MAX" in this.selected_categories[category_name])
             {
-              if (value > this.state.selected_categories[category_name]["MAX"]) {
+              if (value > this.selected_categories[category_name]["MAX"]) {
                 include_datapoint = false;
               }
             }
@@ -136,7 +143,7 @@ class Home extends Component {
     
 
     this.setState({ displayed_data: new_displayed_data });
-    this.setState({ selected_feature : this.state.selected_feature_temp }); // I'm pretty sure this isn't the best way to do this
+    this.setState({ selected_feature : this.selected_feature_temp }); // I'm pretty sure this isn't the best way to do this
 
   }
 
