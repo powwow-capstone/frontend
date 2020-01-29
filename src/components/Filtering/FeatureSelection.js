@@ -5,13 +5,15 @@ class FeatureSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            features: [],
+            features: []
         };
         // console.log("Feature selection data");
         // console.log(props.data);
+        console.log("FeatureSelection contructor");
     }
     componentDidMount() {
         this.getAllUniqueFeatures();
+
     };
 
     getAllUniqueFeatures() {
@@ -19,7 +21,6 @@ class FeatureSelection extends Component {
         // All data should have the same features, so all the different feature labels can be found
         // from the first element of this.props.data
         console.log("Get all unique features");
-        console.log(this.props.data.length);
         if (this.props.data.length > 0) {
             var features = this.props.data[0].features;
             var feature_labels = []
@@ -55,6 +56,9 @@ class FeatureSelection extends Component {
     }
 
     render() {
+        
+        console.log("Feature props");
+        console.log(this.props);
         return (
             <div className="col-12">
                 <div className="card">

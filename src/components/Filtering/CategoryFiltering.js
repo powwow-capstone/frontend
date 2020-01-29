@@ -6,9 +6,10 @@ class CategoryFiltering extends Component {
         super(props);
         this.state = {
             categories: {},
-            category_visibility: {}
+            category_visibility: {},
+            checkboxes: null
         };
-        
+        console.log("categoryFiltering contructor");
     }
     componentDidMount() {
         this.getAllCategories();
@@ -17,26 +18,30 @@ class CategoryFiltering extends Component {
     getAllCategories() {
 
         if (this.props.data.length > 0) {
-            
+            console.log("Get all categories");
+            // console.log(this.props.data);
             var category_labels = {}
             var category_visibility = {}
             var category_id = 1;
-            console.log("Adding to category labels");
+            // console.log("Adding to category labels");
             for (var i = 0; i < this.props.data.length; ++i) {
 
-                var categories = this.state.data[i].categories;
+                var categories = this.props.data[i].categories;
+                if (categories != null)
+                {
 
-                for (var j = 0; j < categories.length; ++j) {
-                    if (!(categories[j].category_name in category_labels)) {
-                        category_labels[categories[j].category_name] = {};
-                        category_labels[categories[j].category_name]["type"] = categories[j].type;
-                        category_labels[categories[j].category_name]["values"] = [];
-                        category_labels[categories[j].category_name]["id"] = category_id;
-                        category_visibility[categories[j].category_name] = false;
-                        category_id = category_id + 1;
+                    for (var j = 0; j < categories.length; ++j) {
+                        if (!(categories[j].category_name in category_labels)) {
+                            category_labels[categories[j].category_name] = {};
+                            category_labels[categories[j].category_name]["type"] = categories[j].type;
+                            category_labels[categories[j].category_name]["values"] = [];
+                            category_labels[categories[j].category_name]["id"] = category_id;
+                            category_visibility[categories[j].category_name] = false;
+                            category_id = category_id + 1;
+                        }
+                        var category_val = categories[j].value;
+                        category_labels[categories[j].category_name]["values"].push(category_val);
                     }
-                    var category_val = categories[j].value;
-                    category_labels[categories[j].category_name]["values"].push(category_val);
                 }
             }
 
@@ -44,7 +49,8 @@ class CategoryFiltering extends Component {
             {
                 category_labels[key]["values"] = [...new Set(category_labels[key]["values"])];
             }
-
+            console.log("Category labels");
+            console.log(category_labels);
             this.setState({ categories: category_labels });
             this.setState({ category_visibility: category_visibility });
 
@@ -162,6 +168,8 @@ class CategoryFiltering extends Component {
     }
 
     render() {
+        console.log("Category props");
+        // console.log(this.props);
         return (
             <div className="col-12">
                 <div className="card">
