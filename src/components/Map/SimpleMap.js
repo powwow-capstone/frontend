@@ -83,7 +83,7 @@ class SimpleMap extends Component {
 						strokeOpacity: 1,
 						strokeWeight: 1
 					}}
-					
+					onClick={() => this.openSidebar(true) }
 				/>
 			);
 			markers.push(
