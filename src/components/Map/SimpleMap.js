@@ -3,7 +3,7 @@ import axios from "axios";
 import { compose, withProps, withHandlers } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
-import Sidebar from "react-sidebar";
+import Sidebar from "../Sidebar/Sidebar";
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -120,22 +120,13 @@ class SimpleMap extends Component {
 	render() {
 
 		var locations = this.drawPolygons();
-
 		return (
 			<div>
 				<div style={{ width: '100%', height: '90vh' }}>
-					<Sidebar
-						sidebar={<h2>Sidebar content</h2>}
-						open={this.state.sidebarVisibility}
-						onSetOpen={this.openSidebar}
-						styles={{
-							sidebar: {
-								background: "white",
-								width: 300
-							}
-						}}> 
-						<GMap polygons={locations[0]} markers={locations[1]}/>
-					</Sidebar>
+					<Sidebar isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar}/>
+
+					<GMap polygons={locations[0]} markers={locations[1]}/>
+					
 				</div>
 				<div className="btn-group dropright mt-2 mr-2">
 					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
