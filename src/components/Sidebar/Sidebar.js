@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import SlidingPane from 'react-sliding-pane';
-import Graph from '../Graph/graph';
+import Graph from '../Graph/Graph';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 class Sidebar extends Component {
