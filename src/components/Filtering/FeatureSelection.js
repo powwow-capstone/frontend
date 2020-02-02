@@ -22,7 +22,7 @@ class FeatureSelection extends Component {
         // from the first element of this.props.data
         console.log("Get all unique features");
         if (this.props.data.length > 0) {
-            var features = this.props.data[0].features;
+            const features = this.props.data[0].features;
             var feature_labels = []
             for (var i = 0; i < features.length; ++i) {
                 feature_labels.push(features[i].name);

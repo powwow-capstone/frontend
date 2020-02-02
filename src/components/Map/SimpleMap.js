@@ -3,6 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-g
 import { compose, withProps, withHandlers } from "recompose"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "react-sidebar";
+import axios from "axios";
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -41,7 +42,7 @@ class SimpleMap extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			sidebarVisibility: false
+			sidebarVisibility: false,
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 	
@@ -53,13 +54,12 @@ class SimpleMap extends Component {
 
 	drawPolygons() {
 
-		// console.log(this.props.data);
-
 		var polygons = []
 		var markers = []
 		var locations = []
 		for (var i = 0; i < this.props.data.length; ++i) {
 			
+			const id = this.props.data[i].id;
 			var colorPolygon = "#FFFFFF";  // default coloring
 			if (this.props.selectedFeature != null)
 			{
@@ -76,7 +76,7 @@ class SimpleMap extends Component {
 
 				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
 				// Hard code this threshold for now
-				if (feature_percentile <= 5 || feature_percentile >= 95) {
+				if (feature_percentile <= 0.05 || feature_percentile >= 0.95) {
 					colorPolygon = "#00FF00";
 				}
 				else {
@@ -124,21 +124,6 @@ class SimpleMap extends Component {
 		return locations;
 	};
 
-	// drawInfoWindows = () => {
-	// 	var infoWindows = []
-	// 	for (var i = 0; i < this.state.fieldDataList.length; ++i) {
-	// 		infoWindows.push( 
-	// 			<InfoWindow
-	// 				defaultPosition={{ lng: this.state.fieldDataList[i].centroid, lat: this.state.fieldDataList[i].centroid }}
-	// 				>
-	// 				<h1 class="text">Here should be something useful </h1>
-	// 			</InfoWindow>
-	// 		);
-	// 	}
-	// 	return infoWindows
-
-	// }	
-
 	render() {
 
 		console.log("Render map");
@@ -157,7 +142,7 @@ class SimpleMap extends Component {
 								width: 300
 							}
 						}}> 
-						<GMap polygons={locations[0]} markers={locations[1]}/>
+						<GMap polygons={locations[0]} markers={locations[1]} />
 					</Sidebar>
 				</div>
 			</div>

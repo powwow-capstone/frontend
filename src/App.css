@@ -27,3 +27,7 @@
   margin-right: auto;
   width: 50%;
 }
+
+.invisible {
+  visibility: hidden;
+}

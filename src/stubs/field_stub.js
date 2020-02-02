@@ -3,7 +3,7 @@ var field_stub = [
     id: 1,
     features : [
         {
-            name : "efficiency", value : 0, percentile : 0
+            name : "eta", value : 0, percentile : 0
         },
         {
             name : "water depth", value : 17, percentile : 17
@@ -24,6 +24,7 @@ var field_stub = [
         34.1,
         -119.5
     ],
+    ranking : 678,
     coordinates : {
         coordinates : [
             { "lng": -119.575927734375, "lat": 34.4122238159181
@@ -41,7 +42,7 @@ var field_stub = [
         id: 2,
         features: [
             {
-                name: "efficiency", value: 50, percentile: 24
+                name: "eta", value: 50, percentile: 24
             },
             {
                 name: "water depth", value: 900, percentile : 99

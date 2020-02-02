@@ -1,11 +1,9 @@
 import React from 'react';
 import { Component } from 'react';
 import { Button } from 'reactstrap';
-import Analysis from '../../components/Report/Analysis'
 import SimpleMap from '../../components/Map/SimpleMap'
 import imageLogo from '../../images/imageLogo.png';
 import axios from "axios";
-import field_stub from '../../stubs/field_stub'
 import CategoryFiltering from '../../components/Filtering/CategoryFiltering';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 
@@ -14,7 +12,6 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,            // This contains all data from the server
-      displayed_data: [], // This contains a subset of data that will be displayed on the map
       selected_feature: null
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
@@ -28,15 +25,35 @@ class Home extends Component {
   }
 
   componentDidMount() {
-      this.loadData();
+    this.loadData();
+
   };
 
 
   loadData() {
     axios
       .get("http://localhost:5000/api/fields")
-      .then(res => this.setState({ data: res.data, displayed_data: res.data }))
+      .then(res => this.setState({ data: res.data }))
       .catch (err => console.log(err));
+  }
+
+  requeryData(displayed_data) {
+    console.log("requeryData()");
+    axios.post("http://localhost:5000/api/filter_fields", displayed_data)
+      .then(res => this.setState({ data: res.data }))
+      .catch(err => console.log(err));
+
+        // .then(function (response) {
+        //   console.log("Response");
+        //   console.log(response);
+        //   //Perform action based on response
+        // })
+        // .catch(function (error) {
+        //   console.log(error);
+        //   //Perform action based on error
+        // });
+
+    // this.setState({ data: response.data });
   }
 
   handleCategoryDropdownSelection(category, value) {
@@ -52,12 +69,13 @@ class Home extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-
+    // console.log("Selected category");
+    // console.log(this.selected_categories);
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
     }
-    this.selected_category[category][min_max] = value;
+    this.selected_categories[category][min_max] = value;
   }
 
   handleCheckboxDeselect(category) {
@@ -70,19 +88,18 @@ class Home extends Component {
 
   submitFilters() {
     console.log("SUBMIT");
-    console.log(this.selected_categories);
-    console.log(this.selected_feature_temp);
     // Retrieve all the selected categories
 
 
     // Retrieve the selected feature
     var new_displayed_data = []
-    const all_data = JSON.parse(JSON.stringify(this.state.data));
+    // const all_data = JSON.parse(JSON.stringify(this.state.data));
 
-    for (var i = 0; i < all_data.length; ++i)
+    for (var i = 0; i < this.state.data.length; ++i)
     {
       var include_datapoint = true;
-      const categories = all_data[i].categories;
+      const categories = this.state.data[i].categories;
+      const id = this.state.data[i].id;
       for (var j = 0; j < categories.length; ++j)
       {
         const category_name = categories[j].category_name;
@@ -118,26 +135,25 @@ class Home extends Component {
       }
       if (include_datapoint)
       {
-        new_displayed_data.push(all_data[i]);
+        new_displayed_data.push(id);
       }
       
     }
 
-    
-
-    this.setState({ displayed_data: new_displayed_data });
     this.setState({ selected_feature : this.selected_feature_temp }); 
+    this.requeryData(new_displayed_data);
 
+    console.log("States reset");
   }
 
   render() {
-
+    console.log("home render");
     return (
         <div className="mt-5">
           <div className="row">
 
             <div className="col-md-9">
-              <SimpleMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature}/>
+              {this.state && this.state.data && <SimpleMap data={this.state.data} selectedFeature={this.state.selected_feature}/> }
             </div>
             <div className="col-md-3">
               <div className="col-12">
@@ -148,7 +164,7 @@ class Home extends Component {
                   <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
                 </div>
                 <div className="container row">
-  =               <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                  <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
                 </div>
                 <div className="container row">
                   <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>

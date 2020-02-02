@@ -144,7 +144,7 @@ class CategoryFiltering extends Component {
                             Min: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
                         </div>
                         <div className="row">
-                            Max: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_max"} />
+                            Max: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                         </div>
                     </div>
                     : null;
