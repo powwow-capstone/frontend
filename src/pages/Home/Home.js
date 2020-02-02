@@ -10,9 +10,9 @@ const home = () => {
             <div className="col-md-12">
               <SimpleMap />
             </div>
-            <div className="col-md-12 mt-5">
+            {/*<div className="col-md-12 mt-5">
               <Analysis />
-            </div>
+            </div>*/}
           </div>
         </div>
       );
