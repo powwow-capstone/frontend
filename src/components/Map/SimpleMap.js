@@ -64,19 +64,20 @@ class SimpleMap extends Component {
 			if (this.props.selectedFeature != null)
 			{
 				var features = this.props.data[i].features;
-				var feature_percentile = 0;
+				var feature_score = 0;
+
 				for (var j = 0; j < features.length; j++)
 				{
 					if (features[j].name == this.props.selectedFeature)
 					{
-						feature_percentile = features[j].percentile;
+						feature_score = features[j].score;
 						break;
 					}
 				}
 
 				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
 				// Hard code this threshold for now
-				if (feature_percentile <= 0.05 || feature_percentile >= 0.95) {
+				if (feature_score == 1) {
 					colorPolygon = "#00FF00";
 				}
 				else {

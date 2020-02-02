@@ -25,6 +25,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    console.log("Component did mount");
     this.loadData();
 
   };
@@ -43,17 +44,6 @@ class Home extends Component {
       .then(res => this.setState({ data: res.data }))
       .catch(err => console.log(err));
 
-        // .then(function (response) {
-        //   console.log("Response");
-        //   console.log(response);
-        //   //Perform action based on response
-        // })
-        // .catch(function (error) {
-        //   console.log(error);
-        //   //Perform action based on error
-        // });
-
-    // this.setState({ data: response.data });
   }
 
   handleCategoryDropdownSelection(category, value) {
@@ -148,6 +138,7 @@ class Home extends Component {
 
   render() {
     console.log("home render");
+    console.log(this.state.data)
     return (
         <div className="mt-5">
           <div className="row">
