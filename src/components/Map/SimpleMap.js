@@ -4,6 +4,7 @@ import { compose, withProps, withHandlers } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "react-sidebar";
+import Graph from '../Graph/graph';
 
 var apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -125,7 +126,9 @@ class SimpleMap extends Component {
 			<div>
 				<div style={{ width: '100%', height: '90vh' }}>
 					<Sidebar
-						sidebar={<h2>Sidebar content</h2>}
+						sidebar={<div>
+						<h2>Sidebar content</h2> <Graph/>
+						</div>}
 						open={this.state.sidebarVisibility}
 						onSetOpen={this.openSidebar}
 						styles={{
