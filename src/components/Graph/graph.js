@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import CanvasJSReact from '../../canvasjs.react';
-import axios from "axios";
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -10,10 +9,27 @@ class Graph extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
-			dataPoints: []
+			datapoints: []
 		};
     }
-    
+	
+	static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            datapoints: nextProps.datapoints,
+        };
+	}
+
+	extract_data(raw_data) {
+		var processed_datapoints = []; 
+		for (var i = 0; i < raw_data.length; i++) {
+			processed_datapoints.push({
+				x: new Date(raw_data[i].date),
+				y: raw_data[i]._mean
+			});
+		}
+		return processed_datapoints;
+	}
+	
 	render() {	
 		const options = {
 			theme: "light2",
@@ -21,15 +37,15 @@ class Graph extends Component {
 				text: "eta over time"
             },
             axisX: {
-				valueFormatString: "MMM"
+				valueFormatString: "MMM YYYY"
 			},
 			axisY: {
 				title: "eta"
 			},
 			data: [{
 				type: "line",
-				xValueFormatString: "MMMM",
-				dataPoints: this.state.dataPoints
+				xValueFormatString: "MMM YYYY",
+				dataPoints: this.extract_data(this.state.datapoints)
 			}]
 		}
 		return (
@@ -42,29 +58,6 @@ class Graph extends Component {
 		);
 	}
     
-    refreshList() {
-		axios
-			.get( "../../stubs/eta.js")
-			.then(res => this.setState({ dataPoints: res.data }))
-			.catch(err => console.log(err));
-    };
-    
-	componentDidMount(){
-		var chart = this.chart;
-        this.refreshList();
-        console.log("datapoints", this.state.dataPoints);
-		// .then(function(data) {
-		// 	for (var i = 0; i < data.length; i++) {
-		// 		dataPoints.push({
-		// 			x: new Date(data[i].x),
-		// 			y: data[i].y
-		// 		});
-        //     }
-        //     console.log("data points", dataPoints);
-		// 	chart.render();
-        // });
-        
-	}
 }
  
 export default Graph;   
