@@ -17,7 +17,6 @@ const GMap = compose(
 	withHandlers({
 		onMarkerClustererClick: () => (markerClusterer) => {
 			const clickedMarkers = markerClusterer.getMarkers()
-			console.log(clickedMarkers.length);
 		},
 	}),
 	withScriptjs,
@@ -46,6 +45,7 @@ class SimpleMap extends Component {
 			sidebarVisibility: false
 		};
 		this.openSidebar = this.openSidebar.bind(this);
+		this.clicked_id = null;
 	}
 	componentDidMount() {
 		this.refreshList();
@@ -57,16 +57,17 @@ class SimpleMap extends Component {
 			.catch(err => console.log(err));
 	};
 
-	openSidebar(open) {
+	openSidebar(open, id) {
+		this.clicked_id = id;
 		this.setState({ sidebarVisibility: open });
 	}
 
 	drawPolygons() {
-		console.log(this.state.fieldDataList);
 		var polygons = []
 		var markers = []
 		var locations = []
 		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
+			const id = this.state.fieldDataList[i].id;
 			var colorPolygon = "#FF0000"
 			if (this.state.fieldDataList[i].efficiency == 1) {
 				colorPolygon = "#00FF00";
@@ -83,13 +84,13 @@ class SimpleMap extends Component {
 						strokeOpacity: 1,
 						strokeWeight: 1
 					}}
-					onClick={() => this.openSidebar(true) }
+					onClick={() => this.openSidebar(true, id) }
 				/>
 			);
 			markers.push(
 				<Marker
 					key={this.state.fieldDataList[i].id}
-					onClick={() => this.openSidebar(true)}
+					onClick={() => this.openSidebar(true, id)}
 					position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
 				/>
 
@@ -123,7 +124,7 @@ class SimpleMap extends Component {
 		return (
 			<div>
 				<div style={{ width: '100%', height: '90vh' }}>
-					<Sidebar isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar}/>
+					<Sidebar clicked_id={this.clicked_id} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar}/>
 
 					<GMap polygons={locations[0]} markers={locations[1]}/>
 					
