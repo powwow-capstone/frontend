@@ -9,38 +9,6 @@ import Geocode from "react-geocode";
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
-/*
-const GMap = compose(
-	withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey,
-		loadingElement: <div style={{ height: `200%` }} />,
-		containerElement: <div style={{ height: `500px` }} />,
-		mapElement: <div style={{ height: `100%` }} />,
-	}),
-	withHandlers({
-		onMarkerClustererClick: () => (markerClusterer) => {
-			const clickedMarkers = markerClusterer.getMarkers()
-			console.log(clickedMarkers.length);
-		},
-	}),
-	withScriptjs,
-	withGoogleMap
-
-)((props) =>
-	<GoogleMap defaultZoom={8} defaultCenter={{ lat: 34.4717, lng: -120.2149 }}>
-		<MarkerClusterer
-      		onClick={props.onMarkerClustererClick}
-      		averageCenter
-      		enableRetinaIcons
-      		gridSize={60}
-    	>
-      		{props.markers}
-    	</MarkerClusterer>
-		{props.polygons}
-	</GoogleMap>	
-		
-)*/
-
 class Map extends Component {
 	constructor(props) {
 		super(props);
@@ -51,9 +19,15 @@ class Map extends Component {
 			mapPosition: {     lat: 35.6163,    lng: -119.6943   }
 		};
 		this.openSidebar = this.openSidebar.bind(this);
+		this.clicked_id = null;
 	}
 	componentDidMount() {
 		this.refreshList();
+	}
+
+	openSidebar(open, id) {
+		this.clicked_id = id;
+		this.setState({ sidebarVisibility: open });
 	}
 	
 	
@@ -128,7 +102,8 @@ class Map extends Component {
 			console.log(clickedMarkers.length);
 		}
 
-	openSidebar(open) {
+	openSidebar(open, id) {
+		this.clicked_id = id;
 		this.setState({ sidebarVisibility: open });
 	}
 
@@ -138,6 +113,8 @@ class Map extends Component {
 		var markers = []
 		var locations = []
 		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
+			const id = this.state.fieldDataList[i].id;
+
 			var colorPolygon = "#FF0000"
 			if (this.state.fieldDataList[i].efficiency == 1) {
 				colorPolygon = "#00FF00";
@@ -154,17 +131,18 @@ class Map extends Component {
 						strokeOpacity: 1,
 						strokeWeight: 1
 					}}
-					onClick={() => this.openSidebar(true) }
+					onClick={() => this.openSidebar(true, id)}
 				/>
 			);
 			markers.push(
 				<Marker
 					key={this.state.fieldDataList[i].id}
-					onClick={() => this.openSidebar(true)}
+					onClick={() => this.openSidebar(true, id)}
 					position={{ lat: this.state.fieldDataList[i].centroid[0], lng: this.state.fieldDataList[i].centroid[1]}}
 				/>
 
 			);
+			
 		}
 
 		locations.push(polygons);
@@ -173,57 +151,42 @@ class Map extends Component {
 		return locations;
 	};
 
-	drawInfoWindows = () => {
-		var infoWindows = []
-		for (var i = 0; i < this.state.fieldDataList.length; ++i) {
-			infoWindows.push( 
-				<InfoWindow
-					defaultPosition={{ lng: this.state.fieldDataList[i].centroid, lat: this.state.fieldDataList[i].centroid }}
-					>
-					<h1 class="text">Here should be something useful </h1>
-				</InfoWindow>
-			);
-		}
-		return infoWindows
-
-	}	
-
 
 
 		
-		render() {
-		var locations = this.drawPolygons();
-		const AsyncMap = withScriptjs(
-		   withGoogleMap(
-			props => (
-			 <GoogleMap google={this.props.google}
-			  defaultZoom={this.props.zoom}
-			  defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
-			 >
-				 <MarkerClusterer
-					onClick={this.onMarkerClustererClick}
-					averageCenter
-					enableRetinaIcons
-					gridSize={60}
-				>
-					{locations[1]}
-				
-				</MarkerClusterer>
-				
-				{this.placeBox()}
-				{this.locationMarker()}
-				{locations[0]}
- 
-			</GoogleMap>
+	render() {
+	var locations = this.drawPolygons();
+	const AsyncMap = withScriptjs(
+		withGoogleMap(
+		props => (
+			<GoogleMap
+			defaultZoom={this.props.zoom}
+			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
+			>
+				<MarkerClusterer
+				onClick={this.onMarkerClustererClick}
+				averageCenter
+				enableRetinaIcons
+				gridSize={60}
+			>
+				{locations[1]}
 			
-		)
-   )
+			</MarkerClusterer>
+			
+			{this.placeBox()}
+			{this.locationMarker()}
+			{locations[0]}
+
+		</GoogleMap>
+		
+	)
+)
   );
 let map;
    map = <div>
-		<Sidebar isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar}/>
+	   <Sidebar clicked_id={this.clicked_id} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
 		 <AsyncMap
-			  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places"}
+			  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 			  loadingElement={
 			   <div style={{ height: `200%` }} />
 			  }
@@ -233,47 +196,11 @@ let map;
 			  mapElement={
 			   <div style={{ height: `100%` }} />
 			  }
-			 /> 
+		/> 
 			 
 		
     </div>
-	return(map)
+	return (map);
  }
 }
 export default Map;
-
-/*
-					<Sidebar isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar}/>
-
-					<GMap polygons={locations[0]} markers={locations[1]}/>
-					
-				</div>
-				<div className="btn-group dropright mt-2 mr-2">
-					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-						Filter by Crop
-					</button>
-					<div className="dropdown-menu">
-						<button className="dropdown-item" type="button">Almond</button>
-						<button className="dropdown-item" type="button">Pistachio</button>
-						<button className="dropdown-item" type="button">Something</button>
-					</div>
-				</div>
-
-				<div className="btn-group dropright mt-2">
-					<button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-						Filter by Year
-					</button>
-					<div className="dropdown-menu">
-						<button className="dropdown-item" type="button">year1</button>
-						<button className="dropdown-item" type="button">year2</button>
-						<button className="dropdown-item" type="button">year3</button>
-					</div>
-				</div>
-			</div>
-
-		)
-	}
-}
-
-export default SimpleMap;
-*/

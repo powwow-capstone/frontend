@@ -7,7 +7,6 @@ class SimpleMap extends Component {
 		return(
 			<div style = {{width: '180vh', height: '70vh'}}>
 				<Map
-					google={this.props.google}
 					center={{    lat: 35.6163,    lng: -119.6943  }}
 					height='300px'
 					zoom={9}

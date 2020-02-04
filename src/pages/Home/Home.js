@@ -5,7 +5,7 @@ import SimpleMap from '../../components/Map/SimpleMap'
 
 const home = () => {
     return (
-        <div className="container mt-5">
+        <div className="mt-5">
           <div className="row">
             <div className="col-md-12">
               <SimpleMap />

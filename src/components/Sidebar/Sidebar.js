@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import axios from "axios";
 import SlidingPane from 'react-sliding-pane';
+import Graph from '../Graph/Graph';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 class Sidebar extends Component {
@@ -8,19 +10,32 @@ class Sidebar extends Component {
 
         this.state = {
             isPaneOpen: props.isPaneOpen,
-        };
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            isPaneOpen: nextProps.isPaneOpen,
+            datapoints: []
         };
     }
     
+    componentDidUpdate(prevProps) {
+        if ( prevProps.isPaneOpen !== this.props.isPaneOpen ) {
+            this.refreshList();
+            this.setState({ isPaneOpen: this.props.isPaneOpen })
+        }
+    }
+    
+    refreshList() {
+        console.log("sidebar fetch data");
+		axios
+			.get( "https://space-monitor-backend.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
+			.then(res => this.setState({ datapoints: res.data }))
+            .catch(err => console.log("ERR" + err));
+        console.log("refresh list finish");
+    };
+
     
     render() {
+        console.log("Sidebar render:");
+        console.log(this.state.datapoints);
         return (
-            <div y>
+            <div>
                 <SlidingPane
                     className='some-custom-class'
                     overlayClassName='some-custom-overlay-class'
@@ -32,7 +47,7 @@ class Sidebar extends Component {
                         // triggered on "<" on left top click or on outside click
                         this.props.onClose(false);
                     }}>
-                    <div>And I am pane content</div>
+                    <div> <Graph datapoints={this.state.datapoints}/> </div>
                 </SlidingPane>
             </div>
         );
