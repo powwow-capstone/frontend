@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { Button } from 'reactstrap';
-import SimpleMap from '../../components/Map/SimpleMap'
+import GMap from '../../components/Map/GMap'
 import imageLogo from '../../images/imageLogo.png';
 import axios from "axios";
 import CategoryFiltering from '../../components/Filtering/CategoryFiltering';
@@ -25,7 +25,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    console.log("Component did mount");
     this.loadData();
 
   };
@@ -77,10 +76,7 @@ class Home extends Component {
   }
 
   submitFilters() {
-    console.log("SUBMIT");
     // Retrieve all the selected categories
-
-
     // Retrieve the selected feature
     var new_displayed_data = []
     // const all_data = JSON.parse(JSON.stringify(this.state.data));
@@ -133,18 +129,16 @@ class Home extends Component {
     this.setState({ selected_feature : this.selected_feature_temp }); 
     this.requeryData(new_displayed_data);
 
-    console.log("States reset");
   }
 
   render() {
-    console.log("home render");
-    console.log(this.state.data)
+
     return (
         <div className="mt-5">
           <div className="row">
 
             <div className="col-md-9">
-              {this.state && this.state.data && <SimpleMap data={this.state.data} selectedFeature={this.state.selected_feature}/> }
+            {this.state && this.state.data && <GMap data={this.state.data} selectedFeature={this.state.selected_feature} center={{ lat: 35.6163, lng: -119.6943 }} /> }
             </div>
             <div className="col-md-3">
               <div className="col-12">
