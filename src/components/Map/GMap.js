@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { compose, withProps, withHandlers } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-google-maps"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
