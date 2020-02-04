@@ -12,6 +12,7 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,            // This contains all data from the server
+      displayed_data: null,
       selected_feature: null
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
@@ -33,13 +34,13 @@ class Home extends Component {
   loadData() {
     axios
       .get("https://space-monitor-backend-staging.herokuapp.com/api/fields")
-      .then(res => this.setState({ data: res.data }))
+      .then(res => this.setState({ data: res.data, displayed_data : res.data }))
       .catch (err => console.log(err));
   }
 
   requeryData(displayed_data) {
     axios.post("https://space-monitor-backend-staging.herokuapp.com/api/filter_fields", displayed_data)
-      .then(res => this.setState({ data: res.data }))
+      .then(res => this.setState({ displayed_data: res.data }))
       .catch(err => console.log(err));
 
   }
@@ -130,13 +131,13 @@ class Home extends Component {
   }
 
   render() {
-
+    console.log(this.state.data);
     return (
         <div className="mt-5">
           <div className="row">
 
             <div className="col-md-9">
-            {this.state && this.state.data && <GMap data={this.state.data} selectedFeature={this.state.selected_feature} /> }
+            {this.state && this.state.data && <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} /> }
             </div>
             <div className="col-md-3">
               <div className="col-12">
