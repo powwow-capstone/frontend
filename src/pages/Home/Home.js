@@ -32,13 +32,13 @@ class Home extends Component {
 
   loadData() {
     axios
-      .get("http://localhost:5000/api/fields")
+      .get("https://space-monitor-backend.herokuapp.com/api/fields")
       .then(res => this.setState({ data: res.data }))
       .catch (err => console.log(err));
   }
 
   requeryData(displayed_data) {
-    axios.post("http://localhost:5000/api/filter_fields", displayed_data)
+    axios.post("https://space-monitor-backend.herokuapp/api/filter_fields", displayed_data)
       .then(res => this.setState({ data: res.data }))
       .catch(err => console.log(err));
 
@@ -136,7 +136,7 @@ class Home extends Component {
           <div className="row">
 
             <div className="col-md-9">
-            {this.state && this.state.data && <GMap data={this.state.data} selectedFeature={this.state.selected_feature} center={{ lat: 35.6163, lng: -119.6943 }} /> }
+            {this.state && this.state.data && <GMap data={this.state.data} selectedFeature={this.state.selected_feature} /> }
             </div>
             <div className="col-md-3">
               <div className="col-12">
