@@ -53,7 +53,6 @@ class GMap extends Component {
 		 };
 		 
 	onMarkerDragEnd = ( event ) => {
-		  console.log( 'event', event );
 		  let newLat = event.latLng.lat(),
 		   newLng = event.latLng.lng();
 			Geocode.fromLatLng( newLat , newLng ).then(

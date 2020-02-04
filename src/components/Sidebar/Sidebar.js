@@ -22,18 +22,15 @@ class Sidebar extends Component {
     }
     
     refreshList() {
-        console.log("sidebar fetch data");
 		axios
 			.get( "https://space-monitor-backend.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
 			.then(res => this.setState({ datapoints: res.data }))
             .catch(err => console.log("ERR" + err));
-        console.log("refresh list finish");
     };
 
     
     render() {
-        console.log("Sidebar render:");
-        console.log(this.state.datapoints);
+
         return (
             <div>
                 <SlidingPane

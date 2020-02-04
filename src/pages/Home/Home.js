@@ -38,7 +38,6 @@ class Home extends Component {
   }
 
   requeryData(displayed_data) {
-    console.log("requeryData()");
     axios.post("http://localhost:5000/api/filter_fields", displayed_data)
       .then(res => this.setState({ data: res.data }))
       .catch(err => console.log(err));
@@ -58,8 +57,7 @@ class Home extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-    // console.log("Selected category");
-    // console.log(this.selected_categories);
+
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
