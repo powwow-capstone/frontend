@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { compose, withProps, withHandlers } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, InfoWindow } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-google-maps"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
@@ -23,17 +23,6 @@ class GMap extends Component {
 	openSidebar(open, id) {
 		this.clicked_id = id;
 		this.setState({ sidebarVisibility: open });
-	}
-	
-	
-	shouldComponentUpdate( nextProps, nextState ){
-		  if (
-		   this.state.markerPosition.lat !== this.props.center.lat 
-		  ) {
-		   return true
-		  } else if ( this.props.center.lat === nextProps.center.lat ){
-		   return false
-		  }
 	}
 	
 	onPlaceSelected = ( place ) => {
@@ -88,7 +77,6 @@ class GMap extends Component {
 
 	onMarkerClustererClick = (markerClusterer) => {
 			const clickedMarkers = markerClusterer.getMarkers()
-			console.log(clickedMarkers.length);
 		}
 
 	openSidebar(open, id) {

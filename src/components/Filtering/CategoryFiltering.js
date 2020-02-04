@@ -9,7 +9,6 @@ class CategoryFiltering extends Component {
             category_visibility: {},
             checkboxes: null
         };
-        console.log("categoryFiltering contructor");
     }
     componentDidMount() {
         this.getAllCategories();
@@ -18,12 +17,9 @@ class CategoryFiltering extends Component {
     getAllCategories() {
 
         if (this.props.data.length > 0) {
-            console.log("Get all categories");
-            // console.log(this.props.data);
             var category_labels = {}
             var category_visibility = {}
             var category_id = 1;
-            // console.log("Adding to category labels");
             for (var i = 0; i < this.props.data.length; ++i) {
 
                 var categories = this.props.data[i].categories;
@@ -49,8 +45,6 @@ class CategoryFiltering extends Component {
             {
                 category_labels[key]["values"] = [...new Set(category_labels[key]["values"])];
             }
-            console.log("Category labels");
-            console.log(category_labels);
             this.setState({ categories: category_labels });
             this.setState({ category_visibility: category_visibility });
 
@@ -70,8 +64,7 @@ class CategoryFiltering extends Component {
         }
 
         this.setState({ category_visibility: all_category_visibilities });
-        // console.log(this.state.category_visibility[category]);
-        // console.log(this.state.category_visibility);
+
     }
 
     handleSelection(category, event) {
@@ -108,11 +101,8 @@ class CategoryFiltering extends Component {
 
 
     createCategoryCheckboxes() {
-        // console.log("Create checkboxes");
-        // console.log(this.state.categories);
         var category_checkboxes = [];
         for (const category_name in this.state.categories) {
-            // console.log("Category name: " + category_name);
             const type = this.state.categories[category_name]["type"];
             const values = this.state.categories[category_name]["values"];
             const id = this.state.categories[category_name]["id"];
@@ -168,8 +158,6 @@ class CategoryFiltering extends Component {
     }
 
     render() {
-        console.log("Category props");
-        // console.log(this.props);
         return (
             <div className="col-12">
                 <div className="card">
