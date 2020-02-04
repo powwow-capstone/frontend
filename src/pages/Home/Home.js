@@ -78,7 +78,6 @@ class Home extends Component {
     // Retrieve all the selected categories
     // Retrieve the selected feature
     var new_displayed_data = []
-    // const all_data = JSON.parse(JSON.stringify(this.state.data));
 
     for (var i = 0; i < this.state.data.length; ++i)
     {
@@ -131,7 +130,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.data);
     return (
         <div className="mt-5">
           <div className="row">
