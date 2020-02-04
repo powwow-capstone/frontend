@@ -25,17 +25,6 @@ class GMap extends Component {
 		this.setState({ sidebarVisibility: open });
 	}
 	
-	
-	shouldComponentUpdate( nextProps, nextState ){
-		  if (
-		   this.state.markerPosition.lat !== this.props.center.lat 
-		  ) {
-		   return true
-		  } else if ( this.props.center.lat === nextProps.center.lat ){
-		   return false
-		  }
-	}
-	
 	onPlaceSelected = ( place ) => {
 		  let latValue = place.geometry.location.lat(),
 		   lngValue = place.geometry.location.lng();
@@ -88,7 +77,6 @@ class GMap extends Component {
 
 	onMarkerClustererClick = (markerClusterer) => {
 			const clickedMarkers = markerClusterer.getMarkers()
-			console.log(clickedMarkers.length);
 		}
 
 	openSidebar(open, id) {

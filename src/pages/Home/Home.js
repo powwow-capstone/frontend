@@ -32,13 +32,13 @@ class Home extends Component {
 
   loadData() {
     axios
-      .get("http://space-monitor-staging.herokuapp.com.herokuapp.com/api/fields")
+      .get("http://localhost:5000/api/fields")
       .then(res => this.setState({ data: res.data }))
       .catch (err => console.log(err));
   }
 
   requeryData(displayed_data) {
-    axios.post("http://space-monitor-staging.herokuapp.com/api/filter_fields", displayed_data)
+    axios.post("http://localhost:5000/api/filter_fields", displayed_data)
       .then(res => this.setState({ data: res.data }))
       .catch(err => console.log(err));
 
