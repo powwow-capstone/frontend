@@ -23,7 +23,7 @@ class Sidebar extends Component {
     
     refreshList() {
 		axios
-			.get( "https://space-monitor-backend.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
+            .get( "http://space-monitor-staging.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
 			.then(res => this.setState({ datapoints: res.data }))
             .catch(err => console.log("ERR" + err));
     };
