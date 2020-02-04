@@ -32,13 +32,13 @@ class Home extends Component {
 
   loadData() {
     axios
-      .get("https://space-monitor-backend.herokuapp.com/api/fields")
+      .get("https://space-monitor-backend-staging.herokuapp.com/api/fields")
       .then(res => this.setState({ data: res.data }))
       .catch (err => console.log(err));
   }
 
   requeryData(displayed_data) {
-    axios.post("https://space-monitor-backend.herokuapp/api/filter_fields", displayed_data)
+    axios.post("https://space-monitor-backend-staging.herokuapp.com/api/filter_fields", displayed_data)
       .then(res => this.setState({ data: res.data }))
       .catch(err => console.log(err));
 
