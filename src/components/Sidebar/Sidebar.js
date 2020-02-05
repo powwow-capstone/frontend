@@ -25,12 +25,14 @@ class Sidebar extends Component {
 		axios
 			.get( "https://space-monitor-backend.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
 			.then(res => this.setState({ datapoints: res.data }))
-			.catch(err => console.log(err));
+            .catch(err => console.log(err));
     };
+
     
     render() {
+
         return (
-            <div y>
+            <div>
                 <SlidingPane
                     className='some-custom-class'
                     overlayClassName='some-custom-overlay-class'

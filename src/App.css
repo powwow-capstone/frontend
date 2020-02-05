@@ -20,3 +20,14 @@
 .App-link {
   color: #000000;
 }
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.invisible {
+  visibility: hidden;
+}
