@@ -31,6 +31,10 @@ class Sidebar extends Component {
     
     render() {
 
+        console.log("categories", this.props.categories);
+        console.log("features", this.props.features);
+        console.log("clicked id", this.props.clicked_id);
+        
         return (
             <div>
                 <SlidingPane
