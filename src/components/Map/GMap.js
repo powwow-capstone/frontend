@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { compose, withProps, withHandlers } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from "react-google-maps"
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "../Sidebar/Sidebar";
@@ -14,15 +13,21 @@ class GMap extends Component {
 		this.state = {
 			sidebarVisibility: false,
 			markerPosition: {    lat: null,    lng: null  },
-			mapPosition: {     lat: 35.6163,    lng: -119.6943   }
+			mapPosition: {     lat: 35.6163,    lng: -119.6943   },
+			clicked_categories: [],
+			clicked_features: []
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 		this.clicked_id = null;
 	}
 
-	openSidebar(open, id) {
+	openSidebar(open, id, categories, features) {
 		this.clicked_id = id;
-		this.setState({ sidebarVisibility: open });
+		this.setState({ sidebarVisibility: open, clicked_categories: categories, clicked_features: features });
+		// this.setState({sidebarVisibility: open, clicked_categories: categories, clicked_features: features}, () => { 
+		// 	// Do something here. 
+		// 	console.log("categories after setstate finishes", this.state.clicked_categories);
+		// });
 	}
 	
 	onPlaceSelected = ( place ) => {
@@ -76,25 +81,20 @@ class GMap extends Component {
 	}
 
 	onMarkerClustererClick = (markerClusterer) => {
-			const clickedMarkers = markerClusterer.getMarkers()
-		}
-
-	openSidebar(open, id) {
-		this.clicked_id = id;
-		this.setState({ sidebarVisibility: open });
+		const clickedMarkers = markerClusterer.getMarkers()
 	}
 
 	drawPolygons() {
-
 		var polygons = []
 		var markers = []
 		var locations = []
 		for (var i = 0; i < this.props.data.length; ++i) {
 
 			const id = this.props.data[i].id;
+			const categories = this.props.data[i].categories;
+			const features = this.props.data[i].features;
 			var colorPolygon = "#FFFFFF";  // default coloring
 			if (this.props.selectedFeature != null) {
-				var features = this.props.data[i].features;
 				var feature_score = 0;
 
 				for (var j = 0; j < features.length; j++) {
@@ -132,13 +132,13 @@ class GMap extends Component {
 							strokeOpacity: 1,
 							strokeWeight: 1
 						}}
-						onClick={() => this.openSidebar(true, id)}
+						onClick={() => this.openSidebar(true, id, categories, features)}
 					/>
 				);
 				markers.push(
 					<Marker
 						key={this.props.data[i].id}
-						onClick={() => this.openSidebar(true, id)}
+						onClick={() => this.openSidebar(true, id, categories, features)}
 						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1] }}
 					/>
 
@@ -158,6 +158,7 @@ class GMap extends Component {
 		
 	render() {
 	var locations = this.drawPolygons();
+
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 		props => (
@@ -184,9 +185,11 @@ class GMap extends Component {
 	)
 )
   );
+
+
 let map;
    map = <div>
-	   <Sidebar clicked_id={this.clicked_id} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
+	   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
 		 <AsyncMap
 			  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 			  loadingElement={
