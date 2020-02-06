@@ -56,11 +56,11 @@ class Sidebar extends Component {
                         this.props.onClose(false);
                     }}>
                     <div> 
-                        <ul>
+                        {listCategories && listFeatures && <ul>
                             {listCategories}
                             {listFeatures}
-                        </ul>               
-                        <Graph datapoints={this.state.datapoints}/> 
+                        </ul>}               
+                        {this.state.datapoints.length>0 && <Graph datapoints={this.state.datapoints}/>}
                     </div>
                 </SlidingPane>
             </div>
