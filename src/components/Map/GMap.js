@@ -14,8 +14,8 @@ class GMap extends Component {
 			sidebarVisibility: false,
 			markerPosition: {    lat: null,    lng: null  },
 			mapPosition: {     lat: 35.6163,    lng: -119.6943   },
-			clicked_categories: null,
-			clicked_features: null
+			clicked_categories: [],
+			clicked_features: []
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 		this.clicked_id = null;
@@ -23,9 +23,11 @@ class GMap extends Component {
 
 	openSidebar(open, id, categories, features) {
 		this.clicked_id = id;
-		// this.clicked_categories = categories;
-		// this.clicked_features = features;
 		this.setState({ sidebarVisibility: open, clicked_categories: categories, clicked_features: features });
+		// this.setState({sidebarVisibility: open, clicked_categories: categories, clicked_features: features}, () => { 
+		// 	// Do something here. 
+		// 	console.log("categories after setstate finishes", this.state.clicked_categories);
+		// });
 	}
 	
 	onPlaceSelected = ( place ) => {
@@ -83,7 +85,6 @@ class GMap extends Component {
 	}
 
 	drawPolygons() {
-
 		var polygons = []
 		var markers = []
 		var locations = []
@@ -157,6 +158,7 @@ class GMap extends Component {
 		
 	render() {
 	var locations = this.drawPolygons();
+
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 		props => (
@@ -184,11 +186,10 @@ class GMap extends Component {
 )
   );
 
-console.log("HERE!");
 
 let map;
    map = <div>
-	   <Sidebar clicked_id={this.clicked_id} categories={this.state.categories} features={this.state.features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
+	   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
 		 <AsyncMap
 			  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 			  loadingElement={
