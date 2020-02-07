@@ -7,6 +7,41 @@ import Geocode from "react-geocode";
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
+// const MapView = compose(
+// 	withProps({
+// 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places",
+// 		loadingElement: <div style={{ height: `200%` }} />,
+// 		containerElement: <div style={{ height: `500px` }} />,
+// 		mapElement: <div style={{ height: `100%` }} />,
+// 	}),
+// 	withHandlers({
+// 		onMarkerClustererClick: () => (markerClusterer) => {
+// 			const clickedMarkers = markerClusterer.getMarkers()
+// 			console.log(clickedMarkers.length);
+// 		},
+// 	}),
+// 	withScriptjs,
+// 	withGoogleMap
+// )((props) =>
+// 	<GoogleMap defaultZoom={props.zoomLevel} 
+// 		defaultCenter={{ lat: props.mapPosition.lat, lng: props.mapPosition.lng }}
+// 	>
+// 		<MarkerClusterer
+// 			onClick={props.onMarkerClustererClick}
+// 			averageCenter
+// 			enableRetinaIcons
+// 			gridSize={60}
+// 		>
+// 			{props.markers}
+// 		</MarkerClusterer>
+// 		{props.polygons}
+// 		{props.placeBox()}
+// 		{props.locationMarker()}
+// 	</GoogleMap>
+
+// ) 
+
+
 class GMap extends Component {
 	constructor(props) {
 		super(props);
@@ -18,16 +53,38 @@ class GMap extends Component {
 			clicked_features: []
 		};
 		this.openSidebar = this.openSidebar.bind(this);
+		this.handleZoomChanged = this.handleZoomChanged.bind(this);
+		this.handleCenterChanged = this.handleCenterChanged.bind(this);
+		this.ref = React.createRef();
 		this.clicked_id = null;
+		this.zoomLevel = 8;
+		this.tempMapPosition = { lat: 30, lng: -120 };
 	}
 
 	openSidebar(open, id, categories, features) {
 		this.clicked_id = id;
-		this.setState({ sidebarVisibility: open, clicked_categories: categories, clicked_features: features });
+		this.setState(
+			{ sidebarVisibility: open, 
+				clicked_categories: categories, 
+				clicked_features: features,
+				mapPosition: this.tempMapPosition 
+			});
 		// this.setState({sidebarVisibility: open, clicked_categories: categories, clicked_features: features}, () => { 
 		// 	// Do something here. 
 		// 	console.log("categories after setstate finishes", this.state.clicked_categories);
 		// });
+	}
+
+	onPositionChanged = (location) => {
+		console.log(`This the new location onPositionChange:${JSON.stringify(location, undefined, 2)}`);
+		const newLocation = new window.google.maps.LatLng(location.lat, location.lng);
+		// [NOTE]: try using the panTo() from googleMaps to recenter the map ? but don't know how to call it.
+
+		return (
+			<Marker
+				position={newLocation}
+			/>
+		);
 	}
 	
 	onPlaceSelected = ( place ) => {
@@ -153,8 +210,20 @@ class GMap extends Component {
 	};
 
 
+	handleZoomChanged() {
+		const zoomLevel = this.ref.current.getZoom();
+		if (zoomLevel !== this.zoomLevel) {
+			this.zoomLevel = zoomLevel;
+		}
+	}
 
+	handleCenterChanged() {
+		const center = this.ref.current.getCenter();
 
+		if (center.lat() !== this.state.mapPosition.lat || center.lng() !== this.state.mapPosition.lng ) {
+			this.tempMapPosition = { lat: center.lat(), lng: center.lng() };
+		}
+	}
 		
 	render() {
 	var locations = this.drawPolygons();
@@ -163,8 +232,11 @@ class GMap extends Component {
 		withGoogleMap(
 		props => (
 			<GoogleMap
-			defaultZoom={8}
+			ref={this.ref}
+			defaultZoom={this.zoomLevel}
 			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
+			onZoomChanged={this.handleZoomChanged}
+			onCenterChanged={this.handleCenterChanged}
 			>
 				<MarkerClusterer
 				onClick={this.onMarkerClustererClick}
