@@ -4,43 +4,9 @@ import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerC
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
 import Geocode from "react-geocode";
+import '../../css/GMap.css';
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
-
-// const MapView = compose(
-// 	withProps({
-// 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places",
-// 		loadingElement: <div style={{ height: `200%` }} />,
-// 		containerElement: <div style={{ height: `500px` }} />,
-// 		mapElement: <div style={{ height: `100%` }} />,
-// 	}),
-// 	withHandlers({
-// 		onMarkerClustererClick: () => (markerClusterer) => {
-// 			const clickedMarkers = markerClusterer.getMarkers()
-// 			console.log(clickedMarkers.length);
-// 		},
-// 	}),
-// 	withScriptjs,
-// 	withGoogleMap
-// )((props) =>
-// 	<GoogleMap defaultZoom={props.zoomLevel} 
-// 		defaultCenter={{ lat: props.mapPosition.lat, lng: props.mapPosition.lng }}
-// 	>
-// 		<MarkerClusterer
-// 			onClick={props.onMarkerClustererClick}
-// 			averageCenter
-// 			enableRetinaIcons
-// 			gridSize={60}
-// 		>
-// 			{props.markers}
-// 		</MarkerClusterer>
-// 		{props.polygons}
-// 		{props.placeBox()}
-// 		{props.locationMarker()}
-// 	</GoogleMap>
-
-// ) 
-
 
 class GMap extends Component {
 	constructor(props) {
@@ -69,10 +35,6 @@ class GMap extends Component {
 				clicked_features: features,
 				mapPosition: this.tempMapPosition 
 			});
-		// this.setState({sidebarVisibility: open, clicked_categories: categories, clicked_features: features}, () => { 
-		// 	// Do something here. 
-		// 	console.log("categories after setstate finishes", this.state.clicked_categories);
-		// });
 	}
 
 	onPositionChanged = (location) => {
@@ -116,15 +78,9 @@ class GMap extends Component {
 	
 	placeBox = () => {
 	  return <Autocomplete
-       style={{
-        width: '100%',
-        height: '40px',
-        paddingLeft: '16px',
-        marginTop: '2px',
-        marginBottom: '100px'
-       }}
-       onPlaceSelected={ this.onPlaceSelected }
-       types={['(regions)']}
+		className = "search-bar"
+       	onPlaceSelected={ this.onPlaceSelected }
+       	types={['(regions)']}
       />
 	}
 	
@@ -228,6 +184,10 @@ class GMap extends Component {
 	render() {
 	var locations = this.drawPolygons();
 
+	const defaultMapOptions = {
+		fullscreenControl: false,
+	};
+
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 		props => (
@@ -237,6 +197,7 @@ class GMap extends Component {
 			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
 			onZoomChanged={this.handleZoomChanged}
 			onCenterChanged={this.handleCenterChanged}
+			defaultOptions={defaultMapOptions}
 			>
 				<MarkerClusterer
 				onClick={this.onMarkerClustererClick}
@@ -268,7 +229,7 @@ let map;
 			   <div style={{ height: `200%` }} />
 			  }
 			  containerElement={
-			   <div style={{ height: '500px' }} />
+			   <div style={{ height: '500px', position: 'relative' }} />
 			  }
 			  mapElement={
 			   <div style={{ height: `100%` }} />
