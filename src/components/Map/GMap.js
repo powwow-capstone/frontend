@@ -19,16 +19,34 @@ class GMap extends Component {
 			clicked_features: []
 		};
 		this.openSidebar = this.openSidebar.bind(this);
+		this.handleZoomChanged = this.handleZoomChanged.bind(this);
+		this.handleCenterChanged = this.handleCenterChanged.bind(this);
+		this.ref = React.createRef();
 		this.clicked_id = null;
+		this.zoomLevel = 8;
+		this.tempMapPosition = { lat: 30, lng: -120 };
 	}
 
 	openSidebar(open, id, categories, features) {
 		this.clicked_id = id;
-		this.setState({ sidebarVisibility: open, clicked_categories: categories, clicked_features: features });
-		// this.setState({sidebarVisibility: open, clicked_categories: categories, clicked_features: features}, () => { 
-		// 	// Do something here. 
-		// 	console.log("categories after setstate finishes", this.state.clicked_categories);
-		// });
+		this.setState(
+			{ sidebarVisibility: open, 
+				clicked_categories: categories, 
+				clicked_features: features,
+				mapPosition: this.tempMapPosition 
+			});
+	}
+
+	onPositionChanged = (location) => {
+		console.log(`This the new location onPositionChange:${JSON.stringify(location, undefined, 2)}`);
+		const newLocation = new window.google.maps.LatLng(location.lat, location.lng);
+		// [NOTE]: try using the panTo() from googleMaps to recenter the map ? but don't know how to call it.
+
+		return (
+			<Marker
+				position={newLocation}
+			/>
+		);
 	}
 	
 	onPlaceSelected = ( place ) => {
@@ -148,8 +166,20 @@ class GMap extends Component {
 	};
 
 
+	handleZoomChanged() {
+		const zoomLevel = this.ref.current.getZoom();
+		if (zoomLevel !== this.zoomLevel) {
+			this.zoomLevel = zoomLevel;
+		}
+	}
 
+	handleCenterChanged() {
+		const center = this.ref.current.getCenter();
 
+		if (center.lat() !== this.state.mapPosition.lat || center.lng() !== this.state.mapPosition.lng ) {
+			this.tempMapPosition = { lat: center.lat(), lng: center.lng() };
+		}
+	}
 		
 	render() {
 	var locations = this.drawPolygons();
@@ -162,8 +192,11 @@ class GMap extends Component {
 		withGoogleMap(
 		props => (
 			<GoogleMap
-			defaultZoom={8}
+			ref={this.ref}
+			defaultZoom={this.zoomLevel}
 			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
+			onZoomChanged={this.handleZoomChanged}
+			onCenterChanged={this.handleCenterChanged}
 			defaultOptions={defaultMapOptions}
 			>
 				<MarkerClusterer
