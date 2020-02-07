@@ -1,0 +1,13 @@
+body {
+	background-color: hsl(195, 88%, 77%, 0.2);
+}
+
+.img-logo {
+    height: auto;
+    max-width: 50%;
+}
+
+.login-button {
+    margin-left: 25px;
+    margin-top: 10px;
+}

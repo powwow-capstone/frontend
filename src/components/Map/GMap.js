@@ -196,7 +196,7 @@ let map;
 			   <div style={{ height: `200%` }} />
 			  }
 			  containerElement={
-			   <div style={{ height: '500px', position: 'relative' }} />
+			   <div style={{ height: '100vh', position: 'relative' }} />
 			  }
 			  mapElement={
 			   <div style={{ height: `100%` }} />

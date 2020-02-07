@@ -2,10 +2,12 @@ import React from 'react';
 import { Component } from 'react';
 import { Button } from 'reactstrap';
 import GMap from '../../components/Map/GMap'
-import imageLogo from '../../images/imageLogo.png';
+import newLogo from '../../images/newLogo.png';
 import axios from "axios";
 import CategoryFiltering from '../../components/Filtering/CategoryFiltering';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
+import GoogleLogin from 'react-google-login';
+import "../../css/Home.css";
 
 class Home extends Component {
   constructor(props) {
@@ -131,28 +133,31 @@ class Home extends Component {
 
   render() {
     return (
-        <div className="mt-5">
-          <div className="row">
-
-            <div className="col-md-9">
+        <div className="row">
+          <div className="col-md-9">
             {this.state && this.state.data && <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} /> }
+          </div>
+          <div className="col-md-3">
+            <div className="mb-2">
+              <img className="img-logo" src={newLogo} alt="Logo"/>
+              <GoogleLogin
+                className="login-button"
+                clientId="779203911044-dtcm94n9lukj7d50nqfhchoqre4511k9.apps.googleusercontent.com"
+                buttonText="Login"
+                cookiePolicy={'single_host_origin'}
+              />
             </div>
-            <div className="col-md-3">
-              <div className="col-12">
-                  <img src={imageLogo} alt="Logo" className="fixed_img center" />
+            {this.state && this.state.data && <div>
+              <div className="container row">
+                <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
               </div>
-              {this.state && this.state.data && <div>
-                <div className="container row">
-                  <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
-                </div>
-                <div className="container row">
-                  <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
-                </div>
-                <div className="container row">
-                  <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
-                </div>
-              </div>}
-            </div>
+              <div className="container row">
+                <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+              </div>
+              <div className="container row">
+                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
+              </div>
+            </div>}
           </div>
         </div>
     );
