@@ -14,7 +14,6 @@ class GMap extends Component {
 		this.state = {
 			sidebarVisibility: false,
 			markerPosition: {    lat: null,    lng: null  },
-			mapPosition: {     lat: 35.6163,    lng: -119.6943   },
 			clicked_categories: [],
 			clicked_features: []
 		};
@@ -24,7 +23,7 @@ class GMap extends Component {
 		this.ref = React.createRef();
 		this.clicked_id = null;
 		this.zoomLevel = 8;
-		this.tempMapPosition = { lat: 30, lng: -120 };
+		this.mapPosition = { lat: 35.6163, lng: -119.6943 };
 	}
 
 	openSidebar(open, id, categories, features) {
@@ -33,7 +32,7 @@ class GMap extends Component {
 			{ sidebarVisibility: open, 
 				clicked_categories: categories, 
 				clicked_features: features,
-				mapPosition: this.tempMapPosition 
+				mapPosition: this.mapPosition 
 			});
 	}
 
@@ -52,16 +51,14 @@ class GMap extends Component {
 	onPlaceSelected = ( place ) => {
 		  let latValue = place.geometry.location.lat(),
 		   lngValue = place.geometry.location.lng();
+		this.mapPosition = { lat: latValue, lng: lngValue };
+
 		// Set these values in the state.
 		  this.setState({
 		   markerPosition: {
 			lat: latValue,
 			lng: lngValue
-		   },
-		   mapPosition: {
-			lat: latValue,
-			lng: lngValue
-		   },
+		   }
 		  })
 		 };
 		 
@@ -176,8 +173,8 @@ class GMap extends Component {
 	handleCenterChanged() {
 		const center = this.ref.current.getCenter();
 
-		if (center.lat() !== this.state.mapPosition.lat || center.lng() !== this.state.mapPosition.lng ) {
-			this.tempMapPosition = { lat: center.lat(), lng: center.lng() };
+		if (center.lat() !== this.mapPosition.lat || center.lng() !== this.mapPosition.lng ) {
+			this.mapPosition = { lat: center.lat(), lng: center.lng() };
 		}
 	}
 		
@@ -194,7 +191,7 @@ class GMap extends Component {
 			<GoogleMap
 			ref={this.ref}
 			defaultZoom={this.zoomLevel}
-			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
+			defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
 			onZoomChanged={this.handleZoomChanged}
 			onCenterChanged={this.handleCenterChanged}
 			defaultOptions={defaultMapOptions}
