@@ -4,6 +4,7 @@ import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerC
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
 import Geocode from "react-geocode";
+import '../../css/GMap.css';
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -59,15 +60,9 @@ class GMap extends Component {
 	
 	placeBox = () => {
 	  return <Autocomplete
-       style={{
-        width: '100%',
-        height: '40px',
-        paddingLeft: '16px',
-        marginTop: '2px',
-        marginBottom: '100px'
-       }}
-       onPlaceSelected={ this.onPlaceSelected }
-       types={['(regions)']}
+		className = "search-bar"
+       	onPlaceSelected={ this.onPlaceSelected }
+       	types={['(regions)']}
       />
 	}
 	
@@ -159,12 +154,17 @@ class GMap extends Component {
 	render() {
 	var locations = this.drawPolygons();
 
+	const defaultMapOptions = {
+		fullscreenControl: false,
+	};
+
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 		props => (
 			<GoogleMap
 			defaultZoom={8}
 			defaultCenter={{ lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng }}
+			defaultOptions={defaultMapOptions}
 			>
 				<MarkerClusterer
 				onClick={this.onMarkerClustererClick}
@@ -196,7 +196,7 @@ let map;
 			   <div style={{ height: `200%` }} />
 			  }
 			  containerElement={
-			   <div style={{ height: '500px' }} />
+			   <div style={{ height: '500px', position: 'relative' }} />
 			  }
 			  mapElement={
 			   <div style={{ height: `100%` }} />
