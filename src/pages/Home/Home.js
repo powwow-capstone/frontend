@@ -126,7 +126,6 @@ class Home extends Component {
       
     }
 
-    this.setState({ selected_feature : this.selected_feature_temp }); 
     this.requeryData(new_displayed_data);
 
   }
@@ -136,7 +135,7 @@ class Home extends Component {
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-9">
-            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} />
+            <GMap data={this.state.displayed_data} selectedFeature={this.selected_feature_temp} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-3">
