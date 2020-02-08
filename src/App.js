@@ -34,16 +34,16 @@ class Loading extends React.Component {
       done: undefined
     };
   }
-
+// Bad practice? mayhaps
   componentDidMount() {
     setTimeout(() => {
-      fetch("https://space-monitor-backend.herokuapp.com/api/fields")
+      fetch("https://space-monitor-backend.herokuapp.com/api/fields?month=null&year=2014")
         .then(response => response.json())
         .then(json => {
           this.setState({ loading: true });
           setTimeout(() => {
             this.setState({ done: true });
-          }, 1000);
+          }, 1200);
         });
     }, 1200);
   }
@@ -51,7 +51,7 @@ class Loading extends React.Component {
   render() {
     return (
       <div>            
-        {!this.state.done ? (
+        {!this.state.done && (
           <div className="App">
             <header className="App-header">
               <FadeIn>
@@ -70,15 +70,8 @@ class Loading extends React.Component {
               </FadeIn>
             </header>
           </div>
-        ) : (
-          <BrowserRouter>
-            <div>
-                <Switch>
-                  <Route path="/" component={Home} exact/>
-                </Switch>
-            </div> 
-          </BrowserRouter>
-        )}
+          )
+        }
       </div>
     );
   }
@@ -87,7 +80,15 @@ class Loading extends React.Component {
 class App extends Component {
   render() {
     return (      
-      <Loading />
+      
+      <BrowserRouter>
+      <div>
+        <Loading />
+          <Switch>
+            <Route path="/" component={Home} exact/>
+          </Switch>
+      </div> 
+    </BrowserRouter>
     );
   }
 }

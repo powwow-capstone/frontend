@@ -4,8 +4,9 @@ import { Button } from 'reactstrap';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
-import CategoryFiltering from '../../components/Filtering/CategoryFiltering';
+import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
+import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 
@@ -15,36 +16,47 @@ class Home extends Component {
     this.state = {
       data: null,            // This contains all data from the server
       displayed_data: null,
-      selected_feature: null
+      selected_feature: null,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
     this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
+    this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
+
     this.selected_feature_temp = null;
     this.selected_categories = {}
+    this.selected_time_range = { year: 2014, month : null }  // Default initial view
 
   }
 
   componentDidMount() {
-    this.loadData();
+    // Default is 2014 yearly data
 
+    this.loadData(this.state.time_range);
   };
 
 
   loadData() {
     axios
-      .get("https://space-monitor-backend.herokuapp.com/api/fields")
-      .then(res => this.setState({ data: res.data, displayed_data : res.data }))
-      .catch (err => console.log(err));
+      .get("https://space-monitor-backend.herokuapp.com/api/fields?month=" + this.selected_time_range.month + "&year=" + this.selected_time_range.year)
+      .then(res => this.setState({ data: res.data, displayed_data: res.data }))
+      .catch(err => console.log(err));
   }
 
   requeryData(displayed_data) {
-    axios.post("https://space-monitor-backend.herokuapp.com/api/filter_fields", displayed_data)
+    const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
+    parameters.data = displayed_data
+    axios.post("https://space-monitor-backend.herokuapp.com/api/filter_fields", parameters)
       .then(res => this.setState({ displayed_data: res.data }))
       .catch(err => console.log(err));
 
+  }
+
+  handleTimeRangeSelection(month, year){
+    this.selected_time_range.month = month;
+    this.selected_time_range.year = year;
   }
 
   handleCategoryDropdownSelection(category, value) {
@@ -126,7 +138,6 @@ class Home extends Component {
       
     }
 
-    this.setState({ selected_feature : this.selected_feature_temp }); 
     this.requeryData(new_displayed_data);
 
   }
@@ -134,9 +145,11 @@ class Home extends Component {
   render() {
     return (
         <div className="row">
+          {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-9">
-            {this.state && this.state.data && <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} /> }
-          </div>
+            <GMap data={this.state.displayed_data} selectedFeature={this.selected_feature_temp} />
+          </div>}
+          {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-3">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
@@ -147,18 +160,21 @@ class Home extends Component {
                 cookiePolicy={'single_host_origin'}
               />
             </div>
-            {this.state && this.state.data && <div>
+            <div>
+              <div className="container row">
+                <TimeRangeSelection currentDate={this.selected_time_range} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
+              </div>
               <div className="container row">
                 <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
               </div>
               <div className="container row">
-                <CategoryFiltering data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="container row">
                 <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
               </div>
-            </div>}
-          </div>
+            </div>
+          </div>}
         </div>
     );
     
