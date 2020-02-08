@@ -134,9 +134,11 @@ class Home extends Component {
   render() {
     return (
         <div className="row">
+          {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-9">
-            {this.state && this.state.data && <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} /> }
-          </div>
+            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} />
+          </div>}
+          {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-md-3">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
@@ -147,7 +149,7 @@ class Home extends Component {
                 cookiePolicy={'single_host_origin'}
               />
             </div>
-            {this.state && this.state.data && <div>
+            <div>
               <div className="container row">
                 <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
               </div>
@@ -157,8 +159,8 @@ class Home extends Component {
               <div className="container row">
                 <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
               </div>
-            </div>}
-          </div>
+            </div>
+          </div>}
         </div>
     );
     
