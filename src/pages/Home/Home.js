@@ -39,7 +39,7 @@ class Home extends Component {
 
   loadData() {
     axios
-      .post("https://space-monitor.herokuapp.com/api/fields", this.selected_time_range)
+      .post("https://space-monitor-backend.herokuapp.com/api/fields", this.selected_time_range)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
       .catch(err => console.log(err));
   }
@@ -47,7 +47,7 @@ class Home extends Component {
   requeryData(displayed_data) {
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
     parameters.data = displayed_data
-    axios.post("https://space-monitor.herokuapp.com/api/filter_fields", parameters)
+    axios.post("https://space-monitor-backend.herokuapp.com/api/filter_fields", parameters)
       .then(res => this.setState({ displayed_data: res.data }))
       .catch(err => console.log(err));
 
