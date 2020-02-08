@@ -33,13 +33,14 @@ class Home extends Component {
 
   componentDidMount() {
     // Default is 2014 yearly data
+
     this.loadData(this.state.time_range);
   };
 
 
   loadData() {
     axios
-      .post("https://space-monitor-backend.herokuapp.com/api/fields", this.selected_time_range)
+      .get("https://space-monitor-backend.herokuapp.com/api/fields?month=" + this.selected_time_range.month + "&year=" + this.selected_time_range.year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
       .catch(err => console.log(err));
   }
