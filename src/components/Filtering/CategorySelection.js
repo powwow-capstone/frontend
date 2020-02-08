@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 
-class CategoryFiltering extends Component {
+class CategorySelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -178,4 +178,4 @@ class CategoryFiltering extends Component {
 
 }
 
-export default CategoryFiltering;
+export default CategorySelection;
