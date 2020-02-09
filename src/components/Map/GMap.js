@@ -8,6 +8,7 @@ import '../../css/GMap.css';
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
+
 class GMap extends Component {
 	constructor(props) {
 		super(props);
@@ -15,7 +16,8 @@ class GMap extends Component {
 			sidebarVisibility: false,
 			markerPosition: {    lat: null,    lng: null  },
 			clicked_categories: [],
-			clicked_features: []
+			clicked_features: [],
+			zoomLevel: 8
 		};
 		this.openSidebar = this.openSidebar.bind(this);
 		this.handleZoomChanged = this.handleZoomChanged.bind(this);
@@ -52,15 +54,16 @@ class GMap extends Component {
 		  let latValue = place.geometry.location.lat(),
 		   lngValue = place.geometry.location.lng();
 		this.mapPosition = { lat: latValue, lng: lngValue };
-
+		this.zoomLevel = 15
 		// Set these values in the state.
 		  this.setState({
 		   markerPosition: {
 			lat: latValue,
 			lng: lngValue
-		   }
+		   },
+		   zoomLevel: 15
 		  })
-		 };
+	};
 		 
 	onMarkerDragEnd = ( event ) => {
 		  let newLat = event.latLng.lat(),
