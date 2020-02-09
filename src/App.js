@@ -83,10 +83,10 @@ class App extends Component {
       
       <BrowserRouter>
       <div>
-        <Loading />
-          <Switch>
-            <Route path="/" component={Home} exact/>
-          </Switch>
+        <Loading/>
+        <Switch>
+          <Route path="/" component={Home} exact/>
+        </Switch>
       </div> 
     </BrowserRouter>
     );

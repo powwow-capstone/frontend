@@ -1,5 +1,7 @@
 body {
-	background-color: hsl(195, 88%, 77%, 0.2);
+    background-color: hsl(195, 88%, 77%, 0.2);
+    position: relative;
+    max-width: 100%;
 }
 
 .img-logo {
