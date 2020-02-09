@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import InfoModal from '../Info/InfoModal';
 
 class FeatureSelection extends Component {
     constructor(props) {
@@ -56,7 +57,8 @@ class FeatureSelection extends Component {
         return (
             <div className="col-12">
                 <div className="card">
-                    <h5 className="card-header">Features</h5>
+                    <h5 className="card-header" style={{display: 'inline-block'}}>Features <InfoModal /></h5>
+                    
                     <div className="card-body">
                         <div className="card-text">
                             {this.createFeatureRadioButtons()}

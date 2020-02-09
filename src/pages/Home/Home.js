@@ -6,7 +6,7 @@ import newLogo from '../../images/newLogo.png';
 import axios from "axios";
 import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
-import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
+import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection';
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 
