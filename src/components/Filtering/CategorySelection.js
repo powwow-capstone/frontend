@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import "../../css/CategorySelection.css";
 
 class CategorySelection extends Component {
     constructor(props) {
@@ -109,8 +110,8 @@ class CategorySelection extends Component {
 
             if (type == "string") {
                 const dropdown_content = this.state.category_visibility[category_name]
-                    ? <div>
-                        <select class="selectpicker" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
+                    ? <div className="input-box">
+                        <select className="input-box" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
                             {this.createDropdownSelection(values)}
                         </select>
                     </div>
@@ -120,7 +121,7 @@ class CategorySelection extends Component {
                 // For strings, each checkbox has a dropdown menu
                 category_checkboxes.push(
                     <div className="row">
-                        <input type="checkbox" id={category_name} onChange={(e) => this.handleChange(category_name, e)} />
+                        <input type="checkbox" className="m-1" id={category_name} onChange={(e) => this.handleChange(category_name, e)} />
                         {category_name}
                         {dropdown_content}
                     </div>
@@ -131,10 +132,10 @@ class CategorySelection extends Component {
                 const textbox_content = this.state.category_visibility[category_name]
                     ? <div>
                         <div className="row">
-                            Min: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
+                            Min: <input type="Text" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
                         </div>
                         <div className="row">
-                            Max: <input type="Text" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                            Max: <input type="Text" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                         </div>
                     </div>
                     : null;
@@ -143,7 +144,7 @@ class CategorySelection extends Component {
                 category_checkboxes.push(
                     <div>
                         <div className="row">
-                            <input type="checkbox" id={category_name} onChange={() => this.handleChange(category_name)} /> {category_name}
+                            <input type="checkbox" className="m-1" id={category_name} onChange={() => this.handleChange(category_name)} /> {category_name}
                         </div>
                         {textbox_content}
                     </div>
@@ -163,11 +164,8 @@ class CategorySelection extends Component {
                 <div className="card">
                     <h5 className="card-header">Categories</h5>
                     <div className="card-body">
-                        <div className="card-text">
                            
-                            {this.createCategoryCheckboxes()}
-                           
-                        </div>
+                        {this.createCategoryCheckboxes()}
 
                     </div>
                 </div>
