@@ -11,17 +11,24 @@ const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 class GMap extends Component {
 	constructor(props) {
 		super(props);
+		
 		this.state = {
 			sidebarVisibility: false,
 			markerPosition: {    lat: null,    lng: null  },
 			clicked_categories: [],
-			clicked_features: []
+			clicked_features: [],
+			zoomLevel: 8,
+			showMarkers: true,
+			showPolygons: false
 		};
+		
 		this.openSidebar = this.openSidebar.bind(this);
 		this.handleZoomChanged = this.handleZoomChanged.bind(this);
 		this.handleCenterChanged = this.handleCenterChanged.bind(this);
 		this.ref = React.createRef();
 		this.clicked_id = null;
+		this.showMarkers= true;
+		this.showPolygons= false;
 		this.zoomLevel = 8;
 		this.mapPosition = { lat: 35.6163, lng: -119.6943 };
 	}
@@ -37,7 +44,7 @@ class GMap extends Component {
 	}
 
 	onPositionChanged = (location) => {
-		console.log(`This the new location onPositionChange:${JSON.stringify(location, undefined, 2)}`);
+
 		const newLocation = new window.google.maps.LatLng(location.lat, location.lng);
 		// [NOTE]: try using the panTo() from googleMaps to recenter the map ? but don't know how to call it.
 
@@ -49,27 +56,35 @@ class GMap extends Component {
 	}
 	
 	onPlaceSelected = ( place ) => {
-		  let latValue = place.geometry.location.lat(),
-		   lngValue = place.geometry.location.lng();
+		let latValue = place.geometry.location.lat(),
+			lngValue = place.geometry.location.lng();
 		this.mapPosition = { lat: latValue, lng: lngValue };
-
+		this.zoomLevel = 15;
+		this.showMarkers =  false;	
+		this.showPolygons = true
+			
+			
 		// Set these values in the state.
-		  this.setState({
-		   markerPosition: {
-			lat: latValue,
-			lng: lngValue
-		   }
-		  })
-		 };
+		this.setState({
+			markerPosition: {
+				lat: latValue,
+				lng: lngValue
+			},
+			zoomLevel: 15,
+			showMarkers: false,	
+			showPolygons: true
+		})
+
+	};
 		 
 	onMarkerDragEnd = ( event ) => {
-		  let newLat = event.latLng.lat(),
-		   newLng = event.latLng.lng();
-			Geocode.fromLatLng( newLat , newLng ).then(
-			   error => {
+		let newLat = event.latLng.lat(),
+			newLng = event.latLng.lng();
+		Geocode.fromLatLng( newLat , newLng ).then(
+			error => {
 				console.error(error);
-			   }
-		  );
+			}
+		);
 	};
 	
 	
@@ -82,16 +97,12 @@ class GMap extends Component {
 	}
 	
 	locationMarker = () =>{
-		return <Marker 
-			draggable={true}
-			 onDragEnd={this.onMarkerDragEnd}
-			 position = {{lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
-			 icon = {{ url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"	}}
-		  />
-	}
-
-	onMarkerClustererClick = (markerClusterer) => {
-		const clickedMarkers = markerClusterer.getMarkers()
+		return < Marker 
+				draggable={true}
+				onDragEnd={this.onMarkerDragEnd}
+				position = {{lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
+				icon = {{ url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"	}}
+			  />
 	}
 
 	drawPolygons() {
@@ -130,7 +141,6 @@ class GMap extends Component {
 			}
 
 			if (draw) {
-
 				polygons.push(
 					<Polygon
 						key={this.props.data[i].id}
@@ -142,6 +152,7 @@ class GMap extends Component {
 							strokeOpacity: 1,
 							strokeWeight: 1
 						}}
+						
 						onClick={() => this.openSidebar(true, id, categories, features)}
 					/>
 				);
@@ -149,7 +160,7 @@ class GMap extends Component {
 					<Marker
 						key={this.props.data[i].id}
 						onClick={() => this.openSidebar(true, id, categories, features)}
-						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1] }}
+						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1]}}
 					/>
 
 				);
@@ -168,6 +179,27 @@ class GMap extends Component {
 		if (zoomLevel !== this.zoomLevel) {
 			this.zoomLevel = zoomLevel;
 		}
+
+		if ( zoomLevel < 12 && !this.showMarkers && this.showPolygons ){
+			this.showMarkers =  true;	
+			this.showPolygons = false
+
+			this.setState({
+				showMarkers: true,
+				showPolygons: false,
+			})
+		}
+		else if ( zoomLevel >= 12 && this.showMarkers && !this.showPolygons){
+			this.showMarkers =  false;	
+			this.showPolygons = true
+			
+			this.setState({
+				showMarkers: false,	
+				showPolygons: true
+				
+			})
+		}
+		
 	}
 
 	handleCenterChanged() {
@@ -179,64 +211,70 @@ class GMap extends Component {
 	}
 		
 	render() {
-	var locations = this.drawPolygons();
-
-	const defaultMapOptions = {
-		fullscreenControl: false,
-	};
-
-	const AsyncMap = withScriptjs(
-		withGoogleMap(
-		props => (
-			<GoogleMap
-			ref={this.ref}
-			defaultZoom={this.zoomLevel}
-			defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
-			onZoomChanged={this.handleZoomChanged}
-			onCenterChanged={this.handleCenterChanged}
-			defaultOptions={defaultMapOptions}
-			>
-				<MarkerClusterer
-				onClick={this.onMarkerClustererClick}
-				averageCenter
-				enableRetinaIcons
-				gridSize={60}
-			>
-				{locations[1]}
-			
-			</MarkerClusterer>
-			
-			{this.placeBox()}
-			{this.locationMarker()}
-			{locations[0]}
-
-		</GoogleMap>
+		var locations = this.drawPolygons();
 		
-	)
-)
-  );
-
-
-let map;
-   map = <div>
-	   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
-		 <AsyncMap
-			  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
-			  loadingElement={
-			   <div style={{ height: `200%` }} />
-			  }
-			  containerElement={
-			   <div style={{ height: '100vh', position: 'relative' }} />
-			  }
-			  mapElement={
-			   <div style={{ height: `100%` }} />
-			  }
-		/> 
-			 
 		
-    </div>
-	return (map);
- }
+		const defaultMapOptions = {
+			fullscreenControl: false,
+		};
+
+		const AsyncMap = withScriptjs(
+			withGoogleMap(
+				props => (
+					<GoogleMap
+						ref={this.ref}
+						defaultZoom={this.zoomLevel}
+						defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
+						onZoomChanged={this.handleZoomChanged}
+						onCenterChanged={this.handleCenterChanged}
+						defaultOptions={defaultMapOptions}
+					>
+						{this.state.showMarkers &&	
+							<MarkerClusterer
+								onClick={this.onMarkerClustererClick}
+								averageCenter
+								enableRetinaIcons
+								gridSize={60}
+							>
+								{locations[1]}
+							
+							</MarkerClusterer>
+						}
+						
+						{this.state.showPolygons && 
+							locations[0]
+						}
+
+						{this.placeBox()}
+						{this.locationMarker()}
+					
+
+					</GoogleMap>
+				)
+			)
+		);
+
+
+	let map;
+	   map = <div>
+		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
+			 <AsyncMap
+				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
+				  loadingElement={
+				   <div style={{ height: `200%` }} />
+				  }
+				  containerElement={
+				   <div style={{ height: '100vh', position: 'relative' }} />
+				  }
+				  mapElement={
+				   <div style={{ height: `100%` }} />
+				  }
+			/> 
+				 
+			
+		</div>
+		return (map);
+	 }
 }
 
 GMap.defaultProps = {
