@@ -41,7 +41,7 @@ class FeatureSelection extends Component {
             feature_buttons.push(
                 <div className="radio">
                     <label>
-                        <input type="radio" name="features" value={feature} onChange={(e) => this.handleChange(feature, e)} />
+                        <input type="radio" className="m-1" name="features" value={feature} onChange={(e) => this.handleChange(feature, e)} />
                         {feature}
                     </label>
                 </div>
@@ -58,10 +58,9 @@ class FeatureSelection extends Component {
                 <div className="card">
                     <h5 className="card-header">Features</h5>
                     <div className="card-body">
-                        <div className="card-text">
-                            {this.createFeatureRadioButtons()}
-                        </div>
-
+                        
+                        {this.createFeatureRadioButtons()}
+                        
                     </div>
                 </div>
             </div>

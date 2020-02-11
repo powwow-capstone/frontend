@@ -146,11 +146,11 @@ class Home extends Component {
     return (
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
-          <div className="col-md-9">
+          <div className="col-lg-9 col-md-8">
             <GMap data={this.state.displayed_data} selectedFeature={this.selected_feature_temp} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
-          <div className="col-md-3">
+          <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
               <GoogleLogin
@@ -170,7 +170,7 @@ class Home extends Component {
               <div className="container row">
                 <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
-              <div className="container row">
+              <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
               </div>
             </div>

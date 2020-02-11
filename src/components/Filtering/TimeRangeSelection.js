@@ -97,13 +97,13 @@ class TimeRangeSelection extends Component {
                             </div>
                             <div className="row">
                                 <label>
-                                    <input type="radio" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />
+                                    <input type="radio" className="m-1" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />
                                     Monthly Average
                                 </label>
                             </div>
                             <div className="row">
                                 <label>
-                                    <input type="radio" name="datePicker" checked={this.state.showYearPicker} onChange={() => this.handleYearPickerChange()} />
+                                    <input type="radio" className="m-1" name="datePicker" checked={this.state.showYearPicker} onChange={() => this.handleYearPickerChange()} />
                                     Yearly Average
                                 </label>
                             </div>
