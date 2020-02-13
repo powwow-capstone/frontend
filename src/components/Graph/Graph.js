@@ -33,13 +33,13 @@ class Graph extends Component {
 		const options = {
 			theme: "light2",
 			title: {
-				text: "eta over time"
+				text: "ETa over time"
             },
             axisX: {
 				valueFormatString: "MMM YYYY"
 			},
 			axisY: {
-				title: "eta"
+				title: "ETa"
 			},
 			data: [{
 				type: "line",
