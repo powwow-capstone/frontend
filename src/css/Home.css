@@ -12,3 +12,9 @@ body {
     margin-left: 25px;
     margin-top: 10px;
 }
+
+.apply-button-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top:10px;
+}
