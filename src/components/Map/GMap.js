@@ -32,14 +32,28 @@ class GMap extends Component {
 		this.zoomLevel = 8;
 		this.mapPosition = { lat: 35.6163, lng: -119.6943 };
 	}
-
-	openSidebar(open, id, categories, features) {
-		this.clicked_id = id;
+	
+	onPolyClick(open, id, categories, features, markersLocationLat, markersLocationLng){
+		
+		this.markerPosition = {lat: markersLocationLat, lng:markersLocationLng};
 		this.setState(
-			{ sidebarVisibility: open, 
+			{ 
+				markerPosition: {lat: markersLocationLat, lng:markersLocationLng}
+			});
+		
+		this.openSidebar(open, id, categories, features)
+		
+	}
+	openSidebar(open, id, categories, features) {
+		
+		this.clicked_id = id;
+		
+		this.setState(
+			{ 
+				sidebarVisibility: open, 
 				clicked_categories: categories, 
 				clicked_features: features,
-				mapPosition: this.mapPosition 
+				mapPosition: this.mapPosition
 			});
 	}
 
@@ -66,10 +80,7 @@ class GMap extends Component {
 			
 		// Set these values in the state.
 		this.setState({
-			markerPosition: {
-				lat: latValue,
-				lng: lngValue
-			},
+			
 			zoomLevel: 15,
 			showMarkers: false,	
 			showPolygons: true
@@ -96,12 +107,12 @@ class GMap extends Component {
       />
 	}
 	
-	locationMarker = () =>{
+	polygonMarker = () =>{
 		return < Marker 
 				draggable={true}
 				onDragEnd={this.onMarkerDragEnd}
 				position = {{lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
-				icon = {{ url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"	}}
+				icon = {{ url: "http://maps.google.com/mapfiles/kml/paddle/blu-blank.png"	}}
 			  />
 	}
 
@@ -113,8 +124,13 @@ class GMap extends Component {
 
 			const id = this.props.data[i].id;
 			const categories = this.props.data[i].categories;
+			const 	markersLocationLat = this.props.data[i].centroid[0],
+					markersLocationLng =  this.props.data[i].centroid[1];
 			const features = this.props.data[i].features;
 			var colorPolygon = "#FFFFFF";  // default coloring
+			
+			//console.log("markersLocationLat: "+markersLocationLat)
+			
 			if (this.props.selectedFeature != null) {
 				var feature_score = 0;
 
@@ -153,13 +169,13 @@ class GMap extends Component {
 							strokeWeight: 1
 						}}
 						
-						onClick={() => this.openSidebar(true, id, categories, features)}
+						onClick={() => this.onPolyClick(true, id, categories, features, markersLocationLat, markersLocationLng)}
 					/>
 				);
 				markers.push(
 					<Marker
 						key={this.props.data[i].id}
-						onClick={() => this.openSidebar(true, id, categories, features)}
+						/*onClick={() => this.openSidebar(true, id, categories, features)}*/
 						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1]}}
 					/>
 
@@ -246,7 +262,7 @@ class GMap extends Component {
 						}
 
 						{this.placeBox()}
-						{this.locationMarker()}
+						{this.polygonMarker()}
 					
 
 					</GoogleMap>
