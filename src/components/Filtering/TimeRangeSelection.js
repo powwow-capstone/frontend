@@ -64,11 +64,11 @@ class TimeRangeSelection extends Component {
     getCurrentDateString() {
         if (this.currentDate.month !== null)
         {
-            return this.formatMonthString() + "-" + this.formatYearString();
+            return months[this.currentDate.month - 1] + "-" + this.currentDate.year;
         }
         else
         {
-            return this.formatYearString();
+            return "" + this.currentDate.year;
         }
         
     }
