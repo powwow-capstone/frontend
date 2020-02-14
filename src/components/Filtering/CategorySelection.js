@@ -82,7 +82,7 @@ class CategorySelection extends Component {
 		if (text === '' || re.test(text))
 			this.props.handleInput(category, min_max, text);
 		else
-			console.log("something wrong")
+			console.log("Invalid input")
         
     }
 
@@ -138,10 +138,10 @@ class CategorySelection extends Component {
                 const textbox_content = this.state.category_visibility[category_name]
                     ? <div>
                         <div className="row">
-                            Min: <input type="Text" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
+                            Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
                         </div>
                         <div className="row">
-                            Max: <input type="Text" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                            Max: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                         </div>
                     </div>
                     : null;
