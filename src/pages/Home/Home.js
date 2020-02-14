@@ -52,7 +52,9 @@ class Home extends Component {
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
-      .then(res => this.setState({ displayed_data: res.data }))
+      .then(res => {
+        this.setState({ displayed_data: res.data }); 
+      })
       .catch(err => {
         console.log(err);
         alert("No data matches parameters selected");
@@ -169,7 +171,7 @@ class Home extends Component {
             </div>
             <div>
               <div className="container row">
-                <TimeRangeSelection currentDate={this.selected_time_range} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
+                <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
                 <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />

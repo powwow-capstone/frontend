@@ -24,26 +24,26 @@ class TimeRangeSelection extends Component {
         super(props);
         this.state = {
             showMonthPicker : false,
-            showYearPicker : true
+            showYearPicker : true,
+            currentDate : props.currentDate
         };
-        this.currentDate = props.currentDate;
 
         // Keep track of the user input for each selection
         this.last_selected_year = props.currentDate.year;
         this.last_selected_month_and_year = { year: props.currentDate.year, month: props.currentDate.month };
     }
 
-    // componentDidUpdate(prevProps) {
-    //     if (this.currentDate !== this.props.currentDate) {
-    //         this.currentDate = this.props.currentDate;
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        if (this.state.currentDate !== this.props.currentDate) {
+            this.setState({ currentDate:  this.props.currentDate });
+        }
+    }
 
     formatYearString() {
 
         // Ensure that the year selected is 4 digits long
         // This is a sanity check. You should never need to pad the year
-        var year = this.currentDate.year + "";
+        var year = this.state.currentDate.year + "";
         while (year.length < 4) {
             year = "0" + year;
         }
@@ -62,13 +62,13 @@ class TimeRangeSelection extends Component {
     }
 
     getCurrentDateString() {
-        if (this.currentDate.month !== null)
+        if (this.state.currentDate.month !== null)
         {
-            return months[this.currentDate.month - 1] + "-" + this.currentDate.year;
+            return months[this.state.currentDate.month - 1] + "-" + this.state.currentDate.year;
         }
         else
         {
-            return "" + this.currentDate.year;
+            return "" + this.state.currentDate.year;
         }
         
     }
