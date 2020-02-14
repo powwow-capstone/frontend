@@ -142,11 +142,11 @@ class TimeRangeSelection extends Component {
                             </div>
                             {this.state.showMonthPicker &&
                                 <div className="row">
-                                <Datetime dateFormat="MM-YYYY" defaultValue={moment( this.formatMonthString() + "-" + this.last_selected_month_and_year.year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleMonthSelection(e)} />
+                                <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment( this.formatMonthString() + "-" + this.last_selected_month_and_year.year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleMonthSelection(e)} />
                                 </div>}
                             { this.state.showYearPicker && 
                             <div className="row">
-                                <Datetime dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
+                                <Datetime inputProps={{ readOnly: true }} dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
                             </div>}
 
                         </div>
