@@ -4,6 +4,8 @@ import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
+const root_path = process.env.REACT_APP_ROOT_PATH;
+
 class Sidebar extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +25,7 @@ class Sidebar extends Component {
     
     refreshList() {
 		axios
-			.get( "https://space-monitor-backend.herokuapp.com/api/eta?objectid="+this.props.clicked_id)
+            .get("" + root_path + "/api/eta?objectid="+this.props.clicked_id)
 			.then(res => this.setState({ datapoints: res.data }))
             .catch(err => console.log(err));
     };

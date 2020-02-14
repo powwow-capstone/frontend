@@ -10,6 +10,8 @@ import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 
+const root_path = process.env.REACT_APP_ROOT_PATH;
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -32,25 +34,29 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    // Default is 2014 yearly data
-
     this.loadData(this.state.time_range);
   };
 
 
   loadData() {
     axios
-      .get("https://space-monitor-backend.herokuapp.com/api/fields?month=" + this.selected_time_range.month + "&year=" + this.selected_time_range.year)
+      .get("" + root_path + "/api/fields?month=" + this.selected_time_range.month + "&year=" + this.selected_time_range.year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        alert("No data matches parameters selected");
+      });
   }
 
   requeryData(displayed_data) {
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
     parameters.data = displayed_data
-    axios.post("http://localhost:5000/api/filter_fields", parameters)
+    axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => this.setState({ displayed_data: res.data }))
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        alert("No data matches parameters selected");
+      });
 
   }
 
