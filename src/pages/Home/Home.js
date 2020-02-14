@@ -149,6 +149,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.selected_time_range);
     return (
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
