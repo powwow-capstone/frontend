@@ -16,8 +16,9 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null,            // This contains all data from the server
-      displayed_data: null,
+      data: null,  	  // This contains all data from the server
+      
+	  displayed_data: null,
       selected_feature: null,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
@@ -27,12 +28,17 @@ class Home extends Component {
     this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
-    this.selected_feature_temp = null;
+	this.selected_feature_temp = null
     this.selected_categories = {}
     this.selected_time_range = { year: 2014, month : null }  // Default initial view
 
   }
 
+  componentWillMount() {
+	  this.loadData()
+	  this.selected_feature_temp = this.data
+  }
+	
   componentDidMount() {
     this.loadData(this.state.time_range);
   };
@@ -80,7 +86,7 @@ class Home extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-
+	
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
@@ -124,7 +130,9 @@ class Home extends Component {
           else
           {
             if ("MIN" in this.selected_categories[category_name])
-            {
+            {	
+				
+				
               if (value < this.selected_categories[category_name]["MIN"])
               {
                 include_datapoint = false;
@@ -179,7 +187,7 @@ class Home extends Component {
                 <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="apply-button-container">
-                <Button className="center" variant="outline-primary" onClick={() => this.submitFilters()}>Apply Changes</Button>
+                <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
               </div>
             </div>
           </div>}
