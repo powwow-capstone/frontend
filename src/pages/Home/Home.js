@@ -11,6 +11,7 @@ import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 
 class Home extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -143,6 +144,11 @@ class Home extends Component {
   }
 
   render() {
+    var firebase = window.$firebase;
+    // var firebase = require('firebase');
+    // var firebaseui = require('firebaseui');
+    var ui = window.$ui
+
     return (
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
@@ -153,12 +159,15 @@ class Home extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
-              <GoogleLogin
-                className="login-button"
-                clientId="779203911044-dtcm94n9lukj7d50nqfhchoqre4511k9.apps.googleusercontent.com"
-                buttonText="Login"
-                cookiePolicy={'single_host_origin'}
-              />
+              {ui.start('#firebaseui-auth-container', {
+                signInOptions: [
+                  {
+                    provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                    signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+                  }
+                ],
+                // Other config options...
+              })}
             </div>
             <div>
               <div className="container row">
