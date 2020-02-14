@@ -159,15 +159,7 @@ class Home extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
-              {ui.start('#firebaseui-auth-container', {
-                signInOptions: [
-                  {
-                    provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                    signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-                  }
-                ],
-                // Other config options...
-              })}
+              
             </div>
             <div>
               <div className="container row">
