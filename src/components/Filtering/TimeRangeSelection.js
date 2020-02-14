@@ -29,8 +29,8 @@ class TimeRangeSelection extends Component {
         this.currentDate = props.currentDate;
 
         // Keep track of the user input for each selection
-        this.last_selected_year = null;
-        this.last_selected_month_and_year = { year : null, month : null };
+        this.last_selected_year = props.currentDate.year;
+        this.last_selected_month_and_year = { year: props.currentDate.year, month: props.currentDate.month };
     }
 
     // componentDidUpdate(prevProps) {
@@ -51,8 +51,14 @@ class TimeRangeSelection extends Component {
         return year;
     }
 
-    formatMonthString(month) {
-        return months[this.currentDate.month - 1];
+    formatMonthString() {
+
+        // Check to see if you need to pad the month with leading zeroes
+        var month = this.last_selected_month_and_year.month + "";
+        while (month.length < 2) {
+            month = "0" + month;
+        }
+        return month;
     }
 
     getCurrentDateString() {
@@ -86,6 +92,12 @@ class TimeRangeSelection extends Component {
 
         // If the user checked month picker, then set the time range selection to their last selected input
         if (newSetting) {
+
+            // If this.last_selected_month_and_year.month is null, then set it to 1 (january) as default
+            if (this.last_selected_month_and_year.month === null) {
+                this.last_selected_month_and_year.month = 1;
+            }
+
             this.props.handleTimeRangeSelection(this.last_selected_month_and_year.month, this.last_selected_month_and_year.year);
         }
 
@@ -130,11 +142,11 @@ class TimeRangeSelection extends Component {
                             </div>
                             {this.state.showMonthPicker &&
                                 <div className="row">
-                                <Datetime dateFormat="MM-YYYY" defaultValue={moment( this.formatMonthString() + "-" + this.formatYearString(), "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleMonthSelection(e)} />
+                                <Datetime dateFormat="MM-YYYY" defaultValue={moment( this.formatMonthString() + "-" + this.last_selected_month_and_year.year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleMonthSelection(e)} />
                                 </div>}
                             { this.state.showYearPicker && 
                             <div className="row">
-                                <Datetime dateFormat="YYYY" defaultValue={ moment(this.formatYearString(), "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
+                                <Datetime dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
                             </div>}
 
                         </div>
