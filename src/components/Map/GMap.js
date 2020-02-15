@@ -150,11 +150,14 @@ class GMap extends Component {
 
 				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
 				// Hard code this threshold for now
-				if (feature_score == 1) {
-					colorPolygon = "#00FF00";
-				}
-				else {
-					colorPolygon = "#FF0000";
+				if (feature_score >= 0)
+				{
+					if (feature_score == 1) {
+						colorPolygon = "#00FF00";
+					}
+					else {
+						colorPolygon = "#FF0000";
+					}
 				}
 			}
 
