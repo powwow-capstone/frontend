@@ -17,9 +17,8 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
-      
-	  displayed_data: null,
-      selected_feature: null,
+	    displayed_data: null,
+      selected_feature: "ETa",
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -28,15 +27,10 @@ class Home extends Component {
     this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
-	this.selected_feature_temp = null
+	  this.selected_feature_temp = null
     this.selected_categories = {}
     this.selected_time_range = { year: 2014, month : null }  // Default initial view
 
-  }
-
-  componentWillMount() {
-	  this.loadData()
-	  this.selected_feature_temp = this.data
   }
 	
   componentDidMount() {
@@ -59,7 +53,7 @@ class Home extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp }); 
       })
       .catch(err => {
         console.log(err);
@@ -163,7 +157,7 @@ class Home extends Component {
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-            <GMap data={this.state.displayed_data} selectedFeature={this.selected_feature_temp} />
+            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
