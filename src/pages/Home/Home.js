@@ -51,7 +51,7 @@ class Home extends Component {
 
   requeryData(displayed_data) {
     console.log(this.selected_time_range);
-    const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
+    const parameters = JSON.parse(JSON.stringify(this.selected_time_range));
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
