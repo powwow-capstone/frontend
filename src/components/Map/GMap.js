@@ -150,7 +150,7 @@ class GMap extends Component {
 				var refs = 'polygon' + i;
 				
 				for (var j = 0; j < features.length; j++) {
-					if (features[j].name == this.state.polygon_coloring_feature) {
+					if (features[j].name === this.state.polygon_coloring_feature) {
 						feature_score = features[j].score;
 						break;
 					}

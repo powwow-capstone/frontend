@@ -29,7 +29,7 @@ class Home extends Component {
 
 	  this.selected_feature_temp = null
     this.selected_categories = {}
-    this.selected_time_range = { year: 2014, month : null }  // Default initial view
+    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null }  // Default initial view
 
   }
 	
@@ -39,8 +39,9 @@ class Home extends Component {
 
 
   loadData() {
+    console.log(this.selected_time_range);
     axios
-      .get("" + root_path + "/api/fields?month=" + this.selected_time_range.month + "&year=" + this.selected_time_range.year)
+      .get("" + root_path + "/api/fields?start_month=" + this.selected_time_range.start_month + "&start_year=" + this.selected_time_range.start_year + "&end_month=" + this.selected_time_range.end_month + "&end_year=" + this.selected_time_range.end_year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
       .catch(err => {
         console.log(err);
@@ -49,6 +50,7 @@ class Home extends Component {
   }
 
   requeryData(displayed_data) {
+    console.log(this.selected_time_range);
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range))
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
@@ -62,13 +64,15 @@ class Home extends Component {
 
   }
 
-  handleTimeRangeSelection(month, year){
-    this.selected_time_range.month = month;
-    this.selected_time_range.year = year;
+  handleTimeRangeSelection(start_month, start_year, end_month, end_year){
+    this.selected_time_range.start_month = start_month;
+    this.selected_time_range.start_year = start_year;
+    this.selected_time_range.end_month = end_month;
+    this.selected_time_range.end_year = end_year;
   }
 
   handleCategoryDropdownSelection(category, value) {
-    if (value != "NULL")
+    if (value !== "NULL")
     {
       this.selected_categories[category] = value;
     }
@@ -114,9 +118,9 @@ class Home extends Component {
 
         if (category_name in this.selected_categories)
         {
-          if (type == "string")
+          if (type === "string")
           {
-            if (value != this.selected_categories[category_name])
+            if (value !== this.selected_categories[category_name])
             {
               include_datapoint = false;
             }

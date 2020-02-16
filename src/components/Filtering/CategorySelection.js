@@ -114,7 +114,7 @@ class CategorySelection extends Component {
             const values = this.state.categories[category_name]["values"];
             const id = this.state.categories[category_name]["id"];
 
-            if (type == "string") {
+            if (type === "string") {
                 const dropdown_content = this.state.category_visibility[category_name]
                     ? <div className="input-box">
                         <select className="input-box" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
