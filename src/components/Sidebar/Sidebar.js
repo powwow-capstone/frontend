@@ -81,7 +81,7 @@ class Sidebar extends Component {
         var listFeatures = null;
         if (this.props.features){
             listFeatures= this.props.features.map((feature) =>
-                <li key={feature.name}>{feature.name + ": " + feature.value}</li> 
+                <li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2)}</li> 
             );
         }
         return (
