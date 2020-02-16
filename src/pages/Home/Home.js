@@ -18,13 +18,13 @@ class Home extends Component {
     this.state = {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
-      selected_feature: "ETa",
+      selected_feature: null,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
-    this.handleRadioButtonSelection = this.handleRadioButtonSelection.bind(this);
+    this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
 	  this.selected_feature_temp = null
@@ -96,8 +96,14 @@ class Home extends Component {
     delete this.selected_categories[category];
   }
 
-  handleRadioButtonSelection(feature) {
+  handleFeatureSelection(feature, updateImmediately = false) {
     this.selected_feature_temp = feature;
+
+    // If updateImmediately is set to true, then immediately call setState
+    // Otherwise, the selected feature will not be updated until the user clicks "Apply Changes"
+    if (updateImmediately) {
+      this.setState( { selected_feature : feature } ); 
+    }
   }
 
   submitFilters() {
@@ -179,7 +185,7 @@ class Home extends Component {
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
-                <FeatureSelection data={this.state.data} handleSelection={this.handleRadioButtonSelection} />
+                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="container row">
                 <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>

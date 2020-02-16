@@ -38,7 +38,6 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		console.log("component did update");
 		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
 			this.setState({ polygon_coloring_feature : this.props.selectedFeature })
 		}

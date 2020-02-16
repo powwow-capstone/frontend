@@ -8,6 +8,7 @@ class FeatureSelection extends Component {
             features: []
         };
     }
+
     componentDidMount() {
         this.getAllUniqueFeatures();
 
@@ -46,8 +47,8 @@ class FeatureSelection extends Component {
                             {feature}
                         </label>
                     </div>
-                
                 );
+                this.props.handleSelection(feature);
             }
             else{
                 feature_buttons.push(
