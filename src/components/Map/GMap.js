@@ -213,8 +213,6 @@ class GMap extends Component {
 	}
 		
 	render() {
-		console.log("render map");
-		console.log(this.state.polygon_coloring_feature);
 
 		var locations = this.drawPolygons();
 		
@@ -262,7 +260,7 @@ class GMap extends Component {
 
 	let map;
 	   map = <div>
-		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
+		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} dateRange={this.props.dateRange} />
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
