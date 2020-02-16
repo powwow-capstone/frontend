@@ -99,9 +99,9 @@ class Home extends Component {
   handleFeatureSelection(feature, updateImmediately = false) {
     this.selected_feature_temp = feature;
 
-    // If updateImmediately is set to true, then immediately call setState
+    // If updateImmediately is set to true, then immediately call setState if this.state.selected_feature is null
     // Otherwise, the selected feature will not be updated until the user clicks "Apply Changes"
-    if (updateImmediately) {
+    if (updateImmediately && this.state.selected_feature === null) {
       this.setState( { selected_feature : feature } ); 
     }
   }
@@ -167,7 +167,7 @@ class Home extends Component {
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} />
+            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">

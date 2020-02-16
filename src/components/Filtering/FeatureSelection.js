@@ -48,7 +48,7 @@ class FeatureSelection extends Component {
                         </label>
                     </div>
                 );
-                this.props.handleSelection(feature);
+                this.props.handleSelection(feature, true);
             }
             else{
                 feature_buttons.push(

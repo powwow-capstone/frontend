@@ -5,6 +5,21 @@ import Graph from '../Graph/Graph';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
+const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+];
+
 
 class Sidebar extends Component {
     constructor(props) {
@@ -21,6 +36,31 @@ class Sidebar extends Component {
             this.refreshList();
             this.setState({ isPaneOpen: this.props.isPaneOpen })
         }
+    }
+
+    parseDateRangeIntoString(date_range) {
+        const start_month = date_range.start_month;
+        const start_year = date_range.start_year;
+        const end_month = date_range.end_month;
+        const end_year = date_range.end_year;
+
+        var str = "";
+        if (start_month !== null) {
+            str += months[start_month - 1] + "-"
+        }
+        str += start_year;
+        if (end_month !== null) {
+            str += " to " + months[end_month - 1] + "-" + end_year;
+        }
+        else
+        {
+            if (start_year !== end_year)
+            {
+                str += " to " + end_year;
+            }
+        }
+
+        return str;
     }
     
     refreshList() {
@@ -50,7 +90,7 @@ class Sidebar extends Component {
                     className='some-custom-class'
                     overlayClassName='some-custom-overlay-class'
                     isOpen={this.state.isPaneOpen}
-                    title='Field Bio'
+                    title={"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)} 
                     // subtitle='Optional subtitle.'
                     from='left'
                     onRequestClose={() => {

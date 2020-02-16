@@ -32,8 +32,10 @@ class Graph extends Component {
 	render() {	
 		const options = {
 			theme: "light2",
+			animationEnabled: true,
+			zoomEnabled: true,
 			title: {
-				text: "ETa over time"
+				text: "ETa"
             },
             axisX: {
 				valueFormatString: "MMM YYYY"
