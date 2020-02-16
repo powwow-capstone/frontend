@@ -19,7 +19,10 @@ class GMap extends Component {
 			clicked_features: [],
 			zoomLevel: 8,
 			showMarkers: true,
-			showPolygons: false
+			showMarker:	false,
+			showPolygons: false,
+			polygon_coloring_feature : props.selectedFeature,  // This is the feature that will determine coloring of polygons
+			
 		};
 		
 		this.openSidebar = this.openSidebar.bind(this);
@@ -29,16 +32,26 @@ class GMap extends Component {
 		this.clicked_id = null;
 		this.showMarkers= true;
 		this.showPolygons= false;
+		this.showMarker = false;
 		this.zoomLevel = 8;
 		this.mapPosition = { lat: 35.6163, lng: -119.6943 };
 	}
+
+	componentDidUpdate(prevProps) {
+		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
+			this.setState({ polygon_coloring_feature : this.props.selectedFeature })
+		}
+	}
 	
-	onPolyClick(open, id, categories, features, markersLocationLat, markersLocationLng){
+	onPolyClick( open, id, categories, features, markersLocationLat, markersLocationLng){
 		
+		/*polygon.setOptions({fillColor: "#FFFF00" })*/
 		this.markerPosition = {lat: markersLocationLat, lng:markersLocationLng};
+		this.showMarker = true;
 		this.setState(
 			{ 
-				markerPosition: {lat: markersLocationLat, lng:markersLocationLng}
+				markerPosition: {lat: markersLocationLat, lng:markersLocationLng},
+				showMarker: true
 			});
 		
 		this.openSidebar(open, id, categories, features)
@@ -47,7 +60,6 @@ class GMap extends Component {
 	openSidebar(open, id, categories, features) {
 		
 		this.clicked_id = id;
-		
 		this.setState(
 			{ 
 				sidebarVisibility: open, 
@@ -75,6 +87,7 @@ class GMap extends Component {
 		this.mapPosition = { lat: latValue, lng: lngValue };
 		this.zoomLevel = 15;
 		this.showMarkers =  false;	
+		this.showMarker = true;
 		this.showPolygons = true
 			
 			
@@ -83,7 +96,8 @@ class GMap extends Component {
 			
 			zoomLevel: 15,
 			showMarkers: false,	
-			showPolygons: true
+			showPolygons: true,
+			showMarker: true
 		})
 
 	};
@@ -109,7 +123,6 @@ class GMap extends Component {
 	
 	polygonMarker = () =>{
 		return < Marker 
-				draggable={true}
 				onDragEnd={this.onMarkerDragEnd}
 				position = {{lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
 				icon = {{ url: "http://maps.google.com/mapfiles/kml/paddle/blu-blank.png"	}}
@@ -131,11 +144,12 @@ class GMap extends Component {
 			
 			//console.log("markersLocationLat: "+markersLocationLat)
 			
-			if (this.props.selectedFeature != null) {
+			if (this.state.polygon_coloring_feature !== null) {
 				var feature_score = 0;
-
+				var refs = 'polygon' + i;
+				
 				for (var j = 0; j < features.length; j++) {
-					if (features[j].name == this.props.selectedFeature) {
+					if (features[j].name === this.state.polygon_coloring_feature) {
 						feature_score = features[j].score;
 						break;
 					}
@@ -145,7 +159,7 @@ class GMap extends Component {
 				// Hard code this threshold for now
 				if (feature_score >= 0)
 				{
-					if (feature_score == 1) {
+					if (feature_score === 1) {
 						colorPolygon = "#00FF00";
 					}
 					else {
@@ -162,6 +176,7 @@ class GMap extends Component {
 			if (draw) {
 				polygons.push(
 					<Polygon
+						ref = {refs}
 						key={this.props.data[i].id}
 						path={this.props.data[i].coordinates.coordinates}
 						options={{
@@ -172,7 +187,7 @@ class GMap extends Component {
 							strokeWeight: 1
 						}}
 						
-						onClick={() => this.onPolyClick(true, id, categories, features, markersLocationLat, markersLocationLng)}
+						onClick={() => this.onPolyClick(true, id, categories, features, markersLocationLat, markersLocationLng) }
 					/>
 				);
 				markers.push(
@@ -201,20 +216,24 @@ class GMap extends Component {
 
 		if ( zoomLevel < 12 && !this.showMarkers && this.showPolygons ){
 			this.showMarkers =  true;	
-			this.showPolygons = false
+			this.showPolygons = false;
+			this.showMarker = false
 
 			this.setState({
 				showMarkers: true,
 				showPolygons: false,
+				showMarker: false
 			})
 		}
 		else if ( zoomLevel >= 12 && this.showMarkers && !this.showPolygons){
 			this.showMarkers =  false;	
-			this.showPolygons = true
+			this.showPolygons = true;
+			this.showMarker = true
 			
 			this.setState({
 				showMarkers: false,	
-				showPolygons: true
+				showPolygons: true,
+				showMarker: true
 				
 			})
 		}
@@ -230,6 +249,7 @@ class GMap extends Component {
 	}
 		
 	render() {
+
 		var locations = this.drawPolygons();
 		
 		
@@ -260,12 +280,12 @@ class GMap extends Component {
 							</MarkerClusterer>
 						}
 						
-						{this.state.showPolygons && 
+						{this.state.showPolygons &&
 							locations[0]
 						}
 
 						{this.placeBox()}
-						{this.polygonMarker()}
+						{this.state.showMarker && this.polygonMarker()}
 					
 
 					</GoogleMap>
@@ -276,7 +296,7 @@ class GMap extends Component {
 
 	let map;
 	   map = <div>
-		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} />
+		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} dateRange={this.props.dateRange} />
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
