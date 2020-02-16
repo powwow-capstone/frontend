@@ -1,13 +1,10 @@
 import React from 'react';
-import { Component } from 'react';
-import './css/App.css';
+import '../../css/App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Home from './pages/Home/Home';
-import MainLoading from './MainLoading';
+import Home from '../../pages/Home';
+import MainLoading from '../../MainLoading';
  
-class App extends Component {
-  render() {
-    return (      
+const App = () => (     
       <BrowserRouter>
       <div>
         <MainLoading/>
@@ -16,8 +13,6 @@ class App extends Component {
         </Switch>
       </div> 
     </BrowserRouter>
-    );
-  }
-}
+);
 
 export default App;
