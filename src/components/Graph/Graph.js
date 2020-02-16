@@ -30,15 +30,45 @@ class Graph extends Component {
 	}
 	
 	render() {	
+		var start_month = this.props.dateRange.start_month;
+		var start_year = this.props.dateRange.start_year;
+		var end_month = this.props.dateRange.end_month;
+		var end_year = this.props.dateRange.end_year;
+
+		if (start_month === null) {
+			start_month = 1;
+		}
+
+		if (end_month == null) {
+			end_month = 12;
+		}
+
+		if (start_month < 10) {
+			start_month = "0" + start_month;
+		}
+		if (end_month < 10) {
+			end_month = "0" + end_month
+		}
+
+		console.log(start_month);
+		console.log(start_year);
+		console.log(end_month);
+		console.log(end_year);
+		
+
 		const options = {
 			theme: "light2",
 			animationEnabled: true,
 			zoomEnabled: true,
+			zoomType: "xy",
 			title: {
 				text: "ETa"
             },
             axisX: {
-				valueFormatString: "MMM YYYY"
+				valueFormatString: "MMM YYYY",
+				viewportMinimum : new Date("" + start_year + "-" + start_month),
+				viewportMaximum: new Date("" + end_year + "-" + end_month),
+				
 			},
 			axisY: {
 				title: "ETa"

@@ -102,7 +102,7 @@ class Sidebar extends Component {
                             {listCategories}
                             {listFeatures}
                         </ul>}               
-                        {this.state.datapoints.length>0 && <Graph datapoints={this.state.datapoints}/>}
+                        {this.state.datapoints.length>0 && <Graph datapoints={this.state.datapoints} dateRange={this.props.dateRange}/>}
                     </div>
                 </SlidingPane>
             </div>
