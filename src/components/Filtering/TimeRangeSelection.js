@@ -29,8 +29,13 @@ class TimeRangeSelection extends Component {
         };
 
         // Keep track of the user input for each selection
-        this.last_selected_year = props.currentDate.year;
-        this.last_selected_month_and_year = { year: props.currentDate.year, month: props.currentDate.month };
+        this.last_selected_year = props.currentDate.start_year;
+        this.last_selected_month_and_year = { 
+            start_year: props.currentDate.start_year, 
+            start_month: props.currentDate.start_month,
+            end_year: props.currentDate.end_year,
+            end_month: props.currentDate.end_month,
+        };
     }
 
     componentDidUpdate(prevProps) {
@@ -39,22 +44,10 @@ class TimeRangeSelection extends Component {
         }
     }
 
-    formatYearString() {
-
-        // Ensure that the year selected is 4 digits long
-        // This is a sanity check. You should never need to pad the year
-        var year = this.state.currentDate.year + "";
-        while (year.length < 4) {
-            year = "0" + year;
-        }
-
-        return year;
-    }
-
-    formatMonthString() {
+    formatMonthString(month) {
 
         // Check to see if you need to pad the month with leading zeroes
-        var month = this.last_selected_month_and_year.month + "";
+        // var month = this.last_selected_month_and_year.month + "";
         while (month.length < 2) {
             month = "0" + month;
         }
@@ -62,28 +55,36 @@ class TimeRangeSelection extends Component {
     }
 
     getCurrentDateString() {
-        if (this.state.currentDate.month !== null)
+        if (this.state.currentDate.start_month !== null)
         {
-            return months[this.state.currentDate.month - 1] + "-" + this.state.currentDate.year;
+            return months[this.state.currentDate.start_month - 1] + "-" + this.state.currentDate.start_year + " to " + months[this.state.currentDate.end_month - 1] + "-" + this.state.currentDate.end_year;
         }
         else
         {
-            return "" + this.state.currentDate.year;
+            return "" + this.state.currentDate.start_year;
         }
         
     }
 
-    handleMonthSelection(moment){
+    handleStartMonthSelection(moment){
         const month = moment.format('MM');
         const year = moment.format('YYYY');
-        this.props.handleTimeRangeSelection(month, year);
-        this.last_selected_month_and_year.month = month;
-        this.last_selected_month_and_year.year = year;
+        this.props.handleTimeRangeSelection(month, year, this.last_selected_month_and_year.end_month, this.last_selected_month_and_year.end_year);
+        this.last_selected_month_and_year.start_month = month;
+        this.last_selected_month_and_year.start_year = year;
+    }
+
+    handleEndMonthSelection(moment) {
+        const month = moment.format('MM');
+        const year = moment.format('YYYY');
+        this.props.handleTimeRangeSelection(this.last_selected_month_and_year.start_month, this.last_selected_month_and_year.start_year, month, year);
+        this.last_selected_month_and_year.end_month = month;
+        this.last_selected_month_and_year.end_year = year;
     }
 
     handleYearSelection(moment){
         const year = moment.format('YYYY');
-        this.props.handleTimeRangeSelection(null, year);
+        this.props.handleTimeRangeSelection(null, year, null, year);
         this.last_selected_year = year;
     }
 
@@ -94,11 +95,16 @@ class TimeRangeSelection extends Component {
         if (newSetting) {
 
             // If this.last_selected_month_and_year.month is null, then set it to 1 (january) as default
-            if (this.last_selected_month_and_year.month === null) {
-                this.last_selected_month_and_year.month = 1;
+            if (this.last_selected_month_and_year.start_month === null) {
+                this.last_selected_month_and_year.start_month = 1;
             }
 
-            this.props.handleTimeRangeSelection(this.last_selected_month_and_year.month, this.last_selected_month_and_year.year);
+            if (this.last_selected_month_and_year.end_month === null) {
+                this.last_selected_month_and_year.end_month = 1;
+            }
+
+
+            this.props.handleTimeRangeSelection(this.last_selected_month_and_year.start_month, this.last_selected_month_and_year.start_year, this.last_selected_month_and_year.end_month, this.last_selected_month_and_year.end_year);
         }
 
         this.setState({ showMonthPicker : newSetting });
@@ -109,7 +115,7 @@ class TimeRangeSelection extends Component {
         const newSetting = !this.state.showYearPicker;
 
         if (newSetting) {
-            this.props.handleTimeRangeSelection(null, this.last_selected_year);
+            this.props.handleTimeRangeSelection(null, this.last_selected_year, null, this.last_selected_year);
         }
 
         this.setState({ showYearPicker: newSetting });
@@ -131,19 +137,26 @@ class TimeRangeSelection extends Component {
                             <div className="row">
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />
-                                    Monthly Average
+                                    Seasonal Summation
                                 </label>
                             </div>
                             <div className="row">
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showYearPicker} onChange={() => this.handleYearPickerChange()} />
-                                    Yearly Average
+                                    Yearly Summation
                                 </label>
                             </div>
                             {this.state.showMonthPicker &&
-                                <div className="row">
-                                <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment( this.formatMonthString() + "-" + this.last_selected_month_and_year.year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleMonthSelection(e)} />
-                                </div>}
+                                <div>
+                                    <div className="row">
+                                    Start Month: <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.start_month) + "-" + this.last_selected_month_and_year.start_year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleStartMonthSelection(e)} />
+                                    </div>
+                        
+                                    <div className="row">
+                                    End Month: <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.end_month) + "-" + this.last_selected_month_and_year.end_year, "MM-YYYY")} timeFormat={false} onChange={(e) => this.handleEndMonthSelection(e)} />
+                                    </div>
+                                </div>
+                            }
                             { this.state.showYearPicker && 
                             <div className="row">
                                 <Datetime inputProps={{ readOnly: true }} dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
@@ -157,7 +170,6 @@ class TimeRangeSelection extends Component {
 
         );
     }
-
 
 }
 

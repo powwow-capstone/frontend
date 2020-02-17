@@ -8,6 +8,7 @@ class FeatureSelection extends Component {
             features: []
         };
     }
+
     componentDidMount() {
         this.getAllUniqueFeatures();
 
@@ -38,7 +39,7 @@ class FeatureSelection extends Component {
         var feature_buttons = [];
         for (var i = 0; i < this.state.features.length; ++i) {
             const feature = this.state.features[i];
-            if (i == 0){
+            if (i === 0){
                 feature_buttons.push(
                     <div className="radio">
                         <label>
@@ -46,20 +47,20 @@ class FeatureSelection extends Component {
                             {feature}
                         </label>
                     </div>
-                
-                )
-                this.props.handleSelection(feature)
+                );
+                this.props.handleSelection(feature, true);
             }
             else{
                 feature_buttons.push(
-                <div className="radio">
-                    <label>
-                        <input type="radio" className="m-1" name="features"  value={feature} onChange={(e) => this.handleChange(feature, e)} />
-                        {feature}
-                    </label>
-                </div>
+                    <div className="radio">
+                        <label>
+                            <input type="radio" className="m-1" name="features"  value={feature} onChange={(e) => this.handleChange(feature, e)} />
+                            {feature}
+                        </label>
+                    </div>
             
-            );}
+                );
+            }
         }
 
         return feature_buttons;
