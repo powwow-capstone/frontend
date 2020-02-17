@@ -117,7 +117,7 @@ class Sidebar extends Component {
                             && this.state.datapoints.field_stats !== null // && this.state.datapoints.cohort_stats !== null
                             && this.state.datapoints.field_stats instanceof Array // && this.state.datapoints.cohort_stats instanceof Array
                             && this.state.datapoints.field_stats.length > 0 
-                            && <Graph datapoints={this.state.datapoints.field_stats} dateRange={this.props.dateRange} />
+                            && <Graph datapoints={this.state.datapoints.field_stats} cohort_datapoints={this.state.datapoints.cohort_stats} dateRange={this.props.dateRange} />
                         }
                     </div>
                 </SlidingPane>
