@@ -50,7 +50,6 @@ class Graph extends Component {
 		} else {
 			e.dataSeries.visible = true;
 		}
-		// this.chart.render();
 		e.chart.render();
 	}
 	
