@@ -173,12 +173,6 @@ class Home extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
-              <GoogleLogin
-                className="login-button"
-                clientId="779203911044-dtcm94n9lukj7d50nqfhchoqre4511k9.apps.googleusercontent.com"
-                buttonText="Login"
-                cookiePolicy={'single_host_origin'}
-              />
             </div>
             <div>
               <div className="container row">
