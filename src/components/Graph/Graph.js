@@ -43,18 +43,13 @@ class Graph extends Component {
 			end_month = 12;
 		}
 
+		// For string formatting, the month must be length 2 and padded with a 0 if needed 
 		if (start_month < 10) {
 			start_month = "0" + start_month;
 		}
 		if (end_month < 10) {
 			end_month = "0" + end_month
 		}
-
-		console.log(start_month);
-		console.log(start_year);
-		console.log(end_month);
-		console.log(end_year);
-		
 
 		const options = {
 			theme: "light2",

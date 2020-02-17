@@ -17,6 +17,7 @@ class GMap extends Component {
 			markerPosition: {    lat: null,    lng: null  },
 			clicked_categories: [],
 			clicked_features: [],
+			clicked_cohort_ids: [],
 			zoomLevel: 8,
 			showMarkers: true,
 			showMarker:	false,
@@ -43,7 +44,7 @@ class GMap extends Component {
 		}
 	}
 	
-	onPolyClick( open, id, categories, features, markersLocationLat, markersLocationLng){
+	onPolyClick( open, id, group_id, categories, features, markersLocationLat, markersLocationLng){
 		
 		/*polygon.setOptions({fillColor: "#FFFF00" })*/
 		this.markerPosition = {lat: markersLocationLat, lng:markersLocationLng};
@@ -54,10 +55,29 @@ class GMap extends Component {
 				showMarker: true
 			});
 		
-		this.openSidebar(open, id, categories, features)
+		const cohort_ids = this.getPolygonCohort(group_id);
+			
+		this.openSidebar(open, id, cohort_ids, categories, features);
 		
 	}
-	openSidebar(open, id, categories, features) {
+
+	getPolygonCohort(groupid) {
+		// Given a groupid, return a list of all ids of polygons that belong to that same cohort
+		var cohort_ids = [];
+		if (this.props.data !== null)
+		{
+			for (var i = 0; i < this.props.data.length; ++i)
+			{
+				if (groupid === this.props.data[i].groupid)
+				{
+					cohort_ids.push(this.props.data[i].id);
+				}
+			}
+		}
+		return cohort_ids;
+	}
+
+	openSidebar(open, id, cohort_ids, categories, features) {
 		
 		this.clicked_id = id;
 		this.setState(
@@ -65,6 +85,7 @@ class GMap extends Component {
 				sidebarVisibility: open, 
 				clicked_categories: categories, 
 				clicked_features: features,
+				clicked_cohort_ids: cohort_ids,
 				mapPosition: this.mapPosition
 			});
 	}
@@ -121,7 +142,7 @@ class GMap extends Component {
       />
 	}
 	
-	polygonMarker = () =>{
+	polygonMarker = () => {
 		return < Marker 
 				onDragEnd={this.onMarkerDragEnd}
 				position = {{lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
@@ -136,6 +157,7 @@ class GMap extends Component {
 		for (var i = 0; i < this.props.data.length; ++i) {
 
 			const id = this.props.data[i].id;
+			const groupid = this.props.data[i].groupid;
 			const categories = this.props.data[i].categories;
 			const 	markersLocationLat = this.props.data[i].centroid[0],
 					markersLocationLng =  this.props.data[i].centroid[1];
@@ -187,7 +209,7 @@ class GMap extends Component {
 							strokeWeight: 1
 						}}
 						
-						onClick={() => this.onPolyClick(true, id, categories, features, markersLocationLat, markersLocationLng) }
+						onClick={() => this.onPolyClick(true, id, groupid, categories, features, markersLocationLat, markersLocationLng) }
 					/>
 				);
 				markers.push(
@@ -296,7 +318,7 @@ class GMap extends Component {
 
 	let map;
 	   map = <div>
-		   <Sidebar clicked_id={this.clicked_id} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} dateRange={this.props.dateRange} />
+		   <Sidebar clicked_id={this.clicked_id} clicked_cohort_ids={this.state.clicked_cohort_ids} categories={this.state.clicked_categories} features={this.state.clicked_features} isPaneOpen={this.state.sidebarVisibility} onClose={this.openSidebar} dateRange={this.props.dateRange} />
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
