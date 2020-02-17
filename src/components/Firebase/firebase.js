@@ -2,6 +2,11 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
+//Roses are red,  
+//Violets are blue,  
+//If you're reading this,
+//I'm sorry for you.
+
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -25,6 +30,11 @@ class Firebase {
   // *** Auth API ***
   doCreateUserWithEmailAndPassword = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);
+
+  doSendEmailVerification = () =>
+    this.auth.currentUser.sendEmailVerification({
+      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+    });
 
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
@@ -57,6 +67,8 @@ class Firebase {
           authUser = {
             uid: authUser.uid,
             email: authUser.email,
+            emailVerified: authUser.emailVerified,
+            providerData: authUser.providerData,
             ...dbUser,
           };
           next(authUser);
