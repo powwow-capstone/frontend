@@ -11,7 +11,6 @@ class FeatureSelection extends Component {
 
     componentDidMount() {
         this.getAllUniqueFeatures();
-
     };
 
     getAllUniqueFeatures() {

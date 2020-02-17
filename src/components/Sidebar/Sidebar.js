@@ -27,14 +27,15 @@ class Sidebar extends Component {
 
         this.state = {
             isPaneOpen: props.isPaneOpen,
-            datapoints: []
+            datapoints : null,
         };
+        this.source = null;
     }
     
     componentDidUpdate(prevProps) {
         if ( prevProps.isPaneOpen !== this.props.isPaneOpen ) {
-            this.refreshList();
-            this.setState({ isPaneOpen: this.props.isPaneOpen })
+            this.refreshList(this.props.clicked_cohort_ids );
+            this.setState({ isPaneOpen: this.props.isPaneOpen });
         }
     }
 
@@ -63,15 +64,27 @@ class Sidebar extends Component {
         return str;
     }
     
-    refreshList() {
+    refreshList(cohortIDs) {
+        const CancelToken = axios.CancelToken;
+        this.source = CancelToken.source();
+
+        var api_endpoint = "" + root_path + "/api/eta?objectid=" + this.props.clicked_id;
+        api_endpoint += "&start_month=" + this.props.dateRange.start_month + "&start_year=" + this.props.dateRange.start_year + "&end_month=" + this.props.dateRange.end_month + "&end_year=" + this.props.dateRange.end_year;
+
 		axios
-            .get("" + root_path + "/api/eta?objectid="+this.props.clicked_id)
-			.then(res => this.setState({ datapoints: res.data }))
+            .put(api_endpoint, cohortIDs, {
+                cancelToken: this.source.token
+            })
+            .then(res => { 
+                console.log(res.data);
+                this.setState({ datapoints: res.data });
+            })
             .catch(err => console.log(err));
     };
 
     
     render() {
+
         var listCategories = null;
         if (this.props.categories){
             listCategories = this.props.categories.map((category) =>
@@ -95,14 +108,22 @@ class Sidebar extends Component {
                     from='left'
                     onRequestClose={() => {
                         // triggered on "<" on left top click or on outside click
+                        this.source.cancel('Operation canceled by the closing sidebar.');
                         this.props.onClose(false);
+
                     }}>
                     <div> 
                         {listCategories && listFeatures && <ul>
                             {listCategories}
                             {listFeatures}
                         </ul>}               
-                        {this.state.datapoints.length>0 && <Graph datapoints={this.state.datapoints} dateRange={this.props.dateRange}/>}
+                        { 
+                            this.state.datapoints !== null 
+                            && this.state.datapoints.field_stats !== null // && this.state.datapoints.cohort_stats !== null
+                            && this.state.datapoints.field_stats instanceof Array // && this.state.datapoints.cohort_stats instanceof Array
+                            && this.state.datapoints.field_stats.length > 0 
+                            && <Graph datapoints={this.state.datapoints.field_stats} cohort_datapoints={this.state.datapoints.cohort_stats} dateRange={this.props.dateRange} />
+                        }
                     </div>
                 </SlidingPane>
             </div>
