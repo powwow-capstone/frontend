@@ -36,6 +36,9 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
+        if ( prevProps.data !== this.props.data ) {
+            this.setState({ showPolyborder: false })
+        }
 		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
 			this.setState({ polygon_coloring_feature : this.props.selectedFeature })
 		}
@@ -249,7 +252,7 @@ class GMap extends Component {
 						}
 
 						{this.placeBox()}
-						{this.state.showPolyborder && this.polygonBorder(this.clicked_i)}
+						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
 					
 
 					</GoogleMap>
