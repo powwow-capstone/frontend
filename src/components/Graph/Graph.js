@@ -8,14 +8,29 @@ class Graph extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
-			datapoints: []
+			datapoints: [],
+			cohort_datapoints: []
 		};
+		this.chart = React.createRef();
     }
 	
 	static getDerivedStateFromProps(nextProps, prevState) {
         return {
-            datapoints: nextProps.datapoints,
+			datapoints: nextProps.datapoints,
+			cohort_datapoints: nextProps.cohort_datapoints,
         };
+	}
+
+	extract_stdev(stdev) {
+		var stdev_datapoints = [];
+		for (var j = 0; j < this.state.cohort_datapoints.length; ++j) {
+			stdev_datapoints.push({
+				date: this.state.cohort_datapoints[j].date,
+				_mean: this.state.cohort_datapoints[j]._mean + (stdev * this.state.cohort_datapoints[j]._stdev),
+			});
+		}
+
+		return this.extract_data(stdev_datapoints);
 	}
 
 	extract_data(raw_data) {
@@ -27,6 +42,15 @@ class Graph extends Component {
 			});
 		}
 		return processed_datapoints;
+	}
+
+	toggleDataSeries(e) {
+		if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+			e.dataSeries.visible = false;
+		} else {
+			e.dataSeries.visible = true;
+		}
+		e.chart.render();
 	}
 	
 	render() {	
@@ -43,6 +67,7 @@ class Graph extends Component {
 			end_month = 12;
 		}
 
+		// For string formatting, the month must be length 2 and padded with a 0 if needed 
 		if (start_month < 10) {
 			start_month = "0" + start_month;
 		}
@@ -50,20 +75,21 @@ class Graph extends Component {
 			end_month = "0" + end_month
 		}
 
-		console.log(start_month);
-		console.log(start_year);
-		console.log(end_month);
-		console.log(end_year);
-		
-
-		const options = {
+		var options = {
 			theme: "light2",
 			animationEnabled: true,
 			zoomEnabled: true,
 			zoomType: "xy",
 			title: {
 				text: "ETa"
-            },
+			},
+			legend: {
+				cursor: "pointer",
+				verticalAlign: "top",
+				horizontalAlign: "center",
+				dockInsidePlotArea: true,
+				itemclick: this.toggleDataSeries
+			},
             axisX: {
 				valueFormatString: "MMM YYYY",
 				viewportMinimum : new Date("" + start_year + "-" + start_month),
@@ -73,11 +99,50 @@ class Graph extends Component {
 			axisY: {
 				title: "ETa"
 			},
-			data: [{
-				type: "line",
-				xValueFormatString: "MMM YYYY",
-				dataPoints: this.extract_data(this.state.datapoints)
-			}]
+			data: [
+				{
+					type: "line",
+					name: "Field ETa",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_data(this.state.datapoints)
+				},
+				{
+					type: "line",
+					name: "Cohort Mean ETa",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_data(this.state.cohort_datapoints)
+				},
+				{
+					type: "line",
+					name: "1σ",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(1)
+				},
+				{
+					type: "line",
+					name: "2σ",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(2)
+				},
+				{
+					type: "line",
+					name: "-1σ",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(-1)
+				},
+				{
+					type: "line",
+					name: "-2σ",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(-2)
+				},
+			]
 		}
 		return (
 		<div>

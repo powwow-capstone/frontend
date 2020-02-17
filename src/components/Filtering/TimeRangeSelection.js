@@ -103,7 +103,6 @@ class TimeRangeSelection extends Component {
                 this.last_selected_month_and_year.end_month = 1;
             }
 
-
             this.props.handleTimeRangeSelection(this.last_selected_month_and_year.start_month, this.last_selected_month_and_year.start_year, this.last_selected_month_and_year.end_month, this.last_selected_month_and_year.end_year);
         }
 
