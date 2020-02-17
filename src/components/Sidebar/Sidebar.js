@@ -66,7 +66,7 @@ class Sidebar extends Component {
     refreshList(cohortIDs) {
 
         var api_endpoint = "" + root_path + "/api/eta?objectid=" + this.props.clicked_id;
-        api_endpoint += "&start_month=" + this.props.dateRange.start_month + "&start_year=" + this.props.dateRange.start_year + " &end_month=" + this.props.dateRange.end_month + "&end_year=" + this.props.dateRange.end_year;
+        api_endpoint += "&start_month=" + this.props.dateRange.start_month + "&start_year=" + this.props.dateRange.start_year + "&end_month=" + this.props.dateRange.end_month + "&end_year=" + this.props.dateRange.end_year;
         if (cohortIDs !== null && cohortIDs instanceof Array) {
             for (var i = 0; i < cohortIDs.length; ++i) {
                 api_endpoint += "&cid=" + cohortIDs[i];
