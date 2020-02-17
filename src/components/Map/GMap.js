@@ -89,7 +89,7 @@ class GMap extends Component {
 				options={{
 				strokeColor: "#000000",
 				strokeOpacity: 1.0,
-          		strokeWeight: 7
+          		strokeWeight: 5
 				}}
 		/>
 	}
@@ -144,7 +144,7 @@ class GMap extends Component {
 						options={{
 							fillColor: colorPolygon,
 							fillOpacity: 0.4,
-							strokeColor: "#000000",
+							strokeColor: "#808080",
 							strokeOpacity: 1,
 							strokeWeight: 1
 						}}
