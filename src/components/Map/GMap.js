@@ -32,6 +32,12 @@ class GMap extends Component {
 		this.zoomLevel = 8;
 		this.mapPosition = { lat: 35.6163, lng: -119.6943 };
 	}
+
+	componentDidUpdate(prevProps) {
+        if ( prevProps.data !== this.props.data ) {
+            this.setState({ showPolyborder: false })
+        }
+	}
 	
 	onPolyClick( open, id, categories, features, clicked_i){
 		this.clicked_i = clicked_i;
@@ -241,7 +247,7 @@ class GMap extends Component {
 						}
 
 						{this.placeBox()}
-						{this.state.showPolyborder && this.polygonBorder(this.clicked_i)}
+						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
 					
 
 					</GoogleMap>
