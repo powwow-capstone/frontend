@@ -32,9 +32,11 @@ const config =
     constructor() {
       app.initializeApp(config);
 
+      this.emailAuthProvider = app.auth.EmailAuthProvider;
       this.auth = app.auth();
       this.db = app.database();
 
+      this.googleProvider = new app.auth.GoogleAuthProvider();
     }
 
     // *** Auth API ***
@@ -43,6 +45,9 @@ const config =
 
     doSignInWithEmailAndPassword = (email, password) =>
       this.auth.signInWithEmailAndPassword(email, password);
+
+    doSignInWithGoogle = () =>
+      this.auth.signInWithPopup(this.googleProvider);
 
     doSignOut = () => this.auth.signOut();
 
