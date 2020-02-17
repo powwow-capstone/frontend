@@ -17,17 +17,10 @@ class GMap extends Component {
 			clicked_features: [],
 			zoomLevel: 8,
 			showMarkers: true,
-<<<<<<< HEAD
-			showMarker:	false,
-			showPolygons: false,
-			polygon_coloring_feature : props.selectedFeature,  // This is the feature that will determine coloring of polygons
-			
-=======
 			showPolyborder: false,
 			showPolygons: false,
 			polygon_coloring_feature: props.selectedFeature,  // This is the feature that will determine coloring of polygons
 
->>>>>>> master
 		};
 		
 		this.openSidebar = this.openSidebar.bind(this);
@@ -43,12 +36,9 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-<<<<<<< HEAD
-=======
         if ( prevProps.data !== this.props.data ) {
             this.setState({ showPolyborder: false })
         }
->>>>>>> master
 		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
 			this.setState({ polygon_coloring_feature : this.props.selectedFeature })
 		}
@@ -126,11 +116,6 @@ class GMap extends Component {
 			const features = this.props.data[i].features;
 			var colorPolygon = "#FFFFFF";  // default coloring
 			
-<<<<<<< HEAD
-			//console.log("markersLocationLat: "+markersLocationLat)
-			
-=======
->>>>>>> master
 			if (this.state.polygon_coloring_feature !== null) {
 				var feature_score = 0;
 				var refs = 'polygon' + i;
