@@ -7,6 +7,8 @@ import * as legoData from "./astronaut-loading.json";
 import * as doneData from "./doneloading.json";
 import { Dot } from 'react-animated-dots';
 
+const root_path = process.env.REACT_APP_ROOT_PATH;
+
 const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -35,7 +37,7 @@ class MainLoading extends Component {
     // Bad practice? mayhaps
     componentDidMount() {
         setTimeout(() => {
-        fetch("https://space-monitor-backend.herokuapp.com/api/fields?month=null&year=2014")
+        fetch("" + root_path + "/api/fields?start_month=null&start_year=2014&end_month=null&end_year=2014")
             .then(response => response.json())
             .then(json => {
             this.setState({ loading: true });
