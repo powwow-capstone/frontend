@@ -4,6 +4,7 @@ import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerC
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
 import '../../css/GMap.css';
+import distinctColors from 'distinct-colors'
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -21,7 +22,7 @@ class GMap extends Component {
 			showPolyborder: false,
 			showPolygons: false,
 			polygon_coloring_feature: props.selectedFeature,  // This is the feature that will determine coloring of polygons
-
+			colorCohorts : props.colorCohorts,
 		};
 		
 		this.openSidebar = this.openSidebar.bind(this);
@@ -37,7 +38,12 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-        if ( prevProps.data !== this.props.data ) {
+		if (this.state.colorCohorts !== this.props.colorCohorts) {
+			this.setState({ showPolyborder: false, colorCohorts: this.props.colorCohorts })
+		}
+
+		// Force a rerender when the data changes or when the user switches the coloring option
+		if (prevProps.data !== this.props.data ) {
             this.setState({ showPolyborder: false })
         }
 		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
@@ -127,35 +133,66 @@ class GMap extends Component {
 		var polygons = []
 		var markers = []
 		var locations = []
+
+		var distinct_colors = {}
+		var num_groups = 0;
+		// Iterate through all the data once to determine how many distinct groups there are
+		for (var k = 0; k < this.props.data.length; ++k) {
+			const groupid = this.props.data[k].groupid;
+			if (! (groupid in distinct_colors) ) {
+				distinct_colors[groupid] = null;
+				num_groups += 1;
+			}
+		}
+		
+		var palette_iterator = 0;
+		var palette = distinctColors({ count : num_groups });
+
 		for (var i = 0; i < this.props.data.length; ++i) {
 
 			const id = this.props.data[i].id;
 			const groupid = this.props.data[i].groupid;
+
+			if (distinct_colors[groupid] === null) {
+				distinct_colors[groupid] = palette[palette_iterator];
+				++palette_iterator;
+			}
+
 			const categories = this.props.data[i].categories;
 			const clicked_i = i;
 			const features = this.props.data[i].features;
+
 			var colorPolygon = "#FFFFFF";  // default coloring
 			
-			if (this.state.polygon_coloring_feature !== null) {
-				var feature_score = 0;
-				var refs = 'polygon' + i;
-				
-				for (var j = 0; j < features.length; j++) {
-					if (features[j].name === this.state.polygon_coloring_feature) {
-						feature_score = features[j].score;
-						break;
+			// console.log("What is color cohort state");
+			// console.log(this.state.colorCohorts);
+			// You will either color based on the cohort or based on the outlier
+			if (this.state.colorCohorts) {
+				colorPolygon = distinct_colors[groupid];
+			}
+			else {
+			
+				if (this.state.polygon_coloring_feature !== null) {
+					var feature_score = 0;
+					var refs = 'polygon' + i;
+					
+					for (var j = 0; j < features.length; j++) {
+						if (features[j].name === this.state.polygon_coloring_feature) {
+							feature_score = features[j].score;
+							break;
+						}
 					}
-				}
 
-				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
-				// Hard code this threshold for now
-				if (feature_score >= 0)
-				{
-					if (feature_score === 1) {
-						colorPolygon = "#00FF00";
-					}
-					else {
-						colorPolygon = "#FF0000";
+					// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
+					// Hard code this threshold for now
+					if (feature_score >= 0)
+					{
+						if (feature_score === 1) {
+							colorPolygon = "#00FF00";
+						}
+						else {
+							colorPolygon = "#FF0000";
+						}
 					}
 				}
 			}

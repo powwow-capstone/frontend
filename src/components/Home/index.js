@@ -7,6 +7,7 @@ import axios from "axios";
 import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
+import ColorCohorts from '../../components/Filtering/ColorCohorts'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 
@@ -19,6 +20,7 @@ class Home extends Component {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
       selected_feature: null,
+      color_cohorts : false,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -26,10 +28,11 @@ class Home extends Component {
     this.submitFilters = this.submitFilters.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
+    this.changeColoringOption = this.changeColoringOption.bind(this);
 
-	  this.selected_feature_temp = null
-    this.selected_categories = {}
-    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null }  // Default initial view
+	  this.selected_feature_temp = null;
+    this.selected_categories = {};
+    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null };  // Default initial view
 
   }
 	
@@ -62,6 +65,15 @@ class Home extends Component {
         alert("No data matches parameters selected");
       });
 
+  }
+
+  changeColoringOption() {
+    var newColoringOption = ! this.state.color_cohorts;
+    this.setState({color_cohorts : newColoringOption});
+    // this.color_cohorts = ! this.color_cohorts;
+    console.log("Color cohorts");
+    console.log(newColoringOption);
+    
   }
 
   handleTimeRangeSelection(start_month, start_year, end_month, end_year){
@@ -167,7 +179,7 @@ class Home extends Component {
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
@@ -176,13 +188,16 @@ class Home extends Component {
             </div>
             <div>
               <div className="container row">
+              <ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.color_cohorts} />
+              </div>
+              <div className="container row">
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
                 <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="container row">
-                <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
