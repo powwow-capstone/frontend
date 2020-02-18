@@ -3,6 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, Polyline } fro
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
+import ColorCohorts from '../../components/Filtering/ColorCohorts'
 import '../../css/GMap.css';
 import distinctColors from 'distinct-colors'
 
@@ -22,12 +23,13 @@ class GMap extends Component {
 			showPolyborder: false,
 			showPolygons: false,
 			polygon_coloring_feature: props.selectedFeature,  // This is the feature that will determine coloring of polygons
-			colorCohorts : props.colorCohorts,
+			colorCohorts : false,
 		};
 		
 		this.openSidebar = this.openSidebar.bind(this);
 		this.handleZoomChanged = this.handleZoomChanged.bind(this);
 		this.handleCenterChanged = this.handleCenterChanged.bind(this);
+		this.changeColoringOption = this.changeColoringOption.bind(this);
 		this.ref = React.createRef();
 		this.clicked_id = null;
 		this.showMarkers= true;
@@ -38,9 +40,6 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.state.colorCohorts !== this.props.colorCohorts) {
-			this.setState({ showPolyborder: false, colorCohorts: this.props.colorCohorts })
-		}
 
 		// Force a rerender when the data changes or when the user switches the coloring option
 		if (prevProps.data !== this.props.data ) {
@@ -87,6 +86,10 @@ class GMap extends Component {
 			});
 	}
 
+	changeColoringOption() {
+		var newColoringOption = !this.state.colorCohorts;
+		this.setState({ showPolyborder: false, colorCohorts: newColoringOption });
+	}
 	
 	onPlaceSelected = ( place ) => {
 		let latValue = place.geometry.location.lat(),
@@ -164,8 +167,6 @@ class GMap extends Component {
 
 			var colorPolygon = "#FFFFFF";  // default coloring
 			
-			// console.log("What is color cohort state");
-			// console.log(this.state.colorCohorts);
 			// You will either color based on the cohort or based on the outlier
 			if (this.state.colorCohorts) {
 				colorPolygon = distinct_colors[groupid];
@@ -310,6 +311,7 @@ class GMap extends Component {
 						}
 
 						{this.placeBox()}
+						<ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
 						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
 					
 
@@ -325,16 +327,15 @@ class GMap extends Component {
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
-				   <div style={{ height: `200%` }} />
+				   <div style={{ height: `100vh` }} />
 				  }
 				  containerElement={
 				   <div style={{ height: '100vh', position: 'relative' }} />
 				  }
 				  mapElement={
-				   <div style={{ height: `100%` }} />
+				   <div style={{ height: `100vh` }} />
 				  }
-			/> 
-				 
+			/>  
 			
 		</div>
 		return (map);

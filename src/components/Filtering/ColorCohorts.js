@@ -32,13 +32,7 @@ class ColorCohort extends Component {
 
     render() {
         return (
-            <div className="col-12">
-                <div className="card">
-                    <div className="card-body">
-                        <button type="button" className="btn btn-primary" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
-                    </div>
-                </div>
-            </div>
+            <button type="button" className="coloring-btn btn btn-primary" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
         );
     }
 }
