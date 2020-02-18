@@ -1,24 +1,27 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import { compose } from 'recompose';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
 import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
-import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
+import { withAuthorization, withEmailVerification } from '../Session';
+import { withFirebase } from '../Firebase';
+import Messages from '../Messages';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
-class Home extends Component {
+class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
       selected_feature: null,
+      users: null,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -34,9 +37,17 @@ class Home extends Component {
   }
 	
   componentDidMount() {
+    this.props.firebase.users().on('value', snapshot => {
+      this.setState({
+        users: snapshot.val(),
+      });
+    });
     this.loadData(this.state.time_range);
   };
 
+  componentWillUnmount() {
+    this.props.firebase.users().off();
+  }
 
   loadData() {
     console.log(this.selected_time_range);
@@ -175,6 +186,8 @@ class Home extends Component {
               <img className="img-logo" src={newLogo} alt="Logo"/>
             </div>
             <div>
+              <Messages users={this.state.users} />
+              
               <div className="container row">
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
@@ -195,4 +208,10 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const condition = authUser => !!authUser;
+
+export default compose(
+  withFirebase,
+  withEmailVerification,
+  withAuthorization(condition),
+)(HomePage);
