@@ -311,6 +311,7 @@ class GMap extends Component {
 						}
 
 						{this.placeBox()}
+						<ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
 						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
 					
 
@@ -334,10 +335,7 @@ class GMap extends Component {
 				  mapElement={
 				   <div style={{ height: `100vh` }} />
 				  }
-			/> 
-		   <ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
-
-				 
+			/>  
 			
 		</div>
 		return (map);
