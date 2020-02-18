@@ -5,12 +5,11 @@ class ColorCohort extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            colorCohort : props.colorCohorts,
+            colorCohorts : props.colorCohorts,
         };
     }
 
     componentDidUpdate(prevProps) {
-        console.log("Update color cohort");
         // Force a rerender when the data changes or when the user switches the coloring option
         if (this.state.colorCohorts !== this.props.colorCohorts) {
             this.setState({ colorCohorts: this.props.colorCohorts })
@@ -22,7 +21,7 @@ class ColorCohort extends Component {
     }
 
     setButtonText() {
-        if (this.state.colorCohort) {
+        if (this.state.colorCohorts) {
             return "Color Outliers"
         }
         else {
@@ -32,8 +31,12 @@ class ColorCohort extends Component {
 
     render() {
         return (
-            <div>
-                <button type="button" class="btn btn-primary" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
+            <div className="col-12">
+                <div className="card">
+                    <div className="card-body">
+                        <button type="button" class="btn btn-primary center" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
+                    </div>
+                </div>
             </div>
         );
     }
