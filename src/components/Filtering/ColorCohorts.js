@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import "../../css/index.css";
 
 class ColorCohort extends Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class ColorCohort extends Component {
             <div className="col-12">
                 <div className="card">
                     <div className="card-body">
-                        <button type="button" class="btn btn-primary center" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
+                        <button type="button" className="btn btn-primary" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
                     </div>
                 </div>
             </div>
