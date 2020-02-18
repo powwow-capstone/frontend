@@ -1,0 +1,12 @@
+.spinner-con {
+    top: 40%;
+    left: 40%;
+    width: 50%;
+    margin: auto;
+    position: absolute;
+}
+
+.text {
+    margin-top: 20px;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
