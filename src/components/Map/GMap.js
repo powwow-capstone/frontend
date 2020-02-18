@@ -164,8 +164,6 @@ class GMap extends Component {
 
 			var colorPolygon = "#FFFFFF";  // default coloring
 			
-			// console.log("What is color cohort state");
-			// console.log(this.state.colorCohorts);
 			// You will either color based on the cohort or based on the outlier
 			if (this.state.colorCohorts) {
 				colorPolygon = distinct_colors[groupid];
@@ -325,13 +323,13 @@ class GMap extends Component {
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
-				   <div style={{ height: `200%` }} />
+				   <div style={{ height: `100vh` }} />
 				  }
 				  containerElement={
 				   <div style={{ height: '100vh', position: 'relative' }} />
 				  }
 				  mapElement={
-				   <div style={{ height: `100%` }} />
+				   <div style={{ height: `100vh` }} />
 				  }
 			/> 
 				 

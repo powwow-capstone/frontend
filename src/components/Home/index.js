@@ -176,7 +176,7 @@ class Home extends Component {
 
   render() {
     return (
-        <div className="row">
+      <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
           <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
