@@ -183,10 +183,10 @@ class Home extends Component {
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
-                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="container row">
-                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>

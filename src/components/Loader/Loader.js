@@ -3,7 +3,7 @@ import { css } from "@emotion/core";
 import DotLoader from "react-spinners/DotLoader";
 import "../../css/Loader.css"
 
-class Loader extends React.Component {
+class Loader extends Component {
     constructor(props) {
       super(props);
     }
