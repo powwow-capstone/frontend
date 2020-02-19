@@ -1,6 +1,9 @@
 {
   "name": "my-app",
   "version": "0.1.0",
+  "engines": {
+    "node": "12.x"
+  },
   "private": true,
   "dependencies": {
     "@react-pdf/renderer": "^1.6.7",
