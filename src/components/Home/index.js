@@ -21,6 +21,7 @@ class Home extends Component {
 	    displayed_data: null,
       selected_feature: null,
       color_cohorts : false,
+      loading: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -58,7 +59,7 @@ class Home extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
       })
       .catch(err => {
         console.log(err);
@@ -121,6 +122,8 @@ class Home extends Component {
   submitFilters() {
     // Retrieve all the selected categories
     // Retrieve the selected feature
+    this.setState({ loading: true });
+
     var new_displayed_data = []
 
     for (var i = 0; i < this.state.data.length; ++i)
@@ -179,7 +182,7 @@ class Home extends Component {
         <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">

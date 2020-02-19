@@ -17,7 +17,7 @@ class Loader extends React.Component {
             color={"#36D7B7"}
             loading={this.props.loading}
           />
-          {this.props.loading && <h4 className="text"> Go take a nap and <br/> then come back </h4>}
+          {this.props.loading && <h5 className="text"> Go take a nap and <br/> then come back </h5>}
         </div>
       );
     }
