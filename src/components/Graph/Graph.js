@@ -92,8 +92,8 @@ class Graph extends Component {
 			},
             axisX: {
 				valueFormatString: "MMM YYYY",
-				min: new Date("" + start_year + "-" + start_month),
-				max: new Date("" + end_year + "-" + end_month),
+				viewportMinimum : new Date("" + start_year + "-" + start_month),
+				viewportMaximum: new Date("" + end_year + "-" + end_month),
 				
 			},
 			axisY: {
