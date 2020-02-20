@@ -9,6 +9,10 @@ import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+import ReactModal from 'react-modal';
+import { modalContent } from './InfoBoxText'
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -17,15 +21,18 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
-	    displayed_data: null,
+	  displayed_data: null,
       selected_feature: null,
       color_cohorts : false,
-      loading: false
+      loading: false,
+	  showModal: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
+	this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
@@ -165,6 +172,13 @@ class Home extends Component {
     this.requeryData(new_displayed_data);
 
   }
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
 
   render() {
     return (
@@ -173,6 +187,17 @@ class Home extends Component {
           <div className="col-lg-9 col-md-8">
           <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
           </div>}
+		  <div style={{position: 'absolute', top: 5, right: 5}}>
+			 
+			 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
+				<InfoIcon color="primary" />
+			 </IconButton>
+			 
+			 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+				 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
+				 {modalContent()}
+			</ReactModal>
+		  </div>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
