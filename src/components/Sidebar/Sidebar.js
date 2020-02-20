@@ -4,6 +4,10 @@ import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
 import Loader from '../Loader/Loader';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+import ReactModal from 'react-modal';
+import { modalContent } from './InfoBoxText'
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 const months = [
@@ -29,9 +33,12 @@ class Sidebar extends Component {
         this.state = {
             isPaneOpen: props.isPaneOpen,
             datapoints : null,
-            loading: true
+            loading: true,
+			showModal: false
         };
         this.source = null;
+		this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
     
     componentDidUpdate(prevProps) {
@@ -83,6 +90,13 @@ class Sidebar extends Component {
             })
             .catch(err => console.log(err));
     };
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
 
     
     render() {
@@ -115,6 +129,18 @@ class Sidebar extends Component {
 
                     }}>
                     <div> 
+						<div style={{position: 'absolute', top: 5, right: 5}}>
+			 
+							 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
+								<InfoIcon color="primary" />
+							 </IconButton>
+							 
+							 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+								 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
+								 {modalContent()}
+							</ReactModal>
+						  </div>
+						  
                         {listCategories && listFeatures && <ul>
                             {listCategories}
                             {listFeatures}
