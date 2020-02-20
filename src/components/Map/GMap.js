@@ -6,6 +6,7 @@ import Autocomplete from 'react-google-autocomplete';
 import ColorCohorts from '../../components/Filtering/ColorCohorts'
 import '../../css/GMap.css';
 import distinctColors from 'distinct-colors'
+import Loader from '../Loader/Loader';
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -278,7 +279,6 @@ class GMap extends Component {
 
 		var locations = this.drawPolygons();
 		
-		
 		const defaultMapOptions = {
 			fullscreenControl: false,
 		};
@@ -286,36 +286,39 @@ class GMap extends Component {
 		const AsyncMap = withScriptjs(
 			withGoogleMap(
 				props => (
-					<GoogleMap
-						ref={this.ref}
-						defaultZoom={this.zoomLevel}
-						defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
-						onZoomChanged={this.handleZoomChanged}
-						onCenterChanged={this.handleCenterChanged}
-						defaultOptions={defaultMapOptions}
-					>
-						{this.state.showMarkers &&	
-							<MarkerClusterer
-								onClick={this.onMarkerClustererClick}
-								averageCenter
-								enableRetinaIcons
-								gridSize={60}
-							>
-								{locations[1]}
+					<div>
+						<Loader loading={this.props.loading}/>
+						{this.props.loading===false && 
+						<GoogleMap
+							ref={this.ref}
+							defaultZoom={this.zoomLevel}
+							defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
+							onZoomChanged={this.handleZoomChanged}
+							onCenterChanged={this.handleCenterChanged}
+							defaultOptions={defaultMapOptions}
+						>
+							{this.state.showMarkers &&	
+								<MarkerClusterer
+									onClick={this.onMarkerClustererClick}
+									averageCenter
+									enableRetinaIcons
+									gridSize={60}
+								>
+									{locations[1]}
+								
+								</MarkerClusterer>
+							}
 							
-							</MarkerClusterer>
-						}
+							{this.state.showPolygons &&
+								locations[0]
+							}
+
+							{this.placeBox()}
+							<ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
+							{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
 						
-						{this.state.showPolygons &&
-							locations[0]
-						}
-
-						{this.placeBox()}
-						<ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
-						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
-					
-
-					</GoogleMap>
+						</GoogleMap>}
+					</div>
 				)
 			)
 		);

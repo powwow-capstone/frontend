@@ -9,6 +9,10 @@ import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+import ReactModal from 'react-modal';
+import { modalContent } from './InfoBoxText'
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -17,13 +21,18 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
-	    displayed_data: null,
+	  displayed_data: null,
       selected_feature: null,
+      color_cohorts : false,
+      loading: false,
+	  showModal: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
+	this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
@@ -55,7 +64,7 @@ class Home extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
       })
       .catch(err => {
         console.log(err);
@@ -109,6 +118,8 @@ class Home extends Component {
   submitFilters() {
     // Retrieve all the selected categories
     // Retrieve the selected feature
+    this.setState({ loading: true });
+
     var new_displayed_data = []
 
     for (var i = 0; i < this.state.data.length; ++i)
@@ -161,14 +172,32 @@ class Home extends Component {
     this.requeryData(new_displayed_data);
 
   }
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
 
   render() {
     return (
       <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
           </div>}
+		  <div style={{position: 'absolute', top: 5, right: 5}}>
+			 
+			 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
+				<InfoIcon color="primary" />
+			 </IconButton>
+			 
+			 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+				 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
+				 {modalContent()}
+			</ReactModal>
+		  </div>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
@@ -179,10 +208,10 @@ class Home extends Component {
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
-                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="container row">
-                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
