@@ -89,7 +89,7 @@ class GMap extends Component {
 
 	changeColoringOption() {
 		var newColoringOption = !this.state.colorCohorts;
-		this.setState({ showPolyborder: false, colorCohorts: newColoringOption });
+		this.setState({ colorCohorts: newColoringOption });
 	}
 	
 	onPlaceSelected = ( place ) => {
