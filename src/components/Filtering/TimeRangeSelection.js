@@ -22,7 +22,7 @@ const months = [
     'Dec'
 ];
 
-const today = Datetime.moment();
+const latest_day = Datetime.moment("2018-12-31", "YYYY-MM-DD");
 const earliest_day = Datetime.moment("2010-01-01", "YYYY-MM-DD");  // The earliest day from which we have data
 
 class TimeRangeSelection extends Component {
@@ -62,7 +62,7 @@ class TimeRangeSelection extends Component {
     }
 
     isValidDate(current) {
-        return (current.isBefore(today) && current.isAfter(earliest_day));       
+        return (current.isBefore(latest_day) && current.isAfter(earliest_day));       
 
     }
 

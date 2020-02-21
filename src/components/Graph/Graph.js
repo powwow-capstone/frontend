@@ -81,7 +81,7 @@ class Graph extends Component {
 			zoomEnabled: true,
 			zoomType: "xy",
 			title: {
-				text: "ETa"
+				text: "Graph of Weekly Totals"
 			},
 			legend: {
 				cursor: "pointer",
@@ -97,7 +97,7 @@ class Graph extends Component {
 				
 			},
 			axisY: {
-				title: "ETa"
+				title: "ETa (inches)"
 			},
 			data: [
 				{
