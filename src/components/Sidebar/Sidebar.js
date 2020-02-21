@@ -48,6 +48,19 @@ class Sidebar extends Component {
         }
     }
 
+    formatCategoryOutput(name, value) {
+        // Output the Category information in a special format depending on the field
+        // Or output the default if no special format exists
+        switch (name) {
+            case "Acreage":
+                return <h6><li key={name}>{"Area: " + value.toFixed(1) + " acres"}</li></h6>
+                break
+            
+            default:
+                return <h6><li key={name}>{name + ": " + value}</li> </h6>
+        }
+    }
+
     parseDateRangeIntoString(date_range) {
         const start_month = date_range.start_month;
         const start_year = date_range.start_year;
@@ -90,27 +103,26 @@ class Sidebar extends Component {
             })
             .catch(err => console.log(err));
     };
-  handleOpenModal () {
-    this.setState({ showModal: true });
-  }
-  
-  handleCloseModal () {
-    this.setState({ showModal: false });
-  }
+
+    handleOpenModal () {
+        this.setState({ showModal: true });
+    }
+    
+    handleCloseModal () {
+        this.setState({ showModal: false });
+    }
 
     
     render() {
 
         var listCategories = null;
         if (this.props.categories){
-            listCategories = this.props.categories.map((category) =>
-                <h6><li key={category.category_name}>{category.category_name + ": " + category.value}</li> </h6>
-            );
+            listCategories = this.props.categories.map((category) => this.formatCategoryOutput(category.category_name, category.value));
         }
         var listFeatures = null;
         if (this.props.features){
-            listFeatures= this.props.features.map((feature) =>
-                <h6><li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2)}</li> </h6>
+            listFeatures= this.props.features.map((feature) => 
+                <h6><li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2) + " " + feature.units}</li> </h6>
             );
         }
         return (

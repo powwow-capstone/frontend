@@ -25,12 +25,12 @@ class Graph extends Component {
 		var stdev_datapoints = [];
 		for (var j = 0; j < this.state.cohort_datapoints.length; ++j) {
 			stdev_datapoints.push({
-				date: this.state.cohort_datapoints[j].date,
-				_mean: this.state.cohort_datapoints[j]._mean + (stdev * this.state.cohort_datapoints[j]._stdev),
+				x: new Date(this.state.cohort_datapoints[j].date),
+				y: [this.state.cohort_datapoints[j]._mean + (-1 * stdev * this.state.cohort_datapoints[j]._stdev),
+					this.state.cohort_datapoints[j]._mean + (stdev * this.state.cohort_datapoints[j]._stdev)],
 			});
 		}
-
-		return this.extract_data(stdev_datapoints);
+		return stdev_datapoints;
 	}
 
 	extract_data(raw_data) {
@@ -81,7 +81,7 @@ class Graph extends Component {
 			zoomEnabled: true,
 			zoomType: "xy",
 			title: {
-				text: "ETa"
+				text: "Graph of Weekly Totals"
 			},
 			legend: {
 				cursor: "pointer",
@@ -97,12 +97,33 @@ class Graph extends Component {
 				
 			},
 			axisY: {
-				title: "ETa"
+				title: "ETa (inches)"
 			},
 			data: [
 				{
+					type: "rangeArea",
+					toolTipContent: null,
+					highlightEnabled: false,
+					color: "#dedcdc",
+					fillOpacity: 1,
+					markerSize: 0,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(2)
+				},
+				{
+					type: "rangeArea",
+					toolTipContent: null,
+					highlightEnabled: false,
+					color: "#bfbfbf",
+					fillOpacity: 1,
+					markerSize: 0,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_stdev(1)
+				},
+				{
 					type: "line",
 					name: "Field ETa",
+					lineColor: "blue",
 					showInLegend: true,
 					xValueFormatString: "MMM YYYY",
 					dataPoints: this.extract_data(this.state.datapoints)
@@ -110,37 +131,10 @@ class Graph extends Component {
 				{
 					type: "line",
 					name: "Cohort Mean ETa",
+					lineColor: "#595957",
 					showInLegend: true,
 					xValueFormatString: "MMM YYYY",
 					dataPoints: this.extract_data(this.state.cohort_datapoints)
-				},
-				{
-					type: "line",
-					name: "1σ",
-					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
-					dataPoints: this.extract_stdev(1)
-				},
-				{
-					type: "line",
-					name: "2σ",
-					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
-					dataPoints: this.extract_stdev(2)
-				},
-				{
-					type: "line",
-					name: "-1σ",
-					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
-					dataPoints: this.extract_stdev(-1)
-				},
-				{
-					type: "line",
-					name: "-2σ",
-					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
-					dataPoints: this.extract_stdev(-2)
 				},
 			]
 		}

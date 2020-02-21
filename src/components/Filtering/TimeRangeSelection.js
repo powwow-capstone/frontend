@@ -3,6 +3,9 @@ import { Component } from 'react';
 import Datetime from 'react-datetime'
 import moment from 'moment'
 import "react-datetime/css/react-datetime.css"
+import axios from "axios";
+
+const root_path = process.env.REACT_APP_ROOT_PATH;
 
 const months = [
     'Jan',
@@ -19,14 +22,18 @@ const months = [
     'Dec'
 ];
 
+const latest_day = Datetime.moment("2018-12-31", "YYYY-MM-DD");
+const earliest_day = Datetime.moment("2010-01-01", "YYYY-MM-DD");  // The earliest day from which we have data
+
 class TimeRangeSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showMonthPicker : false,
             showYearPicker : true,
-            currentDate : props.currentDate
+            currentDate : props.currentDate,
         };
+        this.isValidDate = this.isValidDate.bind(this);
 
         // Keep track of the user input for each selection
         this.last_selected_year = props.currentDate.start_year;
@@ -38,10 +45,25 @@ class TimeRangeSelection extends Component {
         };
     }
 
+    componentDidMount() {
+        // axios
+        //     .get("" + root_path + "/api/date_range")
+        //     .then(res => this.setState( { min : new Date(res.data.min), max : new Date(res.data.max) } ))
+        //     .catch(err => {
+        //         console.log(err);
+
+        //     });
+    };
+
     componentDidUpdate(prevProps) {
         if (this.state.currentDate !== this.props.currentDate) {
             this.setState({ currentDate:  this.props.currentDate });
         }
+    }
+
+    isValidDate(current) {
+        return (current.isBefore(latest_day) && current.isAfter(earliest_day));       
+
     }
 
     formatMonthString(month) {
@@ -145,17 +167,17 @@ class TimeRangeSelection extends Component {
                             {this.state.showMonthPicker &&
                                 <div>
                                     <div className="row">
-                                    Start Month: <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.start_month) + "-" + this.last_selected_month_and_year.start_year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleStartMonthSelection(e)} />
+                                    Start Month: <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.start_month) + "-" + this.last_selected_month_and_year.start_year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleStartMonthSelection(e)} />
                                     </div>
                         
                                     <div className="row">
-                                    End Month: <Datetime inputProps={{ readOnly: true }} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.end_month) + "-" + this.last_selected_month_and_year.end_year, "MM-YYYY")} timeFormat={false} onChange={(e) => this.handleEndMonthSelection(e)} />
+                                    End Month: <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.end_month) + "-" + this.last_selected_month_and_year.end_year, "MM-YYYY")} timeFormat={false} onChange={(e) => this.handleEndMonthSelection(e)} />
                                     </div>
                                 </div>
                             }
                             { this.state.showYearPicker && 
                             <div className="row">
-                                <Datetime inputProps={{ readOnly: true }} dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
+                                <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
                             </div>}
 
                         </div>
