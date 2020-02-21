@@ -37,7 +37,7 @@ class MainLoading extends Component {
     // Bad practice? mayhaps
     componentDidMount() {
         setTimeout(() => {
-        fetch(root_path + "/api/fields?start_month=null&start_year=2014&end_month=null&end_year=2014")
+        fetch("" + root_path + "/api/fields?start_month=null&start_year=2014&end_month=null&end_year=2014")
             .then(response => response.json())
             .then(json => {
             this.setState({ loading: true });
