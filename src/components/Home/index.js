@@ -21,17 +21,17 @@ class Home extends Component {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
-	  displayed_data: null,
+	    displayed_data: null,
       selected_feature: null,
       color_cohorts : false,
       loading: false,
-	  showModal: false
+	    showModal: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
-	this.handleOpenModal = this.handleOpenModal.bind(this);
+	  this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
@@ -48,7 +48,6 @@ class Home extends Component {
 
 
   loadData() {
-    console.log(this.selected_time_range);
     axios
       .get("" + root_path + "/api/fields?start_month=" + this.selected_time_range.start_month + "&start_year=" + this.selected_time_range.start_year + "&end_month=" + this.selected_time_range.end_month + "&end_year=" + this.selected_time_range.end_year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
@@ -56,10 +55,10 @@ class Home extends Component {
         console.log(err);
         alert("No data matches parameters selected");
       });
+  
   }
 
   requeryData(displayed_data) {
-    console.log(this.selected_time_range);
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range));
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
