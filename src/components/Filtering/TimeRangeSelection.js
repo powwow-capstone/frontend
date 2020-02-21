@@ -130,19 +130,16 @@ class TimeRangeSelection extends Component {
                     <h5 className="card-header">Date Range</h5>
                     <div className="card-body">
                         <div className="card-text">
-                            <div className="row mb-2">
-                                Currently Displaying: {current_date_display}
-                            </div>
                             <div className="row">
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />
-                                    Seasonal Summation
+                                    Monthly
                                 </label>
                             </div>
                             <div className="row">
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showYearPicker} onChange={() => this.handleYearPickerChange()} />
-                                    Yearly Summation
+                                    Yearly
                                 </label>
                             </div>
                             {this.state.showMonthPicker &&

@@ -104,13 +104,13 @@ class Sidebar extends Component {
         var listCategories = null;
         if (this.props.categories){
             listCategories = this.props.categories.map((category) =>
-                <li key={category.category_name}>{category.category_name + ": " + category.value}</li> 
+                <h6><li key={category.category_name}>{category.category_name + ": " + category.value}</li> </h6>
             );
         }
         var listFeatures = null;
         if (this.props.features){
             listFeatures= this.props.features.map((feature) =>
-                <li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2)}</li> 
+                <h6><li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2)}</li> </h6>
             );
         }
         return (

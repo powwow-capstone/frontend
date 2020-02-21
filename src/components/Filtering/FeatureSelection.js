@@ -70,7 +70,7 @@ class FeatureSelection extends Component {
         return (
             <div className="col-12">
                 <div className="card">
-                    <h5 className="card-header">Features</h5>
+                    <h5 className="card-header">Data Type</h5>
                     <div className="card-body">
                         
                         {this.createFeatureRadioButtons()}
