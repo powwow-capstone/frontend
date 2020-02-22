@@ -8,9 +8,9 @@ import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import "../../css/Home.css";
-import { withAuthorization, withEmailVerification } from '../Session';
+import { withEmailVerification } from '../Session';
 import { withFirebase } from '../Firebase';
-import Messages from '../Messages';
+import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -184,9 +184,10 @@ class HomePage extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
+              <Navigation/>
             </div>
             <div>
-              <Messages users={this.state.users} />
+              {/* <Messages users={this.state.users} /> */}
               
               <div className="container row">
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
@@ -208,10 +209,7 @@ class HomePage extends Component {
   }
 }
 
-const condition = authUser => !!authUser;
-
 export default compose(
   withFirebase,
   withEmailVerification,
-  withAuthorization(condition),
 )(HomePage);

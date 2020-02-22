@@ -130,13 +130,13 @@ class SignInGoogleBase extends Component {
   };
 
   render() {
-    const { error } = this.state;
+    // const { error } = this.state;
 
     return (
       <form onSubmit={this.onSubmit}>
-        <button type="submit">Sign In with Google</button>
+        <input type="image" src="frontend/src/components/SignIn/btn_google.png" alt="Sign In with Google"/>
 
-        {error && <p>{error.message}</p>}
+        {/* {error && <p>{error.message}</p>} */}
       </form>
     );
   }
