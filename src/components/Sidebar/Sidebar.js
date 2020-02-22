@@ -7,7 +7,7 @@ import 'react-sliding-pane/dist/react-sliding-pane.css';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import ReactModal from 'react-modal';
-import { modalContent } from './InfoBoxText'
+import ModalContent from './ModalContent'
 import "../../css/Sidebar.css"
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
@@ -124,7 +124,7 @@ class Sidebar extends Component {
                         <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        {modalContent()}
+                        <ModalContent/>
                     </ReactModal>
                 </div>
     }
