@@ -134,7 +134,7 @@ class SignInGoogleBase extends Component {
 
     return (
       <form onSubmit={this.onSubmit}>
-        <input type="image" src="frontend/src/components/SignIn/btn_google.png" alt="Sign In with Google"/>
+        <input type="image" src="https://raw.githubusercontent.com/powwow-capstone/frontend/staging/src/images/btn_google.png" alt="Sign In with Google"/>
 
         {/* {error && <p>{error.message}</p>} */}
       </form>
