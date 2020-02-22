@@ -1,13 +1,13 @@
 import React from 'react';
 import { Component } from 'react';
 import { Button } from 'reactstrap';
+import { compose } from 'recompose';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
 import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
-import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
 import { withEmailVerification } from '../Session';
 import { withFirebase } from '../Firebase';
@@ -15,7 +15,7 @@ import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
-class Home extends Component {
+class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -180,7 +180,7 @@ class Home extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
-              <Navigation/>
+              <Navigation className="img-logo"/>
             </div>
             <div>
               {/* <Messages users={this.state.users} /> */}
