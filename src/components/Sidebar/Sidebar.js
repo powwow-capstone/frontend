@@ -98,7 +98,6 @@ class Sidebar extends Component {
                 cancelToken: this.source.token
             })
             .then(res => { 
-                console.log(res.data);
                 this.setState({ datapoints: res.data, loading: false});
             })
             .catch(err => console.log(err));
