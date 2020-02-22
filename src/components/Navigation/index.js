@@ -4,6 +4,7 @@ import { AuthUserContext } from '../Session';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
+import {SignInGoogle} from '../SignIn';
 
 const Navigation = () => (
   <AuthUserContext.Consumer>
@@ -18,12 +19,12 @@ const Navigation = () => (
 );
 const NavigationAuth = ({ authUser }) => (
   <ul>
-    <li>
+    {/* <li>
       <Link to={ROUTES.HOME}>Home</Link>
     </li>
     <li>
       <Link to={ROUTES.ACCOUNT}>Account</Link>
-    </li>
+    </li> */}
     {!!authUser.roles[ROLES.ADMIN] && (
       <li>
         <Link to={ROUTES.ADMIN}>Admin</Link>
@@ -36,12 +37,13 @@ const NavigationAuth = ({ authUser }) => (
 );
 const NavigationNonAuth = () => (
   <ul>
-    <li>
+    <SignInGoogle/>
+    {/* <li>
       <Link to={ROUTES.HOME}>Home</Link>
     </li>
     <li>
       <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-    </li>
+    </li> */}
   </ul>
 );
 export default Navigation;

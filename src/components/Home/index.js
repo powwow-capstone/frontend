@@ -9,6 +9,9 @@ import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import GoogleLogin from 'react-google-login';
 import "../../css/Home.css";
+import { withEmailVerification } from '../Session';
+import { withFirebase } from '../Firebase';
+import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -177,8 +180,11 @@ class Home extends Component {
           <div className="col-lg-3 col-md-4">
             <div className="mb-2">
               <img className="img-logo" src={newLogo} alt="Logo"/>
+              <Navigation/>
             </div>
             <div>
+              {/* <Messages users={this.state.users} /> */}
+              
               <div className="container row">
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
@@ -199,4 +205,7 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default compose(
+  withFirebase,
+  withEmailVerification,
+)(HomePage);
