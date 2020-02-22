@@ -170,7 +170,6 @@ class TimeRangeSelection extends Component {
         );
     }
 
-
 }
 
 export default TimeRangeSelection;
