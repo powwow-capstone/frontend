@@ -178,11 +178,9 @@ class HomePage extends Component {
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
-            <div className="mb-2">
-              <img className="img-logo" src={newLogo} alt="Logo"/>
-              <Navigation className="img-logo"/>
-            </div>
-            <div>
+            <div className="mb-2 img-row">
+              <img className="img-column" src={newLogo} alt="Logo"/>
+              <Navigation/>
               {/* <Messages users={this.state.users} /> */}
               
               <div className="container row">

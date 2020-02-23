@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
+import "../../css/Home.css";
 import * as ROUTES from '../../constants/routes';
 
 const SignInPage = () => (
@@ -134,7 +135,7 @@ class SignInGoogleBase extends Component {
 
     return (
       <form onSubmit={this.onSubmit}>
-        <input type="image" src="https://raw.githubusercontent.com/powwow-capstone/frontend/staging/src/images/btn_google.png" alt="Sign In with Google"/>
+        <input type="image" src="https://raw.githubusercontent.com/powwow-capstone/frontend/staging/src/images/btn_google.png" alt="Sign In with Google" className="img-column"/>
 
         {/* {error && <p>{error.message}</p>} */}
       </form>
