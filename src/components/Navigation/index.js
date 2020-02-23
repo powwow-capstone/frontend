@@ -19,31 +19,31 @@ const Navigation = () => (
 );
 const NavigationAuth = ({ authUser }) => (
   // <ul>
-    // {/* <li>
-    //   <Link to={ROUTES.HOME}>Home</Link>
-    // </li>
-    // <li>
-    //   <Link to={ROUTES.ACCOUNT}>Account</Link>
-    // </li> */}
-    // {/* {!!authUser.roles[ROLES.ADMIN] && (
-    //   <li>
-    //     <Link to={ROUTES.ADMIN}>Admin</Link>
-    //   </li>
-    // )}
-    // <li> */}
-      <SignOutButton />
-  //   {/* </li>
-  // </ul> */}
-);
-const NavigationNonAuth = () => (
-  // <ul>
-    <SignInGoogle/>
     /* <li>
       <Link to={ROUTES.HOME}>Home</Link>
     </li>
     <li>
-      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+      <Link to={ROUTES.ACCOUNT}>Account</Link>
     </li> */
-  // </ul>
+    /* {!!authUser.roles[ROLES.ADMIN] && (
+      <li>
+        <Link to={ROUTES.ADMIN}>Admin</Link>
+      </li>
+    )}
+    <li> */
+      <SignOutButton />
+    /* </li>
+  </ul> */
+);
+const NavigationNonAuth = () => (
+  // <ul>
+    <SignInGoogle/>
+     /* <li>
+      <Link to={ROUTES.HOME}>Home</Link>
+    </li>
+    <li>
+      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+    </li> 
+  </ul> */
 );
 export default Navigation;

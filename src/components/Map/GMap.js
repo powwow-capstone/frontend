@@ -3,10 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon, Polyline } fro
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import Sidebar from "../Sidebar/Sidebar";
 import Autocomplete from 'react-google-autocomplete';
-import ColorCohorts from '../../components/Filtering/ColorCohorts'
 import '../../css/GMap.css';
-import distinctColors from 'distinct-colors'
-import Loader from '../Loader/Loader';
 
 const apiKey = process.env.REACT_APP_GOOGLE_KEY;
 
@@ -24,13 +21,12 @@ class GMap extends Component {
 			showPolyborder: false,
 			showPolygons: false,
 			polygon_coloring_feature: props.selectedFeature,  // This is the feature that will determine coloring of polygons
-			colorCohorts : false,
+
 		};
 		
 		this.openSidebar = this.openSidebar.bind(this);
 		this.handleZoomChanged = this.handleZoomChanged.bind(this);
 		this.handleCenterChanged = this.handleCenterChanged.bind(this);
-		this.changeColoringOption = this.changeColoringOption.bind(this);
 		this.ref = React.createRef();
 		this.clicked_id = null;
 		this.showMarkers= true;
@@ -41,9 +37,7 @@ class GMap extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-
-		// Force a rerender when the data changes or when the user switches the coloring option
-		if (prevProps.data !== this.props.data ) {
+        if ( prevProps.data !== this.props.data ) {
             this.setState({ showPolyborder: false })
         }
 		if (this.state.polygon_coloring_feature !== this.props.selectedFeature) {
@@ -87,10 +81,6 @@ class GMap extends Component {
 			});
 	}
 
-	changeColoringOption() {
-		var newColoringOption = !this.state.colorCohorts;
-		this.setState({ showPolyborder: false, colorCohorts: newColoringOption });
-	}
 	
 	onPlaceSelected = ( place ) => {
 		let latValue = place.geometry.location.lat(),
@@ -137,64 +127,35 @@ class GMap extends Component {
 		var polygons = []
 		var markers = []
 		var locations = []
-
-		var distinct_colors = {}
-		var num_groups = 0;
-		// Iterate through all the data once to determine how many distinct groups there are
-		for (var k = 0; k < this.props.data.length; ++k) {
-			const groupid = this.props.data[k].groupid;
-			if (! (groupid in distinct_colors) ) {
-				distinct_colors[groupid] = null;
-				num_groups += 1;
-			}
-		}
-		
-		var palette_iterator = 0;
-		var palette = distinctColors({ count : num_groups });
-
 		for (var i = 0; i < this.props.data.length; ++i) {
 
 			const id = this.props.data[i].id;
 			const groupid = this.props.data[i].groupid;
-
-			if (distinct_colors[groupid] === null) {
-				distinct_colors[groupid] = palette[palette_iterator];
-				++palette_iterator;
-			}
-
 			const categories = this.props.data[i].categories;
 			const clicked_i = i;
 			const features = this.props.data[i].features;
-
 			var colorPolygon = "#FFFFFF";  // default coloring
 			
-			// You will either color based on the cohort or based on the outlier
-			if (this.state.colorCohorts) {
-				colorPolygon = distinct_colors[groupid];
-			}
-			else {
-			
-				if (this.state.polygon_coloring_feature !== null) {
-					var feature_score = 0;
-					var refs = 'polygon' + i;
-					
-					for (var j = 0; j < features.length; j++) {
-						if (features[j].name === this.state.polygon_coloring_feature) {
-							feature_score = features[j].score;
-							break;
-						}
+			if (this.state.polygon_coloring_feature !== null) {
+				var feature_score = 0;
+				var refs = 'polygon' + i;
+				
+				for (var j = 0; j < features.length; j++) {
+					if (features[j].name === this.state.polygon_coloring_feature) {
+						feature_score = features[j].score;
+						break;
 					}
+				}
 
-					// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
-					// Hard code this threshold for now
-					if (feature_score >= 0)
-					{
-						if (feature_score === 1) {
-							colorPolygon = "#00FF00";
-						}
-						else {
-							colorPolygon = "#FF0000";
-						}
+				// Outside 2 standard deviations is within the 5th percentile or from the 95-100th percentile
+				// Hard code this threshold for now
+				if (feature_score >= 0)
+				{
+					if (feature_score === 1) {
+						colorPolygon = "#00FF00";
+					}
+					else {
+						colorPolygon = "#FF0000";
 					}
 				}
 			}
@@ -279,6 +240,7 @@ class GMap extends Component {
 
 		var locations = this.drawPolygons();
 		
+		
 		const defaultMapOptions = {
 			fullscreenControl: false,
 		};
@@ -286,39 +248,35 @@ class GMap extends Component {
 		const AsyncMap = withScriptjs(
 			withGoogleMap(
 				props => (
-					<div>
-						<Loader loading={this.props.loading}/>
-						{this.props.loading===false && 
-						<GoogleMap
-							ref={this.ref}
-							defaultZoom={this.zoomLevel}
-							defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
-							onZoomChanged={this.handleZoomChanged}
-							onCenterChanged={this.handleCenterChanged}
-							defaultOptions={defaultMapOptions}
-						>
-							{this.state.showMarkers &&	
-								<MarkerClusterer
-									onClick={this.onMarkerClustererClick}
-									averageCenter
-									enableRetinaIcons
-									gridSize={60}
-								>
-									{locations[1]}
-								
-								</MarkerClusterer>
-							}
+					<GoogleMap
+						ref={this.ref}
+						defaultZoom={this.zoomLevel}
+						defaultCenter={{ lat: this.mapPosition.lat, lng: this.mapPosition.lng }}
+						onZoomChanged={this.handleZoomChanged}
+						onCenterChanged={this.handleCenterChanged}
+						defaultOptions={defaultMapOptions}
+					>
+						{this.state.showMarkers &&	
+							<MarkerClusterer
+								onClick={this.onMarkerClustererClick}
+								averageCenter
+								enableRetinaIcons
+								gridSize={60}
+							>
+								{locations[1]}
 							
-							{this.state.showPolygons &&
-								locations[0]
-							}
-
-							{this.placeBox()}
-							<ColorCohorts handleClick={this.changeColoringOption} colorCohorts={this.state.colorCohorts} />
-							{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
+							</MarkerClusterer>
+						}
 						
-						</GoogleMap>}
-					</div>
+						{this.state.showPolygons &&
+							locations[0]
+						}
+
+						{this.placeBox()}
+						{this.state.showPolyborder && this.clicked_i && this.polygonBorder(this.clicked_i)}
+					
+
+					</GoogleMap>
 				)
 			)
 		);
@@ -330,15 +288,16 @@ class GMap extends Component {
 			 <AsyncMap
 				  googleMapURL= {"https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=places"}
 				  loadingElement={
-				   <div style={{ height: `100vh` }} />
+				   <div style={{ height: `200%` }} />
 				  }
 				  containerElement={
 				   <div style={{ height: '100vh', position: 'relative' }} />
 				  }
 				  mapElement={
-				   <div style={{ height: `100vh` }} />
+				   <div style={{ height: `100%` }} />
 				  }
-			/>  
+			/> 
+				 
 			
 		</div>
 		return (map);

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import { compose } from 'recompose';
 import GMap from '../../components/Map/GMap'
@@ -22,8 +21,7 @@ class HomePage extends Component {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
       selected_feature: null,
-      color_cohorts : false,
-      loading: false,
+      users: null,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -32,16 +30,24 @@ class HomePage extends Component {
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
-	  this.selected_feature_temp = null;
-    this.selected_categories = {};
-    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null };  // Default initial view
+	  this.selected_feature_temp = null
+    this.selected_categories = {}
+    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null }  // Default initial view
 
   }
 	
   componentDidMount() {
+    this.props.firebase.users().on('value', snapshot => {
+      this.setState({
+        users: snapshot.val(),
+      });
+    });
     this.loadData(this.state.time_range);
   };
 
+  componentWillUnmount() {
+    this.props.firebase.users().off();
+  }
 
   loadData() {
     console.log(this.selected_time_range);
@@ -60,7 +66,7 @@ class HomePage extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp }); 
       })
       .catch(err => {
         console.log(err);
@@ -114,8 +120,6 @@ class HomePage extends Component {
   submitFilters() {
     // Retrieve all the selected categories
     // Retrieve the selected feature
-    this.setState({ loading: true });
-
     var new_displayed_data = []
 
     for (var i = 0; i < this.state.data.length; ++i)
@@ -171,18 +175,16 @@ class HomePage extends Component {
 
   render() {
     return (
-      <div className="row" style={{ width: `100vw` }}>
+        <div className="row">
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
+            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
-            <div className="mb-2">
-              <img className="img-logo" src={newLogo} alt="Logo"/>
-              <Navigation className="img-logo"/>
-            </div>
-            <div>
+            <div className="mb-2 img-row">
+              <img className="img-column" src={newLogo} alt="Logo"/>
+              <Navigation/>
               {/* <Messages users={this.state.users} /> */}
               
               <div className="container row">
@@ -192,7 +194,7 @@ class HomePage extends Component {
                 <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="container row">
-                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>

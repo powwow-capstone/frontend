@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from "axios";
 import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
-import Loader from '../Loader/Loader';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
@@ -29,7 +28,6 @@ class Sidebar extends Component {
         this.state = {
             isPaneOpen: props.isPaneOpen,
             datapoints : null,
-            loading: true
         };
         this.source = null;
     }
@@ -37,7 +35,7 @@ class Sidebar extends Component {
     componentDidUpdate(prevProps) {
         if ( prevProps.isPaneOpen !== this.props.isPaneOpen ) {
             this.refreshList(this.props.clicked_cohort_ids );
-            this.setState({ isPaneOpen: this.props.isPaneOpen, loading: true });
+            this.setState({ isPaneOpen: this.props.isPaneOpen });
         }
     }
 
@@ -79,7 +77,7 @@ class Sidebar extends Component {
             })
             .then(res => { 
                 console.log(res.data);
-                this.setState({ datapoints: res.data, loading: false});
+                this.setState({ datapoints: res.data });
             })
             .catch(err => console.log(err));
     };
@@ -124,10 +122,8 @@ class Sidebar extends Component {
                             && this.state.datapoints.field_stats !== null // && this.state.datapoints.cohort_stats !== null
                             && this.state.datapoints.field_stats instanceof Array // && this.state.datapoints.cohort_stats instanceof Array
                             && this.state.datapoints.field_stats.length > 0 
-                            && this.state.loading===false
                             && <Graph datapoints={this.state.datapoints.field_stats} cohort_datapoints={this.state.datapoints.cohort_stats} dateRange={this.props.dateRange} />
                         }
-                        <Loader loading={this.state.loading}/>
                     </div>
                 </SlidingPane>
             </div>
