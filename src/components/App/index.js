@@ -20,6 +20,7 @@ const App = () => (
     <div>
       <MainLoading />
       {/* <Navigation /> */}
+      <hr />
       <Route exact path={ROUTES.HOME} component={HomePage} />
       <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />
