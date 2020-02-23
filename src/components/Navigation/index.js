@@ -38,12 +38,21 @@ const NavigationAuth = ({ authUser }) => (
 const NavigationNonAuth = () => (
   // <ul>
     <SignInGoogle/>
+<<<<<<< HEAD
      /* <li>
+=======
+    /* <li>
+>>>>>>> staging
       <Link to={ROUTES.HOME}>Home</Link>
     </li>
     <li>
       <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+<<<<<<< HEAD
     </li> 
   </ul> */
+=======
+    </li> */
+  // </ul>
+>>>>>>> staging
 );
 export default Navigation;
