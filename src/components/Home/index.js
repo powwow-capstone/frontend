@@ -135,6 +135,61 @@ class HomePage extends Component {
 
         if (category_name in this.selected_categories)
         {
+          
+          if (type === "string")
+          {
+            if (value !== this.selected_categories[category_name])
+            {
+              include_datapoint = false;
+            }
+          }
+          else
+          {
+            if ("MIN" in this.selected_categories[category_name])
+            {	
+				
+				
+              if (value < this.selected_categories[category_name]["MIN"])
+              {
+                include_datapoint = false;
+              }
+            }
+            if ("MAX" in this.selected_categories[category_name])
+            {
+              if (value > this.selected_categories[category_name]["MAX"]) {
+                include_datapoint = false;
+              }
+            }
+          }
+        }
+      }
+      if (include_datapoint)
+      {
+        new_displayed_data.push(id);
+      }
+
+    }
+
+    this.requeryData(new_displayed_data);
+
+  }
+
+  saveFilters() {
+    var new_displayed_data = []
+
+    for (var i = 0; i < this.state.data.length; ++i)
+    {
+      var include_datapoint = true;
+      const categories = this.state.data[i].categories;
+      const id = this.state.data[i].id;
+      for (var j = 0; j < categories.length; ++j)
+      {
+        const category_name = categories[j].category_name;
+        const type = categories[j].type;
+        const value = categories[j].value;
+
+        if (category_name in this.selected_categories)
+        {
           if (type === "string")
           {
             if (value !== this.selected_categories[category_name])
@@ -168,9 +223,6 @@ class HomePage extends Component {
       }
       
     }
-
-    this.requeryData(new_displayed_data);
-
   }
 
   render() {
@@ -198,6 +250,9 @@ class HomePage extends Component {
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
+              </div>
+              <div className="apply-button-container">
+                <Button className="center" variant="outline-primary" def onClick={() => this.saveFilters()}>Save Selections</Button>
               </div>
             </div>
           </div>}
