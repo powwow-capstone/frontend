@@ -11,6 +11,10 @@ import "../../css/Home.css";
 import { withEmailVerification } from '../Session';
 import { withFirebase } from '../Firebase';
 import Navigation from '../Navigation';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+import ReactModal from 'react-modal';
+import { modalContent } from './InfoBoxText'
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -22,17 +26,22 @@ class HomePage extends Component {
 	    displayed_data: null,
       selected_feature: null,
       users: null,
+      color_cohorts : false,
+      loading: false,
+	    showModal: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
+	  this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
-	  this.selected_feature_temp = null
-    this.selected_categories = {}
-    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null }  // Default initial view
+	  this.selected_feature_temp = null;
+    this.selected_categories = {};
+    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null };  // Default initial view
 
   }
 	
@@ -50,7 +59,6 @@ class HomePage extends Component {
   }
 
   loadData() {
-    console.log(this.selected_time_range);
     axios
       .get("" + root_path + "/api/fields?start_month=" + this.selected_time_range.start_month + "&start_year=" + this.selected_time_range.start_year + "&end_month=" + this.selected_time_range.end_month + "&end_year=" + this.selected_time_range.end_year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
@@ -58,15 +66,15 @@ class HomePage extends Component {
         console.log(err);
         alert("No data matches parameters selected");
       });
+  
   }
 
   requeryData(displayed_data) {
-    console.log(this.selected_time_range);
     const parameters = JSON.parse(JSON.stringify(this.selected_time_range));
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
       })
       .catch(err => {
         console.log(err);
@@ -120,6 +128,8 @@ class HomePage extends Component {
   submitFilters() {
     // Retrieve all the selected categories
     // Retrieve the selected feature
+    this.setState({ loading: true });
+
     var new_displayed_data = []
 
     for (var i = 0; i < this.state.data.length; ++i)
@@ -172,6 +182,13 @@ class HomePage extends Component {
 
     this.requeryData(new_displayed_data);
 
+  }
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
   }
 
   saveFilters() {
@@ -227,11 +244,22 @@ class HomePage extends Component {
 
   render() {
     return (
-        <div className="row">
+      <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-            <GMap data={this.state.displayed_data} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
           </div>}
+		  <div style={{position: 'absolute', top: 5, right: 5}}>
+			 
+			 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
+				<InfoIcon color="primary" />
+			 </IconButton>
+			 
+			 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+				 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
+				 {modalContent()}
+			</ReactModal>
+		  </div>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
             <div className="mb-2 img-row">
@@ -243,10 +271,10 @@ class HomePage extends Component {
                 <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
-                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
               </div>
               <div className="container row">
-                <CategorySelection data={this.state.data} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
               </div>
               <div className="apply-button-container">
                 <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
