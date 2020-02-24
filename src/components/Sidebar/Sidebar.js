@@ -4,11 +4,10 @@ import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
 import Loader from '../Loader/Loader';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 import ReactModal from 'react-modal';
-import ModalContent from './ModalContent'
-import "../../css/Sidebar.css"
+import ModalContent from './ModalContent';
+import InfoButton from '../Info/InfoButton';
+import "../../css/Sidebar.css";
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 const months = [
@@ -116,9 +115,7 @@ class Sidebar extends Component {
     slidingTitle() {
         return <div className="slideTitle">	 
                     {"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)}
-                    <IconButton className = "infoButton" aria-label="delete" onClick={() => this.handleOpenModal()}>
-                        <InfoIcon color="primary" />
-                    </IconButton>
+                    <InfoButton handleOpenModal={this.handleOpenModal}/>
         
                     <ReactModal className="modal-con" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
                         <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
