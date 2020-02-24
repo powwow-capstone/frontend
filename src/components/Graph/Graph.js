@@ -123,7 +123,9 @@ class Graph extends Component {
 				{
 					type: "line",
 					name: "Field ETa",
+					color: "blue",
 					lineColor: "blue",
+					markerColor: "blue",
 					showInLegend: true,
 					xValueFormatString: "MMM YYYY",
 					dataPoints: this.extract_data(this.state.datapoints)
@@ -131,7 +133,9 @@ class Graph extends Component {
 				{
 					type: "line",
 					name: "Cohort Mean ETa",
+					color: "#595957",
 					lineColor: "#595957",
+					markerColor: "#595957",
 					showInLegend: true,
 					xValueFormatString: "MMM YYYY",
 					dataPoints: this.extract_data(this.state.cohort_datapoints)
