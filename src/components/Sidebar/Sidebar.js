@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import ReactModal from 'react-modal';
 import { modalContent } from './InfoBoxText'
+import "../../css/Sidebar.css"
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 const months = [
@@ -53,11 +54,11 @@ class Sidebar extends Component {
         // Or output the default if no special format exists
         switch (name) {
             case "Acreage":
-                return <h6><li key={name}>{"Area: " + value.toFixed(1) + " acres"}</li></h6>
+                return <li className="xlarge-font" key={name}>{"Area: " + value.toFixed(1) + " acres"}</li>
                 break
             
             default:
-                return <h6><li key={name}>{name + ": " + value}</li> </h6>
+                return <li className="xlarge-font" key={name}>{name + ": " + value}</li> 
         }
     }
 
@@ -121,7 +122,7 @@ class Sidebar extends Component {
         var listFeatures = null;
         if (this.props.features){
             listFeatures= this.props.features.map((feature) => 
-                <h6><li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2) + " " + feature.units}</li> </h6>
+                <li className="xlarge-font" key={feature.name}>{feature.name + ": " + feature.value.toFixed(2) + " " + feature.units}</li> 
             );
         }
         return (
