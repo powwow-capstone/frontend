@@ -26,7 +26,6 @@ class Home extends Component {
       color_cohorts : false,
       loading: false,
       showModal: false,
-      selected_time_range : { start_year: 2014, start_month: null, end_year: 2014, end_month: null },
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -39,7 +38,7 @@ class Home extends Component {
 
 	  this.selected_feature_temp = null;
     this.selected_categories = {};
-    this.selected_time_range_temp = { start_year: 2014, start_month : null, end_year : 2014, end_month : null };  // Default initial view
+    this.selected_time_range = { start_year: 2014, start_month : null, end_year : 2014, end_month : null };  // Default initial view
 
   }
 	
@@ -50,7 +49,7 @@ class Home extends Component {
 
   loadData() {
     axios
-      .get("" + root_path + "/api/fields?start_month=" + this.state.selected_time_range.start_month + "&start_year=" + this.state.selected_time_range.start_year + "&end_month=" + this.state.selected_time_range.end_month + "&end_year=" + this.state.selected_time_range.end_year)
+      .get("" + root_path + "/api/fields?start_month=" + this.selected_time_range.start_month + "&start_year=" + this.selected_time_range.start_year + "&end_month=" + this.selected_time_range.end_month + "&end_year=" + this.selected_time_range.end_year)
       .then(res => this.setState({ data: res.data, displayed_data: res.data }))
       .catch(err => {
         console.log(err);
@@ -60,11 +59,11 @@ class Home extends Component {
   }
 
   requeryData(displayed_data) {
-    const parameters = JSON.parse(JSON.stringify(this.selected_time_range_temp));
+    const parameters = JSON.parse(JSON.stringify(this.selected_time_range));
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false, selected_time_range : this.selected_time_range_temp }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false, selected_time_range : this.selected_time_range }); 
       })
       .catch(err => {
         console.log(err);
@@ -74,10 +73,10 @@ class Home extends Component {
   }
 
   handleTimeRangeSelection(start_month, start_year, end_month, end_year){
-    this.selected_time_range_temp.start_month = start_month;
-    this.selected_time_range_temp.start_year = start_year;
-    this.selected_time_range_temp.end_month = end_month;
-    this.selected_time_range_temp.end_year = end_year;
+    this.selected_time_range.start_month = start_month;
+    this.selected_time_range.start_year = start_year;
+    this.selected_time_range.end_month = end_month;
+    this.selected_time_range.end_year = end_year;
   }
 
   handleCategoryDropdownSelection(category, value) {
@@ -185,7 +184,7 @@ class Home extends Component {
       <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.state.selected_time_range} loading={this.state.loading} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
           </div>}
 		  <div style={{position: 'absolute', top: 5, right: 5}}>
 			 
@@ -205,7 +204,7 @@ class Home extends Component {
             </div>
             <div>
               <div className="container row">
-                <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.state.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
+                <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
               </div>
               <div className="container row">
                 <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
