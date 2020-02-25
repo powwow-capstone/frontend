@@ -1,6 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
 import "../../css/CategorySelection.css";
+import InfoButton from "../Info/InfoButton";
+import ReactModal from 'react-modal';
 
 class CategorySelection extends Component {
     constructor(props) {
@@ -8,8 +10,11 @@ class CategorySelection extends Component {
         this.state = {
             categories: {},
             category_visibility: {},
-            checkboxes: null
+            checkboxes: null,
+            showModal: false
         };
+        this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
     componentDidMount() {
         this.getAllCategories();
@@ -164,11 +169,35 @@ class CategorySelection extends Component {
 
     }
 
+    handleOpenModal () {
+        this.setState({ showModal: true });
+    }
+
+    handleCloseModal () {
+        this.setState({ showModal: false });
+    }
+
     render() {
         return (
             <div className="col-12">
                 <div className="card">
-                    <h5 className="card-header">Categories</h5>
+                    <div className="card-header">
+                        <h5 className="d-inline-block">Categories</h5>
+                        <InfoButton handleOpenModal={this.handleOpenModal}/>
+                    </div>
+                    <ReactModal className="modal-side-categories" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                        <div class="modal-header">
+                            <h5 class="modal-title">Categories</h5>
+                            <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Filter out which fields to see. 
+                                View fields only between certain acreages or only view fields of a specific crop.
+                            </p>
+                        </div>
+                    </ReactModal>
                     <div className="card-body">
                            
                         {this.createCategoryCheckboxes()}

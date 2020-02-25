@@ -1,17 +1,19 @@
-.input-box{
-    max-width: 100%;
-    min-width: 100%;
+.slideTitle {
+    margin-top: 8px;
 }
 
-.modal-side-categories {
+.modal-con {
     position: absolute;
-    top: 44%;
-    left: 55%;
+    top: 65px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
     border: 1px solid rgb(204, 204, 204);
     background: rgb(255, 255, 255);
     overflow: auto;
     border-radius: 4px;
     outline: none;
-    width: 30%;
-    height: 40%;
+    padding: 25px;
+    width: 50%;
+    height: 60%;
 }
