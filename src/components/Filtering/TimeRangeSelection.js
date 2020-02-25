@@ -52,16 +52,6 @@ class TimeRangeSelection extends Component {
 		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
 
-    componentDidMount() {
-        // axios
-        //     .get("" + root_path + "/api/date_range")
-        //     .then(res => this.setState( { min : new Date(res.data.min), max : new Date(res.data.max) } ))
-        //     .catch(err => {
-        //         console.log(err);
-
-        //     });
-    };
-
     componentDidUpdate(prevProps) {
         if (this.state.currentDate !== this.props.currentDate) {
             this.setState({ currentDate:  this.props.currentDate });
@@ -186,6 +176,9 @@ class TimeRangeSelection extends Component {
 
                     <div className="card-body">
                         <div className="card-text">
+                            <div className="row mb-2">
+                                Currently Displaying: {current_date_display}
+                            </div>
                             <div className="row">
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />

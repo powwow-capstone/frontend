@@ -57,7 +57,7 @@ class Home extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false, selected_time_range : this.selected_time_range }); 
       })
       .catch(err => {
         console.log(err);
@@ -171,7 +171,7 @@ class Home extends Component {
       <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
           </div>}
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
