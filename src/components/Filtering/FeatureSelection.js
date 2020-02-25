@@ -99,7 +99,6 @@ class FeatureSelection extends Component {
                         <div class="modal-body">
                             <p>Select which data to process and display on the map. 
                                 The coloring and graphs will reflect this choice.
-                                Currently only one Data Type is available (ETa).
                                 <br/>
                                 ETa - Evapotranspiration - The amount of water evaporated from the leaves of plant into the atmosphere.
                                 
