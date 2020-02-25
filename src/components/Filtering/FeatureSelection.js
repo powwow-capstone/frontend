@@ -1,12 +1,18 @@
 import React from 'react';
 import { Component } from 'react';
+import InfoButton from "../Info/InfoButton";
+import ReactModal from 'react-modal';
+import "../../css/FeatureSelection.css";
 
 class FeatureSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            features: []
+            features: [],
+            showModal: false
         };
+        this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
 
     componentDidMount() {
@@ -65,12 +71,40 @@ class FeatureSelection extends Component {
         return feature_buttons;
     }
 
+    handleOpenModal () {
+        this.setState({ showModal: true });
+    }
+
+    handleCloseModal () {
+        this.setState({ showModal: false });
+    }
+
     render() {
         
         return (
             <div className="col-12">
                 <div className="card">
-                    <h5 className="card-header">Data Type</h5>
+                    <div className="card-header">
+                        <h5 className="d-inline-block">Data Type</h5>
+                        <InfoButton handleOpenModal={this.handleOpenModal}/>
+                    </div>
+        
+                    <ReactModal className="modal-side-features" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                        <div class="modal-header">
+                            <h5 class="modal-title">Data Type</h5>
+                            <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Select which data to process and display on the map. 
+                                The coloring and graphs will reflect this choice.
+                                <br/>
+                                ETa - Evapotranspiration - The amount of water evaporated from the leaves of plant into the atmosphere.
+                                
+                            </p>
+                        </div>
+                    </ReactModal>
                     <div className="card-body">
                         
                         {this.createFeatureRadioButtons()}

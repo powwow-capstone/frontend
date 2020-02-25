@@ -4,6 +4,9 @@ import Datetime from 'react-datetime'
 import moment from 'moment'
 import "react-datetime/css/react-datetime.css"
 import axios from "axios";
+import InfoButton from "../Info/InfoButton";
+import ReactModal from 'react-modal';
+import "../../css/TimeRangeSelection.css";
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -32,6 +35,7 @@ class TimeRangeSelection extends Component {
             showMonthPicker : false,
             showYearPicker : true,
             currentDate : props.currentDate,
+            showModal: false
         };
         this.isValidDate = this.isValidDate.bind(this);
 
@@ -43,6 +47,9 @@ class TimeRangeSelection extends Component {
             end_year: props.currentDate.end_year,
             end_month: props.currentDate.end_month,
         };
+
+        this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -134,12 +141,39 @@ class TimeRangeSelection extends Component {
     }
 
 
+    handleOpenModal () {
+        this.setState({ showModal: true });
+    }
+
+    handleCloseModal () {
+        this.setState({ showModal: false });
+    }
+    
     render() {
         const current_date_display = this.getCurrentDateString();
         return (
             <div className="col-12">
                 <div className="card">
-                    <h5 className="card-header">Date Range</h5>
+                    <div className="card-header">
+                        <h5 className="d-inline-block">Date Range</h5>
+                        <InfoButton handleOpenModal={this.handleOpenModal}/>
+                    </div>
+        
+                    <ReactModal className="modal-side" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                        <div class="modal-header">
+                            <h5 class="modal-title">Date Range</h5>
+                            <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Select either a year or a range of time between months. 
+                                The red and green colorings on the map are based on the summation of the ETa over the selected date range. 
+                                Each individual field’s graph will also reflect this time period.
+                            </p>
+                        </div>
+                    </ReactModal>
+
                     <div className="card-body">
                         <div className="card-text">
                             <div className="row mb-2">

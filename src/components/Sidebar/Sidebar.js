@@ -4,11 +4,10 @@ import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
 import Loader from '../Loader/Loader';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 import ReactModal from 'react-modal';
-import { modalContent } from './InfoBoxText'
-import "../../css/Sidebar.css"
+import ModalContent from './ModalContent';
+import InfoButton from '../Info/InfoButton';
+import "../../css/Sidebar.css";
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 const months = [
@@ -112,6 +111,19 @@ class Sidebar extends Component {
         this.setState({ showModal: false });
     }
 
+    slidingTitle() {
+        return <div className="slideTitle">	 
+                    {"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)}
+                    <InfoButton handleOpenModal={this.handleOpenModal}/>
+        
+                    <ReactModal className="modal-con" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                        <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <ModalContent/>
+                    </ReactModal>
+                </div>
+    }
     
     render() {
 
@@ -131,8 +143,7 @@ class Sidebar extends Component {
                     className='some-custom-class'
                     overlayClassName='some-custom-overlay-class'
                     isOpen={this.state.isPaneOpen}
-                    title={"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)} 
-                    // subtitle='Optional subtitle.'
+                    title={this.slidingTitle()}
                     from='left'
                     onRequestClose={() => {
                         // triggered on "<" on left top click or on outside click
@@ -140,19 +151,7 @@ class Sidebar extends Component {
                         this.props.onClose(false);
 
                     }}>
-                    <div> 
-						<div style={{position: 'absolute', top: 5, right: 5}}>
-			 
-							 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
-								<InfoIcon color="primary" />
-							 </IconButton>
-							 
-							 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
-								 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
-								 {modalContent()}
-							</ReactModal>
-						  </div>
-						  
+                    <div>  
                         {listCategories && listFeatures && <ul>
                             {listCategories}
                             {listFeatures}

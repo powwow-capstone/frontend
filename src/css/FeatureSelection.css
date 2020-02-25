@@ -1,11 +1,6 @@
-.input-box{
-    max-width: 100%;
-    min-width: 100%;
-}
-
-.modal-side-categories {
+.modal-side-features {
     position: absolute;
-    top: 44%;
+    top: 60%;
     left: 55%;
     border: 1px solid rgb(204, 204, 204);
     background: rgb(255, 255, 255);
