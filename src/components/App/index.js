@@ -7,7 +7,6 @@ import HomePage from '../Home';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
-import HomeAuthorizedPage from '../HomeAuthorized';
 
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
@@ -21,7 +20,6 @@ const App = () => (
       <MainLoading />
       {/* <Navigation /> */}
       <Route exact path={ROUTES.HOME} component={HomePage} />
-      <Route path={ROUTES.HOME_AUTH} component={HomeAuthorizedPage} />
       <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />
       <Route

@@ -5,27 +5,13 @@ class SearchItem extends Component {
     super(props);
 
     this.state = {
-      editMode: false,
-      editText: this.props.search.text,
+      editMode: true,
+      startMonth: this.props.search.start_month,
+      startYear: this.props.search.start_year,
+      endMonth: this.props.search.end_month,
+      endYear: this.props.search.end_year,
     };
   }
-
-  onToggleEditMode = () => {
-    this.setState(state => ({
-      editMode: !state.editMode,
-      editText: this.props.search.text,
-    }));
-  };
-
-  onChangeEditText = event => {
-    this.setState({ editText: event.target.value });
-  };
-
-  onSaveEditText = () => {
-    this.props.onEditSearch(this.props.search, this.state.editText);
-
-    this.setState({ editMode: false });
-  };
 
   render() {
     const { search, onRemoveSearch } = this.props;
@@ -33,30 +19,10 @@ class SearchItem extends Component {
 
     return (
       <li>
-        {editMode ? (
-          <input
-            type="text"
-            value={editText}
-            onChange={this.onChangeEditText}
-          />
-        ) : (
-          <span>
-            <strong>
-              {search.user.username || search.user.userId}
-            </strong>{' '}
-            {search.text} {search.editedAt && <span>(Edited)</span>}
-          </span>
-        )}
-
-        {editMode ? (
-          <span>
-            <button onClick={this.onSaveEditText}>Save</button>
-            <button onClick={this.onToggleEditMode}>Reset</button>
-          </span>
-        ) : (
-          <button onClick={this.onToggleEditMode}>Edit</button>
-        )}
-
+        <span>
+          {search.start_month}
+        </span>
+ 
         {!editMode && (
           <button
             type="button"

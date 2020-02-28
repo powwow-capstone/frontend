@@ -23,36 +23,6 @@ class Searches extends Component {
     };
   }
 
-  componentDidMount() {
-    this.onListenForSearches();
-  }
-
-  onListenForSearches = () => {
-    this.setState({ loading: true });
-
-    this.props.firebase
-      .searches()
-      .orderByChild('createdAt')
-      .limitToLast(this.state.limit)
-      .on('value', snapshot => {
-        const searchObject = snapshot.val();
-
-        if (searchObject) {
-          const searchList = Object.keys(searchObject).map(key => ({
-            ...searchObject[key],
-            uid: key,
-          }));
-
-          this.setState({
-            searches: searchList,
-            loading: false,
-          });
-        } else {
-          this.setState({ searches: null, loading: false });
-        }
-      });
-  };
-
   componentWillUnmount() {
     this.props.firebase.searches().off();
   }
