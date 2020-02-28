@@ -27,15 +27,12 @@ class HomePage extends Component {
       selected_feature: null,
       users: null,
       color_cohorts : false,
-      loading: false,
-	    showModal: false
+      loading: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
     this.handleCheckboxDeselect = this.handleCheckboxDeselect.bind(this);
     this.submitFilters = this.submitFilters.bind(this);
-	  this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
 
@@ -74,13 +71,12 @@ class HomePage extends Component {
     parameters.data = displayed_data
     axios.post("" + root_path + "/api/filter_fields", parameters)
       .then(res => {
-        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false }); 
+        this.setState({ displayed_data: res.data, selected_feature : this.selected_feature_temp, loading: false, selected_time_range : this.selected_time_range }); 
       })
       .catch(err => {
         console.log(err);
         alert("No data matches parameters selected");
       });
-
   }
 
   handleTimeRangeSelection(start_month, start_year, end_month, end_year){
@@ -183,13 +179,6 @@ class HomePage extends Component {
     this.requeryData(new_displayed_data);
 
   }
-  handleOpenModal () {
-    this.setState({ showModal: true });
-  }
-  
-  handleCloseModal () {
-    this.setState({ showModal: false });
-  }
 
   saveFilters() {
     var new_displayed_data = []
@@ -247,19 +236,8 @@ class HomePage extends Component {
       <div className="row" style={{ width: `100vw` }}>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={this.selected_time_range} loading={this.state.loading} />
+          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
           </div>}
-		  <div style={{position: 'absolute', top: 5, right: 5}}>
-			 
-			 <IconButton aria-label="delete" onClick={() => this.handleOpenModal()}>
-				<InfoIcon color="primary" />
-			 </IconButton>
-			 
-			 <ReactModal isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
-				 <button style={{position: 'absolute', top: 5, right: 5}} onClick={this.handleCloseModal}>Close</button>
-				 {modalContent()}
-			</ReactModal>
-		  </div>
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-3 col-md-4">
             <div className="mb-2 img-row">
