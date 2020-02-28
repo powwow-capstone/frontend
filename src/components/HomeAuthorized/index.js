@@ -8,13 +8,15 @@ import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import "../../css/Home.css";
+
+import { withAuthorization, withEmailVerification, AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
 
 import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
-class HomePage extends Component {
+class HomeAuthorizedPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -176,40 +178,70 @@ class HomePage extends Component {
 
   }
 
+  saveFilters = (event, authUser) =>{
+    console.log();
+    console.log(this.selected_categories["Crop"]);
+    this.props.firebase.searches().push({
+      start_month: this.selected_time_range.start_month,
+      start_year: this.selected_time_range.start_year,
+      end_month: this.selected_time_range.end_month,
+      end_year: this.selected_time_range.end_year,
+      feature: this.selected_feature_temp,
+      acreage_min: this.selected_categories["Acreage"]["MIN"],
+      acreage_max: this.selected_categories["Acreage"]["MAX"],
+      crop_type: this.selected_categories["Crop"],
+      userId: authUser.uid,
+      createdAt: this.props.firebase.serverValue.TIMESTAMP,
+    });
+
+    event.preventDefault();
+  }
+
   render() {
     return (
-      <div className="row" style={{ width: `100vw` }}>
-          {this.state && this.state.data && (this.state.data instanceof Array) &&
-          <div className="col-lg-9 col-md-8">
-          <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
-          </div>}
-          {this.state && this.state.data && (this.state.data instanceof Array) &&
-          <div className="col-lg-3 col-md-4">
-            <div className="mb-2 img-row">
-              <img className="img-column" src={newLogo} alt="Logo"/>
-              <Navigation/>
-              {/* <Messages users={this.state.users} /> */}
-              
-              <div className="container row">
-                <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
+      <AuthUserContext.Consumer>
+        {authUser => (
+          <div className="row" style={{ width: `100vw` }}>
+            {this.state && this.state.data && (this.state.data instanceof Array) &&
+            <div className="col-lg-9 col-md-8">
+            <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
+            </div>}
+            {this.state && this.state.data && (this.state.data instanceof Array) &&
+            <div className="col-lg-3 col-md-4">
+              <div className="mb-2 img-row">
+                <img className="img-column" src={newLogo} alt="Logo"/>
+                <Navigation/>
+                {/* <Messages users={this.state.users} /> */}
+                
+                <div className="container row">
+                  <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
+                </div>
+                <div className="container row">
+                  <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                </div>
+                <div className="container row">
+                  <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                </div>
+                <div className="apply-button-container">
+                  <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
+                </div>
+                <div className="apply-button-container">
+                  <Button className="center" variant="outline-primary" def onClick={event => this.saveFilters(event, authUser)}>Save Selections</Button>
+                </div>
               </div>
-              <div className="container row">
-                <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
-              </div>
-              <div className="container row">
-                <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
-              </div>
-              <div className="apply-button-container">
-                <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
-              </div>
-            </div>
-          </div>}
-        </div>
+            </div>}
+          </div>
+        )}
+        </AuthUserContext.Consumer>
     );
     
   }
 }
 
+const condition = authUser => !!authUser;
+
 export default compose(
   withFirebase,
-)(HomePage);
+  withEmailVerification,
+  withAuthorization(condition),
+)(HomeAuthorizedPage);
