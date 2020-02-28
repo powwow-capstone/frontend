@@ -8,14 +8,15 @@ import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import "../../css/Home.css";
+
+import { withAuthorization, withEmailVerification, AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
-import { AuthUserContext } from '../Session';
 
 import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
-class HomePage extends Component {
+class HomeAuthorizedPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -174,51 +175,26 @@ class HomePage extends Component {
     }
 
     this.requeryData(new_displayed_data);
+
   }
 
-  saveFilters = (event, authUser) => {
+  saveFilters = (event, authUser) =>{
     console.log();
     console.log(this.selected_categories["Crop"]);
     this.props.firebase.searches().push({
-      start_month: this.selected_time_range.start_month ? this.selected_time_range.start_month : "null",
-      start_year: this.selected_time_range.start_year ? this.selected_time_range.start_year : "null",
-      end_month: this.selected_time_range.end_month ? this.selected_time_range.end_month : "null",
-      end_year: this.selected_time_range.end_year ? this.selected_time_range.end_year : "null",
-      feature: this.selected_feature_temp ? this.selected_feature_temp : "ETa",
-      acreage_min: this.selected_categories["Acreage"]["MIN"] ? this.selected_categories["Acreage"]["MIN"] : 0,
-      acreage_max: this.selected_categories["Acreage"]["MAX"] ? this.selected_categories["Acreage"]["MAX"] : Number.MAX_VALUE,
-      crop_type: this.selected_categories["Crop"] ? this.selected_categories["Crop"] : "null",
+      start_month: this.selected_time_range.start_month,
+      start_year: this.selected_time_range.start_year,
+      end_month: this.selected_time_range.end_month,
+      end_year: this.selected_time_range.end_year,
+      feature: this.selected_feature_temp,
+      acreage_min: this.selected_categories["Acreage"]["MIN"],
+      acreage_max: this.selected_categories["Acreage"]["MAX"],
+      crop_type: this.selected_categories["Crop"],
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
     event.preventDefault();
-  }
-
-  getUserSearches() {
-    this.props.firebase.searches().on("value", function(snapshot) {
-      var searchesSnap = snapshot.val();
-      var newState = [];
-      for (let search in searchesSnap) {
-        newState.push({
-          id: search,
-          start_month: searchesSnap[search].start_month,
-          start_year: searchesSnap[search].start_year,
-          end_month: searchesSnap[search].end_month,
-          end_year: searchesSnap[search].end_year,
-          feature: searchesSnap[search].feature,
-          acreage_min: searchesSnap[search].acreage_min,
-          acreage_max: searchesSnap[search].acreage_max,
-          crop_type: searchesSnap[search].crop_type,
-          userId: searchesSnap[search].userId,
-          createdAt: searchesSnap[search].createdAt,
-        })
-      }
-      console.log(newState);
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-    });
-
   }
 
   render() {
@@ -250,10 +226,7 @@ class HomePage extends Component {
                   <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
                 </div>
                 <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={event => this.saveFilters(event, authUser)}>Save Selected Filters</Button>
-                </div>
-                <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={() => this.getUserSearches()}>Load Filters</Button>
+                  <Button className="center" variant="outline-primary" def onClick={event => this.saveFilters(event, authUser)}>Save Selections</Button>
                 </div>
               </div>
             </div>}
@@ -265,6 +238,10 @@ class HomePage extends Component {
   }
 }
 
+const condition = authUser => !!authUser;
+
 export default compose(
   withFirebase,
-)(HomePage);
+  withEmailVerification,
+  withAuthorization(condition),
+)(HomeAuthorizedPage);

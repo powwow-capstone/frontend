@@ -4,7 +4,6 @@ import SearchItem from './SearchItem';
 
 const SearchList = ({
   searches,
-  onEditSearch,
   onRemoveSearch,
 }) => (
   <ul>
@@ -12,7 +11,6 @@ const SearchList = ({
       <SearchItem
         key={search.uid}
         search={search}
-        onEditSearch={onEditSearch}
         onRemoveSearch={onRemoveSearch}
       />
     ))}

@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import axios from "axios";
 import SlidingPane from 'react-sliding-pane';
 import Graph from '../Graph/Graph';
+import Loader from '../Loader/Loader';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
+import ReactModal from 'react-modal';
+import ModalContent from './ModalContent';
+import InfoButton from '../Info/InfoButton';
+import "../../css/Sidebar.css";
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 const months = [
@@ -28,14 +33,31 @@ class Sidebar extends Component {
         this.state = {
             isPaneOpen: props.isPaneOpen,
             datapoints : null,
+            loading: true,
+			showModal: false
         };
         this.source = null;
+		this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
     }
     
     componentDidUpdate(prevProps) {
         if ( prevProps.isPaneOpen !== this.props.isPaneOpen ) {
             this.refreshList(this.props.clicked_cohort_ids );
-            this.setState({ isPaneOpen: this.props.isPaneOpen });
+            this.setState({ isPaneOpen: this.props.isPaneOpen, loading: true });
+        }
+    }
+
+    formatCategoryOutput(name, value) {
+        // Output the Category information in a special format depending on the field
+        // Or output the default if no special format exists
+        switch (name) {
+            case "Acreage":
+                return <li className="xlarge-font" key={name}>{"Area: " + value.toFixed(1) + " acres"}</li>
+                break
+            
+            default:
+                return <li className="xlarge-font" key={name}>{name + ": " + value}</li> 
         }
     }
 
@@ -76,25 +98,43 @@ class Sidebar extends Component {
                 cancelToken: this.source.token
             })
             .then(res => { 
-                console.log(res.data);
-                this.setState({ datapoints: res.data });
+                this.setState({ datapoints: res.data, loading: false});
             })
             .catch(err => console.log(err));
     };
 
+    handleOpenModal () {
+        this.setState({ showModal: true });
+    }
+    
+    handleCloseModal () {
+        this.setState({ showModal: false });
+    }
+
+    slidingTitle() {
+        return <div className="slideTitle">	 
+                    {"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)}
+                    <InfoButton handleOpenModal={this.handleOpenModal}/>
+        
+                    <ReactModal className="modal-con" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                        <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <ModalContent/>
+                    </ReactModal>
+                </div>
+    }
     
     render() {
 
         var listCategories = null;
         if (this.props.categories){
-            listCategories = this.props.categories.map((category) =>
-                <li key={category.category_name}>{category.category_name + ": " + category.value}</li> 
-            );
+            listCategories = this.props.categories.map((category) => this.formatCategoryOutput(category.category_name, category.value));
         }
         var listFeatures = null;
         if (this.props.features){
-            listFeatures= this.props.features.map((feature) =>
-                <li key={feature.name}>{feature.name + ": " + feature.value.toFixed(2)}</li> 
+            listFeatures= this.props.features.map((feature) => 
+                <li className="xlarge-font" key={feature.name}>{feature.name + ": " + feature.value.toFixed(2) + " " + feature.units}</li> 
             );
         }
         return (
@@ -103,8 +143,7 @@ class Sidebar extends Component {
                     className='some-custom-class'
                     overlayClassName='some-custom-overlay-class'
                     isOpen={this.state.isPaneOpen}
-                    title={"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)} 
-                    // subtitle='Optional subtitle.'
+                    title={this.slidingTitle()}
                     from='left'
                     onRequestClose={() => {
                         // triggered on "<" on left top click or on outside click
@@ -112,7 +151,7 @@ class Sidebar extends Component {
                         this.props.onClose(false);
 
                     }}>
-                    <div> 
+                    <div>  
                         {listCategories && listFeatures && <ul>
                             {listCategories}
                             {listFeatures}
@@ -122,8 +161,10 @@ class Sidebar extends Component {
                             && this.state.datapoints.field_stats !== null // && this.state.datapoints.cohort_stats !== null
                             && this.state.datapoints.field_stats instanceof Array // && this.state.datapoints.cohort_stats instanceof Array
                             && this.state.datapoints.field_stats.length > 0 
+                            && this.state.loading===false
                             && <Graph datapoints={this.state.datapoints.field_stats} cohort_datapoints={this.state.datapoints.cohort_stats} dateRange={this.props.dateRange} />
                         }
+                        <Loader loading={this.state.loading}/>
                     </div>
                 </SlidingPane>
             </div>
