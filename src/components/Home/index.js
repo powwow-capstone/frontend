@@ -12,6 +12,7 @@ import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 
 import Navigation from '../Navigation';
+import SearchList from '../Searches/SearchList';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -32,6 +33,8 @@ class HomePage extends Component {
     this.submitFilters = this.submitFilters.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
+    this.saveFilters = this.saveFilters.bind(this);
+    this.loadLatestSearch = this.loadLatestSearch.bind(this);
 
 	  this.selected_feature_temp = null;
     this.selected_categories = {};
@@ -84,9 +87,10 @@ class HomePage extends Component {
   }
 
   handleCategoryDropdownSelection(category, value) {
-    if (value !== "NULL")
+    if (value !== "NULL" && value !== "null")
     {
       this.selected_categories[category] = value;
+      console.log("category: " + category + " value: " + value);
     }
     else
     {
@@ -176,18 +180,18 @@ class HomePage extends Component {
     this.requeryData(new_displayed_data);
   }
 
-  saveFilters = (event, authUser) => {
-    console.log();
-    console.log(this.selected_categories["Crop"]);
+  saveFilters(event, authUser)  {
+    // for (var i = 0; i < this.state.data.length; ++i)
+    // {
     this.props.firebase.searches().push({
       start_month: this.selected_time_range.start_month ? this.selected_time_range.start_month : "null",
       start_year: this.selected_time_range.start_year ? this.selected_time_range.start_year : "null",
       end_month: this.selected_time_range.end_month ? this.selected_time_range.end_month : "null",
       end_year: this.selected_time_range.end_year ? this.selected_time_range.end_year : "null",
-      feature: this.selected_feature_temp ? this.selected_feature_temp : "ETa",
-      acreage_min: this.selected_categories["Acreage"]["MIN"] ? this.selected_categories["Acreage"]["MIN"] : 0,
-      acreage_max: this.selected_categories["Acreage"]["MAX"] ? this.selected_categories["Acreage"]["MAX"] : Number.MAX_VALUE,
-      crop_type: this.selected_categories["Crop"] ? this.selected_categories["Crop"] : "null",
+      feature: (typeof this.selected_feature_temp !== 'undefined' ) ? this.selected_feature_temp : "ETa",
+      acreage_min: (typeof this.selected_categories["Acreage"] !== 'undefined') ? this.selected_categories["Acreage"]["MIN"] : 0,
+      acreage_max: (typeof this.selected_categories["Acreage"] !== 'undefined') ? this.selected_categories["Acreage"]["MAX"] : Number.MAX_VALUE,
+      crop_type: (typeof this.selected_categories["Crop"] !== 'undefined' ) ? this.selected_categories["Crop"] : "null",
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
@@ -195,31 +199,39 @@ class HomePage extends Component {
     event.preventDefault();
   }
 
-  getUserSearches() {
-    this.props.firebase.searches().on("value", function(snapshot) {
-      var searchesSnap = snapshot.val();
-      var newState = [];
-      for (let search in searchesSnap) {
-        newState.push({
-          id: search,
-          start_month: searchesSnap[search].start_month,
-          start_year: searchesSnap[search].start_year,
-          end_month: searchesSnap[search].end_month,
-          end_year: searchesSnap[search].end_year,
-          feature: searchesSnap[search].feature,
-          acreage_min: searchesSnap[search].acreage_min,
-          acreage_max: searchesSnap[search].acreage_max,
-          crop_type: searchesSnap[search].crop_type,
-          userId: searchesSnap[search].userId,
-          createdAt: searchesSnap[search].createdAt,
-        })
-      }
-      console.log(newState);
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-    });
+  loadLatestSearch = (event, authUser) => {
+    var _start_month, _start_year, _end_month, _end_year, _feature, _acreage_min, _acreage_max, _crop_type;
+    this.props.firebase
+      .searches()
+      .orderByChild('userId')
+      .limitToLast(1)
+      .equalTo(authUser.uid)
+      .on('value', snapshot => {
+        const searchObject = snapshot.val();
 
+        if (searchObject) {
+          const searchList = Object.keys(searchObject).map(key => ({
+            ...searchObject[key],
+            uid: key,
+          }));
+          console.log(searchList);
+          this.selected_time_range.start_month = searchList[0].start_month;
+          this.selected_time_range.start_year = searchList[0].start_year;
+          this.selected_time_range.end_month = searchList[0].end_month;
+          this.selected_time_range.end_year = searchList[0].end_year;
+          this.selected_feature_temp = searchList[0].feature;
+          this.handleCategoryMinMaxInput("Acreage", "MIN", searchList[0].acreage_min);
+          this.handleCategoryMinMaxInput("Acreage", "MAX", searchList[0].acreage_max);
+          console.log(this.selected_categories["Acreage"]["MIN"]);
+          this.selected_categories["Crop"] = searchList[0].crop_type;
+        }
+        else {
+          console.log("Load failed. No searches found.")
+        }
+      }
+    );
   }
+
 
   render() {
     return (
@@ -250,10 +262,10 @@ class HomePage extends Component {
                   <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
                 </div>
                 <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={event => this.saveFilters(event, authUser)}>Save Selected Filters</Button>
+                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={(event) => this.saveFilters(event, authUser)}>Save Selections</Button>
                 </div>
                 <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={() => this.getUserSearches()}>Load Filters</Button>
+                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={(event) => this.loadLatestSearch(event, authUser)}>Load Selections</Button>
                 </div>
               </div>
             </div>}
