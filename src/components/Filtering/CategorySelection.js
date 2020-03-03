@@ -185,7 +185,7 @@ class CategorySelection extends Component {
                         <h5 className="d-inline-block">Categories</h5>
                         <InfoButton handleOpenModal={this.handleOpenModal}/>
                     </div>
-                    <ReactModal className="modal-side-categories" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                    <ReactModal className="modal-side-categories" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" style={{ overlay: { backgroundColor: 'transparent' }}}>  
                         <div class="modal-header">
                             <h5 class="modal-title">Categories</h5>
                             <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>

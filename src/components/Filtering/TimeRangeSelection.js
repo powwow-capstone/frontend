@@ -159,7 +159,7 @@ class TimeRangeSelection extends Component {
                         <InfoButton handleOpenModal={this.handleOpenModal}/>
                     </div>
         
-                    <ReactModal className="modal-side" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                    <ReactModal className="modal-side" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" style={{ overlay: { backgroundColor: 'transparent' }}}>  
                         <div class="modal-header">
                             <h5 class="modal-title">Date Range</h5>
                             <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>

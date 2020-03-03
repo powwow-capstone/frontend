@@ -116,7 +116,7 @@ class Sidebar extends Component {
                     {"Field Details: " + this.parseDateRangeIntoString(this.props.dateRange)}
                     <InfoButton handleOpenModal={this.handleOpenModal}/>
         
-                    <ReactModal className="modal-con" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                    <ReactModal className="modal-con" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" style={{ overlay: { backgroundColor: 'transparent' }}}>  
                         <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
                             <span aria-hidden="true">&times;</span>
                         </button>
