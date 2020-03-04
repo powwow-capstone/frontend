@@ -4,6 +4,7 @@ import { Button } from 'reactstrap';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
+import MainLoading from '../Loader/MainLoading';
 import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
@@ -21,6 +22,7 @@ class Home extends Component {
 	    displayed_data: null,
       selected_feature: null,
       color_cohorts : false,
+      initial_loading: false, // Loading for the first time the website is booted
       loading: false
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
@@ -44,7 +46,7 @@ class Home extends Component {
   loadData() {
     axios
       .get("" + root_path + "/api/fields?start_month=" + this.selected_time_range.start_month + "&start_year=" + this.selected_time_range.start_year + "&end_month=" + this.selected_time_range.end_month + "&end_year=" + this.selected_time_range.end_year)
-      .then(res => this.setState({ data: res.data, displayed_data: res.data }))
+      .then(res => this.setState({ data: res.data, displayed_data: res.data, initial_loading: true }))
       .catch(err => {
         console.log(err);
         alert("No data matches parameters selected");
@@ -169,6 +171,7 @@ class Home extends Component {
   render() {
     return (
       <div className="row" style={{ width: `100vw` }}>
+          <MainLoading done={this.state.initial_loading} />
           {this.state && this.state.data && (this.state.data instanceof Array) &&
           <div className="col-lg-9 col-md-8">
           <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />
