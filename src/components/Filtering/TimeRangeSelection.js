@@ -25,7 +25,7 @@ const months = [
     'Dec'
 ];
 
-const latest_day = Datetime.moment("2018-12-31", "YYYY-MM-DD");
+const latest_day = Datetime.moment("2019-12-31", "YYYY-MM-DD");
 const earliest_day = Datetime.moment("2010-01-01", "YYYY-MM-DD");  // The earliest day from which we have data
 
 class TimeRangeSelection extends Component {
