@@ -16,10 +16,11 @@ body {
   display: table;
 } 
 
-
-
 .apply-button-container {
-    padding-left: 15px;
-    padding-right: 15px;
+    margin-left: 15px;
     margin-top:10px;
+}
+
+.signout-con {
+  margin: 5px;
 }
