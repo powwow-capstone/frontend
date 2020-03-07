@@ -99,7 +99,6 @@ class HomePage extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-	
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
@@ -153,10 +152,7 @@ class HomePage extends Component {
           {
             if ("MIN" in this.selected_categories[category_name])
             {	
-				
-				
-              if (value < this.selected_categories[category_name]["MIN"])
-              {
+              if (value < this.selected_categories[category_name]["MIN"]) {
                 include_datapoint = false;
               }
             }
@@ -182,14 +178,24 @@ class HomePage extends Component {
   saveFilters(event, authUser)  {
     // for (var i = 0; i < this.state.data.length; ++i)
     // {
+    var min_acreage = "null"; 
+    var max_acreage = "null";
+    if (typeof this.selected_categories["Acreage"] !== 'undefined') {
+      if (typeof this.selected_categories["Acreage"]["MIN"] !== 'undefined') {
+        min_acreage = this.selected_categories["Acreage"]["MIN"];
+      }
+      if (typeof this.selected_categories["Acreage"]["MAX"] !== 'undefined') {
+        max_acreage = this.selected_categories["Acreage"]["MAX"];
+      }
+    }
     this.props.firebase.searches().push({
       start_month: this.selected_time_range.start_month ? this.selected_time_range.start_month : "null",
       start_year: this.selected_time_range.start_year ? this.selected_time_range.start_year : "null",
       end_month: this.selected_time_range.end_month ? this.selected_time_range.end_month : "null",
       end_year: this.selected_time_range.end_year ? this.selected_time_range.end_year : "null",
       feature: (typeof this.selected_feature_temp !== 'undefined' ) ? this.selected_feature_temp : "ETa",
-      acreage_min: (typeof this.selected_categories["Acreage"] !== 'undefined') ? this.selected_categories["Acreage"]["MIN"] : 0,
-      acreage_max: (typeof this.selected_categories["Acreage"] !== 'undefined') ? this.selected_categories["Acreage"]["MAX"] : Number.MAX_VALUE,
+      acreage_min: min_acreage,
+      acreage_max: max_acreage,
       crop_type: (typeof this.selected_categories["Crop"] !== 'undefined' ) ? this.selected_categories["Crop"] : "null",
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
@@ -215,16 +221,36 @@ class HomePage extends Component {
             ...searchObject[key],
             uid: key,
           }));
+          console.log("Searchlist:");
           console.log(searchList);
-          this.selected_time_range.start_month = parseInt(searchList[0].start_month, 10);
+          if (searchList[0].start_month === "null") {
+            this.selected_time_range.start_month = null;
+            this.selected_time_range.end_month = null;
+          } 
+          else {
+            this.selected_time_range.start_month = parseInt(searchList[0].start_month, 10);
+            this.selected_time_range.end_month = parseInt(searchList[0].end_month, 10);
+          }
           this.selected_time_range.start_year = parseInt(searchList[0].start_year, 10);
-          this.selected_time_range.end_month = parseInt(searchList[0].end_month, 10);
           this.selected_time_range.end_year = parseInt(searchList[0].end_year, 10);
           this.selected_feature_temp = searchList[0].feature;
-          this.handleCategoryMinMaxInput("Acreage", "MIN", parseInt(searchList[0].acreage_min, 10));
-          this.handleCategoryMinMaxInput("Acreage", "MAX", parseInt(searchList[0].acreage_max, 10));
-          console.log(this.selected_categories["Acreage"]["MIN"]);
-          this.selected_categories["Crop"] = searchList[0].crop_type;
+          this.selected_categories = {}
+          if (searchList[0].acreage_min !== "null") {
+            if (!("Acreage" in this.selected_categories)) {
+              this.selected_categories["Acreage"] = {};
+            }
+            this.selected_categories["Acreage"]["MIN"] = searchList[0].acreage_min;
+          }
+
+          if (searchList[0].acreage_max !== "null") {
+            if (!("Acreage" in this.selected_categories)) {
+              this.selected_categories["Acreage"] = {};
+            }
+            this.selected_categories["Acreage"]["MAX"] = searchList[0].acreage_max;
+          }
+          if (searchList[0].crop_type !== "null") {
+            this.handleCategoryDropdownSelection("Crop", searchList[0].crop_type);
+          }
           this.setState({displayed_data : searchList[0].displayed_data, selected_feature : searchList[0].selected_feature, color_cohorts : searchList[0].color_cohorts});
         }
         else {
@@ -232,6 +258,8 @@ class HomePage extends Component {
         }
       }
     );
+    console.log("Selected time range:");
+    console.log(this.selected_time_range);
   }
 
 
@@ -254,7 +282,7 @@ class HomePage extends Component {
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
                 <div className="container row">
-                  <CategorySelection data={this.state.data} selectedCategories={this.selected_categories}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                  <CategorySelection data={this.state.data} defaultCategories={JSON.parse(JSON.stringify(this.selected_categories))} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
                 </div>
                 <div className="container row">
                   <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />

@@ -11,13 +11,27 @@ class CategorySelection extends Component {
             categories: {},
             category_visibility: {},
             checkboxes: null,
-            showModal: false
+            showModal: false,
+            default_categories : props.defaultCategories,
         };
         this.handleOpenModal = this.handleOpenModal.bind(this);
-		this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.loadPreviousSelection = false;
     }
     componentDidMount() {
         this.getAllCategories();
+    }
+
+    componentDidUpdate(prevProps) {
+
+        if (this.state.default_categories !== this.props.defaultCategories) {
+            var category_visibility = {}
+            for (const category_name in this.state.categories) {
+                category_visibility[category_name] = (category_name in this.props.defaultCategories);
+            }
+
+            this.setState({ category_visibility : category_visibility, default_categories : this.props.defaultCategories });
+        }
     }
 
     getAllCategories() {
@@ -38,7 +52,7 @@ class CategorySelection extends Component {
                             category_labels[categories[j].category_name]["type"] = categories[j].type;
                             category_labels[categories[j].category_name]["values"] = [];
                             category_labels[categories[j].category_name]["id"] = category_id;
-                            category_visibility[categories[j].category_name] = false;
+                            category_visibility[categories[j].category_name] = (categories[j].category_name in this.state.default_categories);
                             category_id = category_id + 1;
                         }
                         var category_val = categories[j].value;
@@ -51,8 +65,7 @@ class CategorySelection extends Component {
             {
                 category_labels[key]["values"] = [...new Set(category_labels[key]["values"])];
             }
-            this.setState({ categories: category_labels });
-            this.setState({ category_visibility: category_visibility });
+            this.setState({ categories: category_labels, category_visibility: category_visibility });
 
         }
     }
@@ -117,9 +130,13 @@ class CategorySelection extends Component {
         for (const category_name in this.state.categories) {
             const type = this.state.categories[category_name]["type"];
             const values = this.state.categories[category_name]["values"];
-            const id = this.state.categories[category_name]["id"];
-
+            
             if (type === "string") {
+                var default_selection = null
+                if (category_name in this.state.default_categories) {
+                    default_selection = this.state.default_categories[category_name];
+                }
+                var dropdown_content;
                 const dropdown_content = this.state.category_visibility[category_name]
                     ? <div className="input-box">
                         <select className="input-box" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
@@ -127,12 +144,12 @@ class CategorySelection extends Component {
                         </select>
                     </div>
                     : null;
-            
 
+                const checked = (dropdown_content !== null);
                 // For strings, each checkbox has a dropdown menu
                 category_checkboxes.push(
                     <div className="row">
-                        <input type="checkbox" className="m-1" id={category_name} onChange={(e) => this.handleChange(category_name, e)} />
+                        <input type="checkbox" className="m-1" id={category_name} checked={checked} onChange={(e) => this.handleChange(category_name, e)} />
                         {category_name}
                         {dropdown_content}
                     </div>
@@ -140,10 +157,20 @@ class CategorySelection extends Component {
 
             }
             else {
+                var default_min = 0;
+                var default_max = null;
+                if (category_name in this.state.default_categories) {
+                    if (typeof this.state.default_categories[category_name]["MIN"] !== 'undefined') {
+                        default_min = this.state.default_categories[category_name]["MIN"];
+                    }
+                    if (typeof this.state.default_categories[category_name]["MAX"] !== 'undefined') {
+                        default_max = this.state.default_categories[category_name]["MAX"];
+                    }
+                }
                 const textbox_content = this.state.category_visibility[category_name]
                     ? <div>
                         <div className="row">
-                            Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name,"MIN", e)} id={category_name + "_min"} />
+                            Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                         </div>
                         <div className="row">
                             Max: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
@@ -151,19 +178,22 @@ class CategorySelection extends Component {
                     </div>
                     : null;
 
+                const checked = (textbox_content !== null);
+
                 // For ints, the user inputs a min and a max
                 category_checkboxes.push(
                     <div>
                         <div className="row">
-                            <input type="checkbox" className="m-1" id={category_name} onChange={() => this.handleChange(category_name)} /> {category_name}
+                            <input type="checkbox" className="m-1" id={category_name} checked={checked} onChange={() => this.handleChange(category_name)} /> {category_name}
                         </div>
                         {textbox_content}
                     </div>
                 );
 
             }
-
+            
         }
+        this.loadPreviousSelection = false;
 
         return category_checkboxes;
 
