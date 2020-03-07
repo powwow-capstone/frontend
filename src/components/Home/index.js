@@ -23,7 +23,6 @@ class HomePage extends Component {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
       selected_feature: null,
-      users: null,
       color_cohorts : false,
       loading: false
     };
@@ -194,6 +193,9 @@ class HomePage extends Component {
       crop_type: (typeof this.selected_categories["Crop"] !== 'undefined' ) ? this.selected_categories["Crop"] : "null",
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
+      displayed_data: this.state.displayed_data ? this.state.displayed_data : [],
+      selected_feature: this.state.selected_feature ? this.state.selected_feature : "ETa",
+      color_cohorts: this.state.color_cohorts ? this.state.color_cohorts : false,
     });
 
     event.preventDefault();
@@ -214,15 +216,16 @@ class HomePage extends Component {
             uid: key,
           }));
           console.log(searchList);
-          this.selected_time_range.start_month = searchList[0].start_month;
-          this.selected_time_range.start_year = searchList[0].start_year;
-          this.selected_time_range.end_month = searchList[0].end_month;
-          this.selected_time_range.end_year = searchList[0].end_year;
+          this.selected_time_range.start_month = parseInt(searchList[0].start_month, 10);
+          this.selected_time_range.start_year = parseInt(searchList[0].start_year, 10);
+          this.selected_time_range.end_month = parseInt(searchList[0].end_month, 10);
+          this.selected_time_range.end_year = parseInt(searchList[0].end_year, 10);
           this.selected_feature_temp = searchList[0].feature;
-          this.handleCategoryMinMaxInput("Acreage", "MIN", searchList[0].acreage_min);
-          this.handleCategoryMinMaxInput("Acreage", "MAX", searchList[0].acreage_max);
+          this.handleCategoryMinMaxInput("Acreage", "MIN", parseInt(searchList[0].acreage_min, 10));
+          this.handleCategoryMinMaxInput("Acreage", "MAX", parseInt(searchList[0].acreage_max, 10));
           console.log(this.selected_categories["Acreage"]["MIN"]);
           this.selected_categories["Crop"] = searchList[0].crop_type;
+          this.setState({displayed_data : searchList[0].displayed_data, selected_feature : searchList[0].selected_feature, color_cohorts : searchList[0].color_cohorts});
         }
         else {
           alert("Load failed. No searches found.");
@@ -246,16 +249,15 @@ class HomePage extends Component {
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
                 <Navigation/>
-                {/* <Messages users={this.state.users} /> */}
                 
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
                 <div className="container row">
-                  <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                  <CategorySelection data={this.state.data} selectedCategories={this.selected_categories}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
                 </div>
                 <div className="container row">
-                  <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                  <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
                 </div>
                 <div className="apply-button-container">
                   <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>

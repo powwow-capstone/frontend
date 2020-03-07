@@ -54,7 +54,13 @@ class TimeRangeSelection extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.state.currentDate !== this.props.currentDate) {
-            this.setState({ currentDate:  this.props.currentDate });
+            
+            if (this.props.currentDate.start_month !== null) {
+                this.setState({ currentDate: this.props.currentDate, showMonthPicker : true, showYearPicker : false });
+            }
+            else {
+                this.setState({ currentDate: this.props.currentDate, showMonthPicker : false, showYearPicker : true });
+            }
         }
     }
 
