@@ -200,7 +200,6 @@ class HomePage extends Component {
   }
 
   loadLatestSearch = (event, authUser) => {
-    var _start_month, _start_year, _end_month, _end_year, _feature, _acreage_min, _acreage_max, _crop_type;
     this.props.firebase
       .searches()
       .orderByChild('userId')
@@ -226,7 +225,7 @@ class HomePage extends Component {
           this.selected_categories["Crop"] = searchList[0].crop_type;
         }
         else {
-          console.log("Load failed. No searches found.")
+          alert("Load failed. No searches found.");
         }
       }
     );
