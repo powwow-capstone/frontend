@@ -108,22 +108,55 @@ class CategorySelection extends Component {
         this.props.handleDeselect(category);
     }
 
-    createDropdownSelection(options) {
+    createDropdownSelection(options, default_selection) {
         var dropdown_selection = [];
         dropdown_selection.push(
             <option value="NULL" selected >Select</option>
         );
+
         for (var i = 0; i < options.length; ++i) {
             // dropdown_selection.push(
             //     <a class="dropdown-item" href="#">{options[i]}</a>
             // );
-            dropdown_selection.push(
-            <option value={options[i]} >{options[i]}</option>
-            );
+            if (default_selection === options[i]) {
+                dropdown_selection.push(
+                    <option value={options[i]} selected>{options[i]}</option>
+                );
+            }
+            else {
+                dropdown_selection.push(
+                    <option value={options[i]} >{options[i]}</option>
+                );
+            }
         }
         return dropdown_selection;
     }
 
+    createMinInputBox(category_name, default_val) {
+        if (default_val === null) {
+            return (<div className="row">
+                        Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                    </div>) 
+        }
+        else {
+            return (<div className="row">
+                Min: <input type="Number" defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                    </div>)
+        }
+    }
+
+    createMaxInputBox(category_name, default_val) {
+        if (default_val === null) {
+            return (<div className="row">
+                        Max: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                    </div>)
+        }
+        else {
+            return (<div className="row">
+                        Max: <input type="Number" defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                    </div>)
+        }
+    }
 
     createCategoryCheckboxes() {
         var category_checkboxes = [];
@@ -136,11 +169,10 @@ class CategorySelection extends Component {
                 if (category_name in this.state.default_categories) {
                     default_selection = this.state.default_categories[category_name];
                 }
-                var dropdown_content;
                 const dropdown_content = this.state.category_visibility[category_name]
                     ? <div className="input-box">
                         <select className="input-box" id={category_name + "_selection"} data-live-search="true" onChange={(e) => this.handleSelection(category_name, e)} >
-                            {this.createDropdownSelection(values)}
+                            {this.createDropdownSelection(values, default_selection)}
                         </select>
                     </div>
                     : null;
@@ -157,7 +189,7 @@ class CategorySelection extends Component {
 
             }
             else {
-                var default_min = 0;
+                var default_min = null;
                 var default_max = null;
                 if (category_name in this.state.default_categories) {
                     if (typeof this.state.default_categories[category_name]["MIN"] !== 'undefined') {
@@ -169,12 +201,8 @@ class CategorySelection extends Component {
                 }
                 const textbox_content = this.state.category_visibility[category_name]
                     ? <div>
-                        <div className="row">
-                            Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
-                        </div>
-                        <div className="row">
-                            Max: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
-                        </div>
+                        {this.createMinInputBox(category_name, default_min)}
+                        {this.createMaxInputBox(category_name, default_max)}
                     </div>
                     : null;
 
