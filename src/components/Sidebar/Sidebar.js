@@ -152,7 +152,7 @@ class Sidebar extends Component {
 
                     }}>
                     <div>  
-                        {listCategories && listFeatures && <ul>
+                        {listCategories && listFeatures && <ul className="list-con">
                             {listCategories}
                             {listFeatures}
                         </ul>}               

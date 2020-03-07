@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+// import { Button } from 'reactstrap';
 import { compose } from 'recompose';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
@@ -8,6 +8,8 @@ import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import "../../css/Home.css";
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 
@@ -287,15 +289,13 @@ class HomePage extends Component {
                 <div className="container row">
                   <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
                 </div>
-                <div className="apply-button-container">
-                  <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
-                </div>
-                <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={(event) => this.saveFilters(event, authUser)}>Save Selections</Button>
-                </div>
-                <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={(event) => this.loadLatestSearch(event, authUser)}>Load Selections</Button>
-                </div>
+
+                <ButtonGroup className="apply-button-container" size="large" variant="contained" color="primary" aria-label="contained primary button group">
+                  <Button def onClick={() => this.submitFilters()}>Apply</Button>
+                  <Button disabled={!authUser} def onClick={(event) => this.saveFilters(event, authUser)}>Save</Button>
+                  <Button disabled={!authUser} def onClick={(event) => this.loadLatestSearch(event, authUser)}>Load</Button>
+                </ButtonGroup>
+                
               </div>
             </div>}
           </div>
