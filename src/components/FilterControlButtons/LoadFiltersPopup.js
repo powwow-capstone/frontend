@@ -31,7 +31,7 @@ const columns = [
     {
         id: 'date',
         label: 'Date Range',
-        minWidth: 170,
+        minWidth: 200,
         align: 'left',
     },
     {
@@ -43,13 +43,13 @@ const columns = [
     {
         id: 'min_acreage',
         label: 'Min Acreage',
-        minWidth: 100,
+        minWidth: 75,
         align: 'left',
     },
     {
         id: 'max_acreage',
         label: 'Max Acreage',
-        minWidth: 100,
+        minWidth: 75,
         align: 'left',
     },
     {
@@ -153,7 +153,7 @@ class LoadFiltersPopup extends Component {
             filter_cells.push (
                 <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell component="th" scope="row">
-                        {this.calculateDateRange(row.start_month, row.start_year, row.end_month, row.end_month)}
+                        {this.calculateDateRange(row.start_month, row.start_year, row.end_month, row.end_year)}
                     </TableCell>
                     <TableCell align="left">{crop_type}</TableCell>
                     <TableCell align="left">{acreage_min}</TableCell>
