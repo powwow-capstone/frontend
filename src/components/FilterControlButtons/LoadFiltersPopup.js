@@ -107,7 +107,17 @@ class LoadFiltersPopup extends Component {
         var array = [...this.state.saveList];
         // var index = array.indexOf(savedFilter)
         array.splice(index, 1);
-        this.setState({saveList : array});
+        // If index is the last element on a page, then this page should no longer be visible
+        // unless page == 0
+        var page = this.state.page;
+        if (this.state.page > 0) {
+            if (index === (this.state.page * this.state.rowsPerPage)) {
+                page -= 1;
+            }   
+        }
+
+
+        this.setState({saveList : array, page : page});
 
         // Delete from firebase
         this.props.firebase

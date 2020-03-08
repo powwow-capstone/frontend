@@ -204,7 +204,7 @@ class HomePage extends Component {
     });
 
     event.preventDefault();
-    alert("Saved Filters");
+    alert("Saved Filters Successfully!");
   }
 
   loadFilters = (savedFilters) => {
