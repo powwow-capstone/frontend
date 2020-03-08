@@ -9,6 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import CloseIcon from '@material-ui/icons/Close';
 import Loader from '../Loader/Loader'
 
 import '../../css/LoadFiltersPopup.css'
@@ -189,7 +190,7 @@ class LoadFiltersPopup extends Component {
                 <div className='popup_inner'>
                     <div className = "row popup_header">
                         <h4 className="popup_headertext">Saved Filter Options</h4>
-                        <Button variant="outlined" color="secondary" className="popup_close" onClick={this.props.closePopup}>Close</Button>
+                        <CloseIcon className="popup_close" onClick={this.props.closePopup}></CloseIcon>
                     </div>
                     <Paper className="loadfilters_paper">
                         <TableContainer className="loadfilters_table">
