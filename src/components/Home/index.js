@@ -14,7 +14,6 @@ import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 
 import Navigation from '../Navigation';
-import SearchList from '../Searches/SearchList';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
