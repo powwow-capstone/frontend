@@ -3,22 +3,46 @@ import CanvasJSReact from '../../canvasjs.react';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+const daysInMonth = [
+	31, // Jan
+	28, // Feb
+	31, // Mar
+	30, // Apr
+	31, // May
+	30, // Jun
+	31, // Jul
+	31, // Aug
+	30, // Sep
+	31, // Oct
+	30, // Nov
+	31  // Dec
+]
+
 class Graph extends Component {
  
     constructor(props) {
 		super(props);
 		this.state = {
-			datapoints: [],
-			cohort_datapoints: []
+			datapoints: props.datapoints,
+			cohort_datapoints: props.cohort_datapoints,
 		};
 		this.chart = React.createRef();
     }
 	
-	static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-			datapoints: nextProps.datapoints,
-			cohort_datapoints: nextProps.cohort_datapoints,
-        };
+	// static getDerivedStateFromProps(nextProps, prevState) {
+    //     return {
+	// 		datapoints: nextProps.datapoints,
+	// 		cohort_datapoints: nextProps.cohort_datapoints,
+    //     };
+	// }
+
+	componentDidUpdate(prevProps) {
+		if (this.state.datapoints !== this.props.datapoints || this.state.cohort_datapoints !== this.props.cohort_datapoints) {
+			this.setState({
+				datapoints: this.props.datapoints,
+				cohort_datapoints: this.props.cohort_datapoints,
+			});
+		}
 	}
 
 	extract_stdev(stdev) {
@@ -58,13 +82,25 @@ class Graph extends Component {
 		var start_year = this.props.dateRange.start_year;
 		var end_month = this.props.dateRange.end_month;
 		var end_year = this.props.dateRange.end_year;
-
+		
 		if (start_month === null) {
 			start_month = 1;
+		}
+		else {
+			start_month = parseInt(start_month, 10);
 		}
 
 		if (end_month == null) {
 			end_month = 12;
+		}
+		else {
+			end_month = parseInt(end_month, 10);
+		}
+
+		var end_month_days = daysInMonth[end_month - 1];
+		if ((parseInt(end_year,10) % 4) === 0 && end_month === 2) {
+			// leap year
+			end_month_days += 1;
 		}
 
 		// For string formatting, the month must be length 2 and padded with a 0 if needed 
@@ -92,8 +128,8 @@ class Graph extends Component {
 			},
             axisX: {
 				valueFormatString: "MMM YYYY",
-				minimum: new Date("" + start_year + "-" + start_month),
-				maximum: new Date("" + end_year + "-" + end_month),
+				minimum: new Date("" + start_year + "-" + start_month + "-01"),
+				maximum: new Date("" + end_year + "-" + end_month + "-" + end_month_days),
 				
 			},
 			axisY: {
