@@ -25,7 +25,7 @@ const months = [
     'Dec'
 ];
 
-const latest_day = Datetime.moment("2018-12-31", "YYYY-MM-DD");
+const latest_day = Datetime.moment("2019-12-31", "YYYY-MM-DD");
 const earliest_day = Datetime.moment("2010-01-01", "YYYY-MM-DD");  // The earliest day from which we have data
 
 class TimeRangeSelection extends Component {
@@ -173,7 +173,7 @@ class TimeRangeSelection extends Component {
                         <InfoButton handleOpenModal={this.handleOpenModal}/>
                     </div>
         
-                    <ReactModal className="modal-side" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                    <ReactModal className="modal-side" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" style={{ overlay: { backgroundColor: 'transparent' }}}>  
                         <div class="modal-header">
                             <h5 class="modal-title">Date Range</h5>
                             <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>

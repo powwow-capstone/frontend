@@ -2,9 +2,9 @@ import React from 'react';
 import { Component } from 'react';
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
-import "./css/bootstrap.min.css";
-import * as legoData from "./astronaut-loading.json";
-import * as doneData from "./doneloading.json";
+import "../../css/bootstrap.min.css";
+import * as legoData from "../../astronaut-loading.json";
+import * as doneData from "../../doneloading.json";
 import { Dot } from 'react-animated-dots';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
@@ -31,23 +31,17 @@ class MainLoading extends Component {
     constructor(props) {
         super(props);
         this.state = {
-        done: undefined
+        done: props.done
         };
     }
-    // Bad practice? mayhaps
-    componentDidMount() {
-        setTimeout(() => {
-        fetch(root_path + "/api/fields?start_month=null&start_year=2014&end_month=null&end_year=2014")
-            .then(response => response.json())
-            .then(json => {
-            this.setState({ loading: true });
-            setTimeout(() => {
-                this.setState({ done: true });
-            }, 1200);
-            });
-        }, 1200);
+
+    componentDidUpdate(prevProps) {
+        // Force a rerender when the data changes or when the user switches the coloring option
+        if (this.state.done !== this.props.done) {
+            this.setState({ done: this.props.done })
+        }
     }
-    
+
     render() {
         return (
         <div>            
