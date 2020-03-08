@@ -29,13 +29,13 @@ const columns = [
     {
         id: 'min_acreage',
         label: 'Min Acreage',
-        minWidth: 170,
+        minWidth: 100,
         align: 'left',
     },
     {
         id: 'max_acreage',
         label: 'Max Acreage',
-        minWidth: 170,
+        minWidth: 100,
         align: 'left',
     },
     {
@@ -88,9 +88,19 @@ class LoadFiltersPopup extends Component {
         this.props.loadFilters(savedFilter);
     }
 
-    handleDeleteFilter(savedFilter) {
+    handleDeleteFilter(savedFilter, index) {
         console.log("Delete");
         console.log(savedFilter);
+        console.log(index);
+        var array = [...this.state.saveList];
+        // var index = array.indexOf(savedFilter)
+        array.splice(index, 1);
+        this.setState({saveList : array});
+
+        // Delete from firebase
+        this.props.firebase
+            .search(savedFilter.uid)
+            .remove();
     }
 
     getSavedFilters() {
@@ -116,7 +126,8 @@ class LoadFiltersPopup extends Component {
         console.log("Create filter table rows");
         var filter_cells = [];
 
-        this.state.saveList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map(row => {
+        this.state.saveList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row, page_index) => {
+            const index = (this.state.page * this.state.rowsPerPage) + page_index;
             filter_cells.push (
                 <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell component="th" scope="row">
@@ -126,12 +137,12 @@ class LoadFiltersPopup extends Component {
                     <TableCell align="left">{row.acreage_min}</TableCell>
                     <TableCell align="left">{row.acreage_max}</TableCell>
                     <TableCell align="left"><button onClick={() => this.handleLoadFilter(row)}>Load</button></TableCell>
-                    <TableCell align="left"><button onClick={() => this.handleDeleteFilter(row)}>Delete</button></TableCell>
+                    <TableCell align="left"><button onClick={() => this.handleDeleteFilter(row, index)}>Delete</button></TableCell>
                 </TableRow>
             );
-        })
+        });
 
-        return filter_cells
+        return filter_cells;
     }
 
     calculateDateRange(start_month, start_year, end_month, end_year) {
