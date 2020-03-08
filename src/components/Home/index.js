@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+// import { Button } from 'reactstrap';
 import { compose } from 'recompose';
 import GMap from '../../components/Map/GMap'
 import newLogo from '../../images/newLogo.png';
@@ -8,10 +8,13 @@ import CategorySelection from '../../components/Filtering/CategorySelection';
 import FeatureSelection from '../../components/Filtering/FeatureSelection';
 import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
 import "../../css/Home.css";
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 
 import Navigation from '../Navigation';
+import SearchList from '../Searches/SearchList';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -22,7 +25,6 @@ class HomePage extends Component {
       data: null,  	  // This contains all data from the server
 	    displayed_data: null,
       selected_feature: null,
-      users: null,
       color_cohorts : false,
       loading: false
     };
@@ -32,6 +34,8 @@ class HomePage extends Component {
     this.submitFilters = this.submitFilters.bind(this);
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
+    this.saveFilters = this.saveFilters.bind(this);
+    this.loadLatestSearch = this.loadLatestSearch.bind(this);
 
 	  this.selected_feature_temp = null;
     this.selected_categories = {};
@@ -84,9 +88,10 @@ class HomePage extends Component {
   }
 
   handleCategoryDropdownSelection(category, value) {
-    if (value !== "NULL")
+    if (value !== "NULL" && value !== "null")
     {
       this.selected_categories[category] = value;
+      console.log("category: " + category + " value: " + value);
     }
     else
     {
@@ -96,7 +101,6 @@ class HomePage extends Component {
 
   handleCategoryMinMaxInput(category, min_max, value) {
     // min_max will equal either "MIN" or "MAX"
-	
     if (!(category in this.selected_categories))
     {
       this.selected_categories[category] = {}
@@ -150,10 +154,7 @@ class HomePage extends Component {
           {
             if ("MIN" in this.selected_categories[category_name])
             {	
-				
-				
-              if (value < this.selected_categories[category_name]["MIN"])
-              {
+              if (value < this.selected_categories[category_name]["MIN"]) {
                 include_datapoint = false;
               }
             }
@@ -176,50 +177,93 @@ class HomePage extends Component {
     this.requeryData(new_displayed_data);
   }
 
-  saveFilters = (event, authUser) => {
-    console.log();
-    console.log(this.selected_categories["Crop"]);
+  saveFilters(event, authUser)  {
+    // for (var i = 0; i < this.state.data.length; ++i)
+    // {
+    var min_acreage = "null"; 
+    var max_acreage = "null";
+    if (typeof this.selected_categories["Acreage"] !== 'undefined') {
+      if (typeof this.selected_categories["Acreage"]["MIN"] !== 'undefined') {
+        min_acreage = this.selected_categories["Acreage"]["MIN"];
+      }
+      if (typeof this.selected_categories["Acreage"]["MAX"] !== 'undefined') {
+        max_acreage = this.selected_categories["Acreage"]["MAX"];
+      }
+    }
     this.props.firebase.searches().push({
       start_month: this.selected_time_range.start_month ? this.selected_time_range.start_month : "null",
       start_year: this.selected_time_range.start_year ? this.selected_time_range.start_year : "null",
       end_month: this.selected_time_range.end_month ? this.selected_time_range.end_month : "null",
       end_year: this.selected_time_range.end_year ? this.selected_time_range.end_year : "null",
-      feature: this.selected_feature_temp ? this.selected_feature_temp : "ETa",
-      acreage_min: this.selected_categories["Acreage"]["MIN"] ? this.selected_categories["Acreage"]["MIN"] : 0,
-      acreage_max: this.selected_categories["Acreage"]["MAX"] ? this.selected_categories["Acreage"]["MAX"] : Number.MAX_VALUE,
-      crop_type: this.selected_categories["Crop"] ? this.selected_categories["Crop"] : "null",
+      feature: (typeof this.selected_feature_temp !== 'undefined' ) ? this.selected_feature_temp : "ETa",
+      acreage_min: min_acreage,
+      acreage_max: max_acreage,
+      crop_type: (typeof this.selected_categories["Crop"] !== 'undefined' ) ? this.selected_categories["Crop"] : "null",
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
+      displayed_data: this.state.displayed_data ? this.state.displayed_data : [],
+      selected_feature: this.state.selected_feature ? this.state.selected_feature : "ETa",
+      color_cohorts: this.state.color_cohorts ? this.state.color_cohorts : false,
     });
 
     event.preventDefault();
   }
 
-  getUserSearches() {
-    this.props.firebase.searches().on("value", function(snapshot) {
-      var searchesSnap = snapshot.val();
-      var newState = [];
-      for (let search in searchesSnap) {
-        newState.push({
-          id: search,
-          start_month: searchesSnap[search].start_month,
-          start_year: searchesSnap[search].start_year,
-          end_month: searchesSnap[search].end_month,
-          end_year: searchesSnap[search].end_year,
-          feature: searchesSnap[search].feature,
-          acreage_min: searchesSnap[search].acreage_min,
-          acreage_max: searchesSnap[search].acreage_max,
-          crop_type: searchesSnap[search].crop_type,
-          userId: searchesSnap[search].userId,
-          createdAt: searchesSnap[search].createdAt,
-        })
-      }
-      console.log(newState);
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-    });
+  loadLatestSearch = (event, authUser) => {
+    this.props.firebase
+      .searches()
+      .orderByChild('userId')
+      .limitToLast(1)
+      .equalTo(authUser.uid)
+      .on('value', snapshot => {
+        const searchObject = snapshot.val();
 
+        if (searchObject) {
+          const searchList = Object.keys(searchObject).map(key => ({
+            ...searchObject[key],
+            uid: key,
+          }));
+          console.log("Searchlist:");
+          console.log(searchList);
+          if (searchList[0].start_month === "null") {
+            this.selected_time_range.start_month = null;
+            this.selected_time_range.end_month = null;
+          } 
+          else {
+            this.selected_time_range.start_month = parseInt(searchList[0].start_month, 10);
+            this.selected_time_range.end_month = parseInt(searchList[0].end_month, 10);
+          }
+          this.selected_time_range.start_year = parseInt(searchList[0].start_year, 10);
+          this.selected_time_range.end_year = parseInt(searchList[0].end_year, 10);
+          this.selected_feature_temp = searchList[0].feature;
+          this.selected_categories = {}
+          if (searchList[0].acreage_min !== "null") {
+            if (!("Acreage" in this.selected_categories)) {
+              this.selected_categories["Acreage"] = {};
+            }
+            this.selected_categories["Acreage"]["MIN"] = searchList[0].acreage_min;
+          }
+
+          if (searchList[0].acreage_max !== "null") {
+            if (!("Acreage" in this.selected_categories)) {
+              this.selected_categories["Acreage"] = {};
+            }
+            this.selected_categories["Acreage"]["MAX"] = searchList[0].acreage_max;
+          }
+          if (searchList[0].crop_type !== "null") {
+            this.handleCategoryDropdownSelection("Crop", searchList[0].crop_type);
+          }
+          this.setState({displayed_data : searchList[0].displayed_data, selected_feature : searchList[0].selected_feature, color_cohorts : searchList[0].color_cohorts});
+        }
+        else {
+          alert("Load failed. No searches found.");
+        }
+      }
+    );
+    console.log("Selected time range:");
+    console.log(this.selected_time_range);
   }
+
 
   render() {
     return (
@@ -235,26 +279,23 @@ class HomePage extends Component {
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
                 <Navigation/>
-                {/* <Messages users={this.state.users} /> */}
                 
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
                 <div className="container row">
-                  <CategorySelection data={this.state.data}  handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                  <CategorySelection data={this.state.data} defaultCategories={JSON.parse(JSON.stringify(this.selected_categories))} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
                 </div>
                 <div className="container row">
-                  <FeatureSelection data={this.state.data} handleSelection={this.handleFeatureSelection} />
+                  <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
                 </div>
-                <div className="apply-button-container">
-                  <Button className="center" variant="outline-primary" def onClick={() => this.submitFilters()}>Apply Changes</Button>
-                </div>
-                <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={event => this.saveFilters(event, authUser)}>Save Selected Filters</Button>
-                </div>
-                <div className="apply-button-container">
-                  <Button className="center" disabled={!authUser} variant="outline-primary" def onClick={() => this.getUserSearches()}>Load Filters</Button>
-                </div>
+
+                <ButtonGroup className="apply-button-container" size="large" variant="contained" color="primary" aria-label="contained primary button group">
+                  <Button def onClick={() => this.submitFilters()}>Apply</Button>
+                  <Button disabled={!authUser} def onClick={(event) => this.saveFilters(event, authUser)}>Save</Button>
+                  <Button disabled={!authUser} def onClick={(event) => this.loadLatestSearch(event, authUser)}>Load</Button>
+                </ButtonGroup>
+                
               </div>
             </div>}
           </div>

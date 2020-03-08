@@ -16,3 +16,4 @@ backend/models/__pycache__
 venv/
 *.bak
 *.pyc
+src/react-app-env.d.ts
