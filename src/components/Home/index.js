@@ -76,6 +76,7 @@ class HomePage extends Component {
       .catch(err => {
         console.log(err);
         alert("No data matches parameters selected");
+        this.setState({ loading : false })
       });
   }
 

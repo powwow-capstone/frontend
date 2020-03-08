@@ -129,6 +129,9 @@ class LoadFiltersPopup extends Component {
                     }));
                     this.setState({saveList : searchList, loading : false });
                 }
+                else {
+                    this.setState({loading : false});
+                }
             }
         );
 
@@ -192,7 +195,7 @@ class LoadFiltersPopup extends Component {
                         <h4 className="popup_headertext">Saved Filter Options</h4>
                         <CloseIcon className="popup_close" onClick={this.props.closePopup}></CloseIcon>
                     </div>
-                    <Paper className="loadfilters_paper">
+                    {!this.state.loading && <Paper className="loadfilters_paper">
                         <TableContainer className="loadfilters_table">
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
@@ -222,7 +225,7 @@ class LoadFiltersPopup extends Component {
                             onChangePage={this.handleChangePage}
                             onChangeRowsPerPage={this.handleChangeRowsPerPage}
                         />
-                    </Paper>
+                    </Paper>}
                 </div>
                 <Loader loading={this.state.loading} />
             </div>
