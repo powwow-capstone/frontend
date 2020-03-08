@@ -12,6 +12,20 @@ import TableRow from '@material-ui/core/TableRow';
 import Loader from '../Loader/Loader'
 
 import '../../css/LoadFiltersPopup.css'
+const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+];
 
 const columns = [
     {
@@ -128,14 +142,26 @@ class LoadFiltersPopup extends Component {
 
         this.state.saveList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row, page_index) => {
             const index = (this.state.page * this.state.rowsPerPage) + page_index;
+            var crop_type = row.crop_type;
+            if (crop_type === "null") {
+                crop_type = "";
+            }
+            var acreage_min = row.acreage_min;
+            if (acreage_min === "null") {
+                acreage_min = "";
+            }
+            var acreage_max = row.acreage_max;
+            if (acreage_max === "null") {
+                acreage_max = "";
+            }
             filter_cells.push (
                 <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell component="th" scope="row">
                         {this.calculateDateRange(row.start_month, row.start_year, row.end_month, row.end_month)}
                     </TableCell>
-                    <TableCell align="left">{row.crop_type}</TableCell>
-                    <TableCell align="left">{row.acreage_min}</TableCell>
-                    <TableCell align="left">{row.acreage_max}</TableCell>
+                    <TableCell align="left">{crop_type}</TableCell>
+                    <TableCell align="left">{acreage_min}</TableCell>
+                    <TableCell align="left">{acreage_max}</TableCell>
                     <TableCell align="left"><button onClick={() => this.handleLoadFilter(row)}>Load</button></TableCell>
                     <TableCell align="left"><button onClick={() => this.handleDeleteFilter(row, index)}>Delete</button></TableCell>
                 </TableRow>
@@ -146,8 +172,18 @@ class LoadFiltersPopup extends Component {
     }
 
     calculateDateRange(start_month, start_year, end_month, end_year) {
-
-        return "";
+        var range = ""
+        if (start_month !== "null") {
+            // For the date range, either both start_month and end_month must be "null" or neither are
+            range += months[parseInt(start_month, 10) - 1] + "-"; 
+            range += start_year + " to ";
+            range += months[parseInt(end_month, 10) - 1] + "-";
+            range += end_year;
+        }
+        else {
+            range = start_year;
+        }
+        return range;
     }
 
     render() {
