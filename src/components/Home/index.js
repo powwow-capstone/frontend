@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 // import { Button } from 'reactstrap';
 import { compose } from 'recompose';
-import GMap from '../../components/Map/GMap'
+import GMap from '../Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
-import CategorySelection from '../../components/Filtering/CategorySelection';
-import FeatureSelection from '../../components/Filtering/FeatureSelection';
-import TimeRangeSelection from '../../components/Filtering/TimeRangeSelection'
+import CategorySelection from '../Filtering/CategorySelection';
+import FeatureSelection from '../Filtering/FeatureSelection';
+import TimeRangeSelection from '../Filtering/TimeRangeSelection'
+import FilterControlButtons from '../FilterControlButtons/FilterControlButtons'
 import "../../css/Home.css";
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 
@@ -23,10 +22,10 @@ class HomePage extends Component {
     super(props);
     this.state = {
       data: null,  	  // This contains all data from the server
-	    displayed_data: null,
+	    displayed_data: [],
       selected_feature: null,
       color_cohorts : false,
-      loading: false
+      loading: false,
     };
     this.handleCategoryDropdownSelection = this.handleCategoryDropdownSelection.bind(this);
     this.handleCategoryMinMaxInput = this.handleCategoryMinMaxInput.bind(this);
@@ -201,67 +200,70 @@ class HomePage extends Component {
       crop_type: (typeof this.selected_categories["Crop"] !== 'undefined' ) ? this.selected_categories["Crop"] : "null",
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
-      displayed_data: this.state.displayed_data ? this.state.displayed_data : [],
+      displayed_data: this.state.displayed_data,
       selected_feature: this.state.selected_feature ? this.state.selected_feature : "ETa",
-      color_cohorts: this.state.color_cohorts ? this.state.color_cohorts : false,
+      color_cohorts: this.state.color_cohorts,
     });
 
     event.preventDefault();
+    alert("Saved Filters");
   }
 
-  loadLatestSearch = (event, authUser) => {
-    this.props.firebase
-      .searches()
-      .orderByChild('userId')
-      .limitToLast(1)
-      .equalTo(authUser.uid)
-      .on('value', snapshot => {
-        const searchObject = snapshot.val();
+  // getSavedFilters(authUser) {
+  //   this.props.firebase
+  //   .searches()
+  //   .orderByChild('userId')
+  //   .equalTo(authUser.uid)
+  //   .on('value', snapshot => {
+  //       const searchObject = snapshot.val();
+  //       if (searchObject) {
+  //         const searchList = Object.keys(searchObject).map(key => ({
+  //           ...searchObject[key],
+  //           uid: key,
+  //         }));
 
-        if (searchObject) {
-          const searchList = Object.keys(searchObject).map(key => ({
-            ...searchObject[key],
-            uid: key,
-          }));
-          console.log("Searchlist:");
-          console.log(searchList);
-          if (searchList[0].start_month === "null") {
-            this.selected_time_range.start_month = null;
-            this.selected_time_range.end_month = null;
-          } 
-          else {
-            this.selected_time_range.start_month = parseInt(searchList[0].start_month, 10);
-            this.selected_time_range.end_month = parseInt(searchList[0].end_month, 10);
-          }
-          this.selected_time_range.start_year = parseInt(searchList[0].start_year, 10);
-          this.selected_time_range.end_year = parseInt(searchList[0].end_year, 10);
-          this.selected_feature_temp = searchList[0].feature;
-          this.selected_categories = {}
-          if (searchList[0].acreage_min !== "null") {
-            if (!("Acreage" in this.selected_categories)) {
-              this.selected_categories["Acreage"] = {};
-            }
-            this.selected_categories["Acreage"]["MIN"] = searchList[0].acreage_min;
-          }
+  //         console.log("Searchlist:");
+  //         console.log(searchList);
+  //         return searchList;
+  //       }
+  //     }
+  //   );
 
-          if (searchList[0].acreage_max !== "null") {
-            if (!("Acreage" in this.selected_categories)) {
-              this.selected_categories["Acreage"] = {};
-            }
-            this.selected_categories["Acreage"]["MAX"] = searchList[0].acreage_max;
-          }
-          if (searchList[0].crop_type !== "null") {
-            this.handleCategoryDropdownSelection("Crop", searchList[0].crop_type);
-          }
-          this.setState({displayed_data : searchList[0].displayed_data, selected_feature : searchList[0].selected_feature, color_cohorts : searchList[0].color_cohorts});
-        }
-        else {
-          alert("Load failed. No searches found.");
-        }
+  //   return [];
+  // }
+
+  loadLatestSearch = (savedFilters) => {
+   
+    if (savedFilters.start_month === "null") {
+      this.selected_time_range.start_month = null;
+      this.selected_time_range.end_month = null;
+    } 
+    else {
+      this.selected_time_range.start_month = parseInt(savedFilters.start_month, 10);
+      this.selected_time_range.end_month = parseInt(savedFilters.end_month, 10);
+    }
+    this.selected_time_range.start_year = parseInt(savedFilters.start_year, 10);
+    this.selected_time_range.end_year = parseInt(savedFilters.end_year, 10);
+    this.selected_feature_temp = savedFilters.feature;
+    this.selected_categories = {}
+    if (savedFilters.acreage_min !== "null") {
+      if (!("Acreage" in this.selected_categories)) {
+        this.selected_categories["Acreage"] = {};
       }
-    );
-    console.log("Selected time range:");
-    console.log(this.selected_time_range);
+      this.selected_categories["Acreage"]["MIN"] = savedFilters.acreage_min;
+    }
+
+    if (savedFilters.acreage_max !== "null") {
+      if (!("Acreage" in this.selected_categories)) {
+        this.selected_categories["Acreage"] = {};
+      }
+      this.selected_categories["Acreage"]["MAX"] = savedFilters.acreage_max;
+    }
+    if (savedFilters.crop_type !== "null") {
+      this.handleCategoryDropdownSelection("Crop", savedFilters.crop_type);
+    }
+    this.setState({displayed_data : savedFilters.displayed_data, selected_feature : savedFilters.selected_feature, color_cohorts : savedFilters.color_cohorts});
+
   }
 
 
@@ -269,6 +271,7 @@ class HomePage extends Component {
     return (
       <AuthUserContext.Consumer>
         {authUser => (
+          
           <div className="row" style={{ width: `100vw` }}>
             {this.state && this.state.data && (this.state.data instanceof Array) &&
             <div className="col-lg-9 col-md-8">
@@ -279,7 +282,6 @@ class HomePage extends Component {
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
                 <Navigation/>
-                
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
@@ -290,11 +292,7 @@ class HomePage extends Component {
                   <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
                 </div>
 
-                <ButtonGroup className="apply-button-container" size="large" variant="contained" color="primary" aria-label="contained primary button group">
-                  <Button def onClick={() => this.submitFilters()}>Apply</Button>
-                  <Button disabled={!authUser} def onClick={(event) => this.saveFilters(event, authUser)}>Save</Button>
-                  <Button disabled={!authUser} def onClick={(event) => this.loadLatestSearch(event, authUser)}>Load</Button>
-                </ButtonGroup>
+                <FilterControlButtons firebase={this.props.firebase} authUser={authUser} saveFilters={this.saveFilters} submitFilters={this.submitFilters} />
                 
               </div>
             </div>}
