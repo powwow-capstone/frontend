@@ -29,19 +29,20 @@ class FilterControlButtons extends Component {
     render() {
         return ( 
             <div>
-                {this.state.showPopup ?
-                    <LoadFiltersPopup
-                        authUser={this.state.authUser}
-                        firebase={this.props.firebase}
-                        closePopup={this.togglePopup.bind(this)}
-                    />
-                    : null
-                }
                 <ButtonGroup className="apply-button-container" size="large" variant="contained" color="primary" aria-label="contained primary button group">
                     <Button def onClick={() => this.props.submitFilters()}>Apply</Button>
                     <Button disabled={!this.state.authUser} def onClick={(event) => this.props.saveFilters(event, this.state.authUser)}>Save</Button>
                     <Button disabled={!this.state.authUser} def onClick={this.togglePopup.bind(this)}>Load</Button>
                 </ButtonGroup>
+                {this.state.showPopup ?
+                    <LoadFiltersPopup
+                        authUser={this.state.authUser}
+                        firebase={this.props.firebase}
+                        loadFilters={this.props.loadFilters}
+                        closePopup={this.togglePopup.bind(this)}
+                    />
+                    : null
+                }
             </div>
         );
     }

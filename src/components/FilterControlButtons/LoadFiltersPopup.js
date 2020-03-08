@@ -41,12 +41,12 @@ const columns = [
     {
         id: 'load',
         label: 'Load',
-        minWidth: 100,
+        minWidth: 50,
     },
     {
         id: 'delete',
         label: 'Delete',
-        minWidth: 100,
+        minWidth: 50,
     },
 ];
 
@@ -61,6 +61,7 @@ class LoadFiltersPopup extends Component {
         };
         this.calculateDateRange = this.calculateDateRange.bind(this);
         this.createFiltersTableRows = this.createFiltersTableRows.bind(this);
+        this.handleLoadFilter = this.handleLoadFilter.bind(this);
     }
 
     componentDidMount() {
@@ -78,10 +79,19 @@ class LoadFiltersPopup extends Component {
         this.setState({page : newPage});
     };
 
-    // handleChangeRowsPerPage = event => {
-    //     this.setState({ page: 0, rowsPerPage: +event.target.value})
-    // };
+    handleChangeRowsPerPage = event => {
+        this.setState({ page: 0, rowsPerPage: +event.target.value})
+    };
 
+    handleLoadFilter(savedFilter) {
+        this.props.closePopup();
+        this.props.loadFilters(savedFilter);
+    }
+
+    handleDeleteFilter(savedFilter) {
+        console.log("Delete");
+        console.log(savedFilter);
+    }
 
     getSavedFilters() {
         this.props.firebase
@@ -95,8 +105,6 @@ class LoadFiltersPopup extends Component {
                         ...searchObject[key],
                         uid: key,
                     }));
-                    console.log("Searchlist");
-                    console.log(searchList);
                     this.setState({saveList : searchList, loading : false });
                 }
             }
@@ -117,18 +125,11 @@ class LoadFiltersPopup extends Component {
                     <TableCell align="left">{row.crop_type}</TableCell>
                     <TableCell align="left">{row.acreage_min}</TableCell>
                     <TableCell align="left">{row.acreage_max}</TableCell>
-                    <TableCell align="left"><button>Load</button></TableCell>
-                    <TableCell align="left"><button>Delete</button></TableCell>
+                    <TableCell align="left"><button onClick={() => this.handleLoadFilter(row)}>Load</button></TableCell>
+                    <TableCell align="left"><button onClick={() => this.handleDeleteFilter(row)}>Delete</button></TableCell>
                 </TableRow>
             );
         })
-        // for (var i = 0; i < this.state.saveList.length; ++i) {
-        //     const row = this.state.saveList[i];
-        //     filter_cells.push(
-
-                
-        //     );
-        // }
 
         return filter_cells
     }
@@ -143,7 +144,10 @@ class LoadFiltersPopup extends Component {
         return (
             <div className='popup'>
                 <div className='popup_inner'>
-                    <h1>Saved Filter Options</h1>
+                    <div className = "row">
+                        <h1>Saved Filter Options</h1>
+                        <button onClick={this.props.closePopup}>Close</button>
+                    </div>
                     <Paper className="loadfilters_paper">
                         <TableContainer className="loadfilters_table">
                             <Table stickyHeader aria-label="sticky table">
@@ -175,7 +179,6 @@ class LoadFiltersPopup extends Component {
                             onChangeRowsPerPage={this.handleChangeRowsPerPage}
                         />
                     </Paper>
-                    <button onClick={this.props.closePopup}>Close</button>
                 </div>
                 <Loader loading={this.state.loading} />
             </div>

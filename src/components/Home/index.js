@@ -34,7 +34,7 @@ class HomePage extends Component {
     this.handleFeatureSelection = this.handleFeatureSelection.bind(this);
     this.handleTimeRangeSelection = this.handleTimeRangeSelection.bind(this);
     this.saveFilters = this.saveFilters.bind(this);
-    this.loadLatestSearch = this.loadLatestSearch.bind(this);
+    this.loadFilters = this.loadFilters.bind(this);
 
 	  this.selected_feature_temp = null;
     this.selected_categories = {};
@@ -177,8 +177,6 @@ class HomePage extends Component {
   }
 
   saveFilters(event, authUser)  {
-    // for (var i = 0; i < this.state.data.length; ++i)
-    // {
     var min_acreage = "null"; 
     var max_acreage = "null";
     if (typeof this.selected_categories["Acreage"] !== 'undefined') {
@@ -209,31 +207,9 @@ class HomePage extends Component {
     alert("Saved Filters");
   }
 
-  // getSavedFilters(authUser) {
-  //   this.props.firebase
-  //   .searches()
-  //   .orderByChild('userId')
-  //   .equalTo(authUser.uid)
-  //   .on('value', snapshot => {
-  //       const searchObject = snapshot.val();
-  //       if (searchObject) {
-  //         const searchList = Object.keys(searchObject).map(key => ({
-  //           ...searchObject[key],
-  //           uid: key,
-  //         }));
-
-  //         console.log("Searchlist:");
-  //         console.log(searchList);
-  //         return searchList;
-  //       }
-  //     }
-  //   );
-
-  //   return [];
-  // }
-
-  loadLatestSearch = (savedFilters) => {
-   
+  loadFilters = (savedFilters) => {
+    console.log("Load filters");
+    console.log(savedFilters);
     if (savedFilters.start_month === "null") {
       this.selected_time_range.start_month = null;
       this.selected_time_range.end_month = null;
@@ -292,7 +268,7 @@ class HomePage extends Component {
                   <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
                 </div>
 
-                <FilterControlButtons firebase={this.props.firebase} authUser={authUser} saveFilters={this.saveFilters} submitFilters={this.submitFilters} />
+                <FilterControlButtons firebase={this.props.firebase} authUser={authUser} loadFilters={this.loadFilters} saveFilters={this.saveFilters} submitFilters={this.submitFilters} />
                 
               </div>
             </div>}
