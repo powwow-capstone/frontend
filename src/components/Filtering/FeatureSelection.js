@@ -90,7 +90,7 @@ class FeatureSelection extends Component {
                         <InfoButton handleOpenModal={this.handleOpenModal}/>
                     </div>
         
-                    <ReactModal className="modal-side-features" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >  
+                    <ReactModal className="modal-side-features" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example"  style={{ overlay: { backgroundColor: 'transparent' }}}>  
                         <div class="modal-header">
                             <h5 class="modal-title">Data Type</h5>
                             <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>

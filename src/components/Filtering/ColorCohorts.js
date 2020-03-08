@@ -31,7 +31,7 @@ class ColorCohort extends Component {
             return "Color Outliers"
         }
         else {
-            return "Color Cohorts"
+            return "Color Clusters"
         }
     }
 
@@ -50,17 +50,17 @@ class ColorCohort extends Component {
                     <button type="button" className="btn btn-primary d-inline-block" onClick={() => this.handleClick()}>{this.setButtonText()}</button>
                     <InfoButton handleOpenModal={this.handleOpenModal}/>
                 </div>
-                <ReactModal className="modal-side-cohorts" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" >
+                <ReactModal className="modal-side-cohorts" isOpen={this.state.showModal}  contentLabel="Minimal Modal Example" style={{ overlay: { backgroundColor: 'transparent' }}}>
                     <div class="modal-header">
-                        <h5 class="modal-title">Color Cohorts/Color Outliers</h5>
+                        <h5 class="modal-title">Color Cluster/Color Outliers</h5>
                         <button type="button" className="close" aria-label="Close" onClick={this.handleCloseModal}>
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Switch between different coloring modes.
-                        Outlier mode will color all fields green or red based on its individual data values compared to every field in the cohort.
-                        Cohort mode will color all fields within the same cohort as the same color. Visually see which fields are being compared together.
+						<p>
+						<b>Outlier mode</b> colors all fields green or red based on its individual data values compared to every field in the cohort.
+                        <br/><br/><b>Cluster mode</b> colors all fields within the same cluster as the same color. Visually see which fields are being compared together.
                         </p>
                     </div>
                 </ReactModal>

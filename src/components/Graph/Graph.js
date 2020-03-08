@@ -122,6 +122,16 @@ class Graph extends Component {
 				},
 				{
 					type: "line",
+					name: "Cluster Mean ETa",
+					color: "#595957",
+					lineColor: "#595957",
+					markerColor: "#595957",
+					showInLegend: true,
+					xValueFormatString: "MMM YYYY",
+					dataPoints: this.extract_data(this.state.cohort_datapoints)
+				},
+				{
+					type: "line",
 					name: "Field ETa",
 					color: "blue",
 					lineColor: "blue",
@@ -129,16 +139,6 @@ class Graph extends Component {
 					showInLegend: true,
 					xValueFormatString: "MMM YYYY",
 					dataPoints: this.extract_data(this.state.datapoints)
-				},
-				{
-					type: "line",
-					name: "Cohort Mean ETa",
-					color: "#595957",
-					lineColor: "#595957",
-					markerColor: "#595957",
-					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
-					dataPoints: this.extract_data(this.state.cohort_datapoints)
 				},
 			]
 		}
