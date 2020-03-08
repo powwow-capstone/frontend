@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -162,8 +163,8 @@ class LoadFiltersPopup extends Component {
                     <TableCell align="left">{crop_type}</TableCell>
                     <TableCell align="left">{acreage_min}</TableCell>
                     <TableCell align="left">{acreage_max}</TableCell>
-                    <TableCell align="left"><button onClick={() => this.handleLoadFilter(row)}>Load</button></TableCell>
-                    <TableCell align="left"><button onClick={() => this.handleDeleteFilter(row, index)}>Delete</button></TableCell>
+                    <TableCell align="left"><Button variant="outlined" color="primary" onClick={() => this.handleLoadFilter(row)}>Load</Button></TableCell>
+                    <TableCell align="left"><Button variant="outlined" color="secondary" onClick={() => this.handleDeleteFilter(row, index)}>Delete</Button></TableCell>
                 </TableRow>
             );
         });
@@ -191,9 +192,9 @@ class LoadFiltersPopup extends Component {
         return (
             <div className='popup'>
                 <div className='popup_inner'>
-                    <div className = "row">
-                        <h1>Saved Filter Options</h1>
-                        <button onClick={this.props.closePopup}>Close</button>
+                    <div className = "row popup_header">
+                        <h4 className="popup_headertext">Saved Filter Options</h4>
+                        <Button variant="outlined" color="secondary" className="popup_close" onClick={this.props.closePopup}>Close</Button>
                     </div>
                     <Paper className="loadfilters_paper">
                         <TableContainer className="loadfilters_table">
