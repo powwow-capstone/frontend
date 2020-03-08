@@ -3,7 +3,6 @@ import { Component } from 'react';
 import Datetime from 'react-datetime'
 import moment from 'moment'
 import "react-datetime/css/react-datetime.css"
-import axios from "axios";
 import InfoButton from "../Info/InfoButton";
 import ReactModal from 'react-modal';
 import "../../css/TimeRangeSelection.css";
