@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import GMap from '../Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
+import Navigation from '../Navigation/Navigation';
 import MainLoading from '../Loader/MainLoading';
 import CategorySelection from '../Filtering/CategorySelection';
 import FeatureSelection from '../Filtering/FeatureSelection';
@@ -12,8 +13,6 @@ import FilterControlButtons from '../FilterControlButtons/FilterControlButtons'
 import "../../css/Home.css";
 import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
-
-import Navigation from '../Navigation';
 
 const root_path = process.env.REACT_APP_ROOT_PATH;
 
@@ -255,7 +254,7 @@ class HomePage extends Component {
             <div className="col-lg-3 col-md-4">
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
-                <Navigation/>
+                <Navigation />
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>

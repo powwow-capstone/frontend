@@ -9,6 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import CloseIcon from '@material-ui/icons/Close';
 import Loader from '../Loader/Loader'
 
 import '../../css/LoadFiltersPopup.css'
@@ -31,7 +32,7 @@ const columns = [
     {
         id: 'date',
         label: 'Date Range',
-        minWidth: 170,
+        minWidth: 200,
         align: 'left',
     },
     {
@@ -43,13 +44,13 @@ const columns = [
     {
         id: 'min_acreage',
         label: 'Min Acreage',
-        minWidth: 100,
+        minWidth: 75,
         align: 'left',
     },
     {
         id: 'max_acreage',
         label: 'Max Acreage',
-        minWidth: 100,
+        minWidth: 75,
         align: 'left',
     },
     {
@@ -153,7 +154,7 @@ class LoadFiltersPopup extends Component {
             filter_cells.push (
                 <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell component="th" scope="row">
-                        {this.calculateDateRange(row.start_month, row.start_year, row.end_month, row.end_month)}
+                        {this.calculateDateRange(row.start_month, row.start_year, row.end_month, row.end_year)}
                     </TableCell>
                     <TableCell align="left">{crop_type}</TableCell>
                     <TableCell align="left">{acreage_min}</TableCell>
@@ -189,7 +190,7 @@ class LoadFiltersPopup extends Component {
                 <div className='popup_inner'>
                     <div className = "row popup_header">
                         <h4 className="popup_headertext">Saved Filter Options</h4>
-                        <Button variant="outlined" color="secondary" className="popup_close" onClick={this.props.closePopup}>Close</Button>
+                        <CloseIcon className="popup_close" onClick={this.props.closePopup}></CloseIcon>
                     </div>
                     <Paper className="loadfilters_paper">
                         <TableContainer className="loadfilters_table">
