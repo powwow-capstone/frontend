@@ -18,6 +18,6 @@ const NavigationAuth = ({ authUser }) => (
   <SignOutButton />
 );
 const NavigationNonAuth = () => (
-  <SignInGoogle/>
+  <SignInGoogle />
 );
 export default Navigation;
