@@ -104,9 +104,6 @@ class LoadFiltersPopup extends Component {
     }
 
     handleDeleteFilter(savedFilter, index) {
-        console.log("Delete");
-        console.log(savedFilter);
-        console.log(index);
         var array = [...this.state.saveList];
         // var index = array.indexOf(savedFilter)
         array.splice(index, 1);
@@ -138,7 +135,6 @@ class LoadFiltersPopup extends Component {
     }
 
     createFiltersTableRows() {
-        console.log("Create filter table rows");
         var filter_cells = [];
 
         this.state.saveList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row, page_index) => {

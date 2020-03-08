@@ -92,7 +92,6 @@ class HomePage extends Component {
     if (value !== "NULL" && value !== "null")
     {
       this.selected_categories[category] = value;
-      console.log("category: " + category + " value: " + value);
     }
     else
     {
@@ -210,8 +209,7 @@ class HomePage extends Component {
   }
 
   loadFilters = (savedFilters) => {
-    console.log("Load filters");
-    console.log(savedFilters);
+
     if (savedFilters.start_month === "null") {
       this.selected_time_range.start_month = null;
       this.selected_time_range.end_month = null;
@@ -248,8 +246,8 @@ class HomePage extends Component {
     return (
       <AuthUserContext.Consumer>
         {authUser => (
-          <MainLoading done={this.state.initial_loading} />
           <div className="row" style={{ width: `100vw` }}>
+            <MainLoading done={this.state.initial_loading} />
             {this.state && this.state.data && (this.state.data instanceof Array) &&
             <div className="col-lg-9 col-md-8">
             <GMap data={this.state.displayed_data} colorCohorts={this.state.color_cohorts} selectedFeature={this.state.selected_feature} dateRange={JSON.parse(JSON.stringify(this.selected_time_range))} loading={this.state.loading} />

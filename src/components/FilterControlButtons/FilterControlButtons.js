@@ -10,7 +10,6 @@ class FilterControlButtons extends Component {
         this.state = {
             showPopup: false,
             authUser: props.authUser,
-            // saved_filters : props.getSavedFilters(props.authUser),
         };
     }
 
