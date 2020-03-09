@@ -1,9 +1,9 @@
 import React from 'react';
 import { AuthUserContext } from '../Session';
-import SignOutButton from '../SignOut';
-import SignInGoogle from '../SignIn/SignInGoogle';
+import SignOutButton from './SignOutButton';
+import SignInGoogle from './SignInGoogle';
 
-const Navigation = () => (
+const Login = () => (
   <AuthUserContext.Consumer>
     {authUser =>
       authUser ? (
@@ -20,4 +20,4 @@ const NavigationAuth = ({ authUser }) => (
 const NavigationNonAuth = () => (
   <SignInGoogle />
 );
-export default Navigation;
+export default Login;
