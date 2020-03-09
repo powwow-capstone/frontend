@@ -102,15 +102,12 @@ class CategorySelection extends Component {
 
     handleMinMaxInput(category, min_max, event) {
         // min_max will equal either "MIN" or "MAX"
-		const re = /^[0-9\b]+$/;
         const text = event.target.value;
-		
-		//allow only int values
-		if (text === '' || re.test(text))
-			this.props.handleInput(category, min_max, text);
-		else
-			console.log("Invalid input")
+        // This is my hacky way of making sure that the inputted acreage does not reset if the user selects a crop type
+        document.getElementById("Acreage_min").defaultValue = document.getElementById("Acreage_min").value;
+        document.getElementById("Acreage_max").defaultValue = document.getElementById("Acreage_max").value;
         
+        this.props.handleInput(category, min_max, text);
     }
 
     handleDeselect(category) {
@@ -150,12 +147,12 @@ class CategorySelection extends Component {
     createMinInputBox(category_name, default_val) {
         if (default_val === null) {
             return (<div className="row">
-                        Min: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                        Min: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                     </div>) 
         }
         else {
             return (<div className="row">
-                        Min: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                        Min: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                     </div>);
         }
     }
@@ -163,13 +160,13 @@ class CategorySelection extends Component {
     createMaxInputBox(category_name, default_val) {
         if (default_val === null) {
             return (<div className="row">
-                        Max: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                        Max: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
         else {
 
             return (<div className="row">
-                        Max: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                        Max: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
     }
