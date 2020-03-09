@@ -138,30 +138,38 @@ class CategorySelection extends Component {
         }
         return dropdown_selection;
     }
+    inputValidate(e) {
+        var key = e.keyCode || e.which;
+        // Disable all non digits except for backspace, delete, left arrow, and right arrow
+        if (((key < 48) || (key > 57)) && (key != 8) && (key != 46) && (key != 37) && (key != 39)) { 
+            if (e.preventDefault) e.preventDefault();
+            e.returnValue = false;
+        }
+    }
 
     createMinInputBox(category_name, default_val) {
         if (default_val === null) {
             return (<div className="row">
-                        Min: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                        Min: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                     </div>) 
         }
         else {
             return (<div className="row">
-                            Min: <input type="Number" defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
-                        </div>);
+                        Min: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
+                    </div>);
         }
     }
 
     createMaxInputBox(category_name, default_val) {
         if (default_val === null) {
             return (<div className="row">
-                        Max: <input type="Number" className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                        Max: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
         else {
 
             return (<div className="row">
-                        Max: <input type="Number" defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
+                        Max: <input type="Number" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
     }
