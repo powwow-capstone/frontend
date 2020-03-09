@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-// import { Button } from 'reactstrap';
 import { compose } from 'recompose';
 import GMap from '../Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
-import Navigation from '../Navigation/Navigation';
+import Login from '../LoginButton/Login';
 import MainLoading from '../Loader/MainLoading';
 import CategorySelection from '../Filtering/CategorySelection';
 import FeatureSelection from '../Filtering/FeatureSelection';
@@ -255,7 +254,7 @@ class HomePage extends Component {
             <div className="col-lg-3 col-md-4">
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
-                <Navigation />
+                <Login />
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
