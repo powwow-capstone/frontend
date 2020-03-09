@@ -18,6 +18,12 @@ const daysInMonth = [
 	31  // Dec
 ]
 
+// Define a threshold where if the difference between days is <= this value, 
+// then display MMM DD, YYY on the x-axis
+// If difference between days is > this value, then display MMM YYYY
+// There are an average of 30.42 days in a month
+const difference_in_days_threshold = 30.42 * 6; 
+
 class Graph extends Component {
  
     constructor(props) {
@@ -110,6 +116,9 @@ class Graph extends Component {
 		if (end_month < 10) {
 			end_month = "0" + end_month
 		}
+		const start_date = new Date("" + start_year + "-" + start_month + "-01");
+		const end_date = new Date("" + end_year + "-" + end_month + "-" + end_month_days);
+		const difference_in_days = (end_date.getTime() - start_date.getTime()) / (1000 * 3600 * 24);
 
 		var options = {
 			theme: "light2",
@@ -127,9 +136,9 @@ class Graph extends Component {
 				itemclick: this.toggleDataSeries
 			},
             axisX: {
-				valueFormatString: "MMM YYYY",
-				minimum: new Date("" + start_year + "-" + start_month + "-01"),
-				maximum: new Date("" + end_year + "-" + end_month + "-" + end_month_days),
+				valueFormatString: (difference_in_days > difference_in_days_threshold) ? "MMM YYYY" : "MMM DD,YYYY",
+				minimum: start_date,
+				maximum: end_date,
 				
 			},
 			axisY: {
@@ -163,7 +172,7 @@ class Graph extends Component {
 					lineColor: "#595957",
 					markerColor: "#595957",
 					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
+					xValueFormatString: "MMM DD, YYYY",
 					dataPoints: this.extract_data(this.state.cohort_datapoints)
 				},
 				{
@@ -173,7 +182,7 @@ class Graph extends Component {
 					lineColor: "blue",
 					markerColor: "blue",
 					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
+					xValueFormatString: "MMM DD, YYYY",
 					dataPoints: this.extract_data(this.state.datapoints)
 				},
 			]
