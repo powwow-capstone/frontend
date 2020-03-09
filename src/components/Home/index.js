@@ -260,7 +260,7 @@ class HomePage extends Component {
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
                 <div className="container row">
-                  <CategorySelection data={this.state.data} defaultCategories={JSON.parse(JSON.stringify(this.selected_categories))} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
+                  <CategorySelection data={this.state.data} defaultCategories={this.selected_categories} handleSelection={this.handleCategoryDropdownSelection} handleInput={this.handleCategoryMinMaxInput} handleDeselect={this.handleCheckboxDeselect}/>
                 </div>
                 <div className="container row">
                   <FeatureSelection data={this.state.data} selectedFeature={this.state.selected_feature} handleSelection={this.handleFeatureSelection} />
