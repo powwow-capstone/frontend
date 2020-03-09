@@ -4,7 +4,11 @@ import { compose } from 'recompose';
 import GMap from '../Map/GMap'
 import newLogo from '../../images/newLogo.png';
 import axios from "axios";
+<<<<<<< HEAD
 import Navigation from '../Navigation/Navigation';
+=======
+import Login from '../Login/Login';
+>>>>>>> firebase_save2
 import MainLoading from '../Loader/MainLoading';
 import CategorySelection from '../Filtering/CategorySelection';
 import FeatureSelection from '../Filtering/FeatureSelection';
