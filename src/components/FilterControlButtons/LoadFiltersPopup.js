@@ -116,8 +116,6 @@ class LoadFiltersPopup extends Component {
                 page -= 1;
             }   
         }
-
-
         this.setState({saveList : array, page : page});
 
         // Delete from firebase
