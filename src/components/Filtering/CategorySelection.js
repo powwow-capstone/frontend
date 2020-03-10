@@ -146,12 +146,12 @@ class CategorySelection extends Component {
 
     createMinInputBox(category_name, default_val) {
         if (default_val === null) {
-            return (<div className="row">
+            return (<div>
                         Min: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                     </div>) 
         }
         else {
-            return (<div className="row">
+            return (<div>
                         Min: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MIN", e)} id={category_name + "_min"} />
                     </div>);
         }
@@ -159,13 +159,13 @@ class CategorySelection extends Component {
 
     createMaxInputBox(category_name, default_val) {
         if (default_val === null) {
-            return (<div className="row">
+            return (<div>
                         Max: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
         else {
 
-            return (<div className="row">
+            return (<div>
                         Max: <input type="Number" min="0" onKeyDown={(e) => this.inputValidate(e)} defaultValue={default_val} className="input-box" onChange={(e) => this.handleMinMaxInput(category_name, "MAX", e)} id={category_name + "_max"} />
                     </div>)
         }
@@ -193,7 +193,7 @@ class CategorySelection extends Component {
                 const checked = (dropdown_content !== null);
                 // For strings, each checkbox has a dropdown menu
                 category_checkboxes.push(
-                    <div className="row">
+                    <div>
                         <input type="checkbox" className="m-1" id={category_name} checked={checked} onChange={(e) => this.handleChange(category_name, e)} />
                         {category_name}
                         {dropdown_content}
@@ -224,9 +224,8 @@ class CategorySelection extends Component {
                 // For ints, the user inputs a min and a max
                 category_checkboxes.push(
                     <div>
-                        <div className="row">
-                            <input type="checkbox" className="m-1" id={category_name} checked={checked} onChange={() => this.handleChange(category_name)} /> {category_name}
-                        </div>
+                        <input type="checkbox" className="m-1" id={category_name} checked={checked} onChange={() => this.handleChange(category_name)} /> 
+                        {category_name}
                         {textbox_content}
                     </div>
                 );
@@ -269,7 +268,7 @@ class CategorySelection extends Component {
                             </p>
                         </div>
                     </ReactModal>
-                    <div className="card-body">
+                    <div className="card-body display-text">
                            
                         {this.createCategoryCheckboxes()}
 
