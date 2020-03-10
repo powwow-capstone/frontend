@@ -238,11 +238,11 @@ class HomePage extends Component {
   }
 
   // DEBUG FUNCTION
-  clearDatabaseSearches() {
-    this.props.firebase
-      .searches()
-      .remove();
-  }
+  // clearDatabaseSearches() {
+  //   this.props.firebase
+  //     .searches()
+  //     .remove();
+  // }
 
   render() {
     return (
@@ -259,7 +259,6 @@ class HomePage extends Component {
               <div className="mb-2 img-row">
                 <img className="img-column" src={newLogo} alt="Logo"/>
                 <Login />
-                <button onClick={() => this.clearDatabaseSearches()}>Delete Database</button>
                 <div className="container row">
                   <TimeRangeSelection currentDate={JSON.parse(JSON.stringify(this.selected_time_range))} handleTimeRangeSelection={this.handleTimeRangeSelection}/>
                 </div>
