@@ -3,22 +3,52 @@ import CanvasJSReact from '../../canvasjs.react';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+const daysInMonth = [
+	31, // Jan
+	28, // Feb
+	31, // Mar
+	30, // Apr
+	31, // May
+	30, // Jun
+	31, // Jul
+	31, // Aug
+	30, // Sep
+	31, // Oct
+	30, // Nov
+	31  // Dec
+]
+
+// Define a threshold where if the difference between days is <= this value, 
+// then display MMM DD, YYY on the x-axis
+// If difference between days is > this value, then display MMM YYYY
+// There are an average of 30.42 days in a month
+const difference_in_days_threshold = 30.42 * 6; 
+
 class Graph extends Component {
  
     constructor(props) {
 		super(props);
 		this.state = {
-			datapoints: [],
-			cohort_datapoints: []
+			datapoints: props.datapoints,
+			cohort_datapoints: props.cohort_datapoints,
 		};
 		this.chart = React.createRef();
     }
 	
-	static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-			datapoints: nextProps.datapoints,
-			cohort_datapoints: nextProps.cohort_datapoints,
-        };
+	// static getDerivedStateFromProps(nextProps, prevState) {
+    //     return {
+	// 		datapoints: nextProps.datapoints,
+	// 		cohort_datapoints: nextProps.cohort_datapoints,
+    //     };
+	// }
+
+	componentDidUpdate(prevProps) {
+		if (this.state.datapoints !== this.props.datapoints || this.state.cohort_datapoints !== this.props.cohort_datapoints) {
+			this.setState({
+				datapoints: this.props.datapoints,
+				cohort_datapoints: this.props.cohort_datapoints,
+			});
+		}
 	}
 
 	extract_stdev(stdev) {
@@ -58,13 +88,25 @@ class Graph extends Component {
 		var start_year = this.props.dateRange.start_year;
 		var end_month = this.props.dateRange.end_month;
 		var end_year = this.props.dateRange.end_year;
-
+		
 		if (start_month === null) {
 			start_month = 1;
+		}
+		else {
+			start_month = parseInt(start_month, 10);
 		}
 
 		if (end_month == null) {
 			end_month = 12;
+		}
+		else {
+			end_month = parseInt(end_month, 10);
+		}
+
+		var end_month_days = daysInMonth[end_month - 1];
+		if ((parseInt(end_year,10) % 4) === 0 && end_month === 2) {
+			// leap year
+			end_month_days += 1;
 		}
 
 		// For string formatting, the month must be length 2 and padded with a 0 if needed 
@@ -74,6 +116,9 @@ class Graph extends Component {
 		if (end_month < 10) {
 			end_month = "0" + end_month
 		}
+		const start_date = new Date("" + start_year + "-" + start_month + "-01");
+		const end_date = new Date("" + end_year + "-" + end_month + "-" + end_month_days);
+		const difference_in_days = (end_date.getTime() - start_date.getTime()) / (1000 * 3600 * 24);
 
 		var options = {
 			theme: "light2",
@@ -91,9 +136,9 @@ class Graph extends Component {
 				itemclick: this.toggleDataSeries
 			},
             axisX: {
-				valueFormatString: "MMM YYYY",
-				minimum: new Date("" + start_year + "-" + start_month),
-				maximum: new Date("" + end_year + "-" + end_month),
+				valueFormatString: (difference_in_days > difference_in_days_threshold) ? "MMM YYYY" : "MMM DD,YYYY",
+				minimum: start_date,
+				maximum: end_date,
 				
 			},
 			axisY: {
@@ -127,7 +172,7 @@ class Graph extends Component {
 					lineColor: "#595957",
 					markerColor: "#595957",
 					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
+					xValueFormatString: "MMM DD, YYYY",
 					dataPoints: this.extract_data(this.state.cohort_datapoints)
 				},
 				{
@@ -137,7 +182,7 @@ class Graph extends Component {
 					lineColor: "blue",
 					markerColor: "blue",
 					showInLegend: true,
-					xValueFormatString: "MMM YYYY",
+					xValueFormatString: "MMM DD, YYYY",
 					dataPoints: this.extract_data(this.state.datapoints)
 				},
 			]

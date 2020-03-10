@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-
+import GoogleButton from 'react-google-button'
 import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
+import "../../css/Home.css";
 import * as ROUTES from '../../constants/routes';
+
 
 const SignInPage = () => (
   <div>
     <h1>Sign In</h1>
     <SignInForm />
-    <SignInGoogle />>
+    <SignInGoogle />
     <PasswordForgetLink />
     <SignUpLink />
   </div>
@@ -130,14 +132,19 @@ class SignInGoogleBase extends Component {
   };
 
   render() {
-    const { error } = this.state;
+    // const { error } = this.state;
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <button type="submit">Sign In with Google</button>
+      <GoogleButton
+        label="Login"
+        type="light"
+        onClick={(event) => { this.onSubmit(event) }}
+      />
+      // <form onSubmit={this.onSubmit}>
+      //   <input type="image" src="https://raw.githubusercontent.com/powwow-capstone/frontend/staging/src/images/btn_google.png" alt="Sign In with Google" className="img-column"/>
 
-        {error && <p>{error.message}</p>}
-      </form>
+      //   {/* {error && <p>{error.message}</p>} */}
+      // </form>
     );
   }
 }

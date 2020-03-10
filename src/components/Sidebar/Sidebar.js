@@ -99,6 +99,7 @@ class Sidebar extends Component {
             })
             .then(res => { 
                 this.setState({ datapoints: res.data, loading: false});
+                console.log(res.data);
             })
             .catch(err => console.log(err));
     };
@@ -152,7 +153,7 @@ class Sidebar extends Component {
 
                     }}>
                     <div>  
-                        {listCategories && listFeatures && <ul>
+                        {listCategories && listFeatures && <ul className="list-con">
                             {listCategories}
                             {listFeatures}
                         </ul>}               

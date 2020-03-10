@@ -44,7 +44,7 @@ class FeatureSelection extends Component {
         var feature_buttons = [];
         for (var i = 0; i < this.state.features.length; ++i) {
             const feature = this.state.features[i];
-            if (i === 0){
+            if ((this.props.selectedFeature === null && i === 0) || (this.props.selectedFeature === feature)){
                 feature_buttons.push(
                     <div className="radio">
                         <label>
@@ -56,6 +56,7 @@ class FeatureSelection extends Component {
                 this.props.handleSelection(feature, true);
             }
             else{
+
                 feature_buttons.push(
                     <div className="radio">
                         <label>
@@ -105,7 +106,7 @@ class FeatureSelection extends Component {
                             </p>
                         </div>
                     </ReactModal>
-                    <div className="card-body">
+                    <div className="card-body display-text">
                         
                         {this.createFeatureRadioButtons()}
                         

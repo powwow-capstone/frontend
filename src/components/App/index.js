@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../../css/App.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import HomePage from '../Home';
@@ -12,11 +12,9 @@ import AdminPage from '../Admin';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
 
-
 const App = () => (
   <Router>
     <div>
-
       <Route exact path={ROUTES.HOME} component={HomePage} />
       <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />

@@ -31,6 +31,7 @@ class GMap extends Component {
 		this.handleZoomChanged = this.handleZoomChanged.bind(this);
 		this.handleCenterChanged = this.handleCenterChanged.bind(this);
 		this.changeColoringOption = this.changeColoringOption.bind(this);
+		this.onMarkerClick = this.onMarkerClick.bind(this);
 		this.ref = React.createRef();
 		this.clicked_id = null;
 		this.showMarkers= true;
@@ -205,6 +206,8 @@ class GMap extends Component {
 			}
 
 			if (draw) {
+				const clicked_marker_lat = this.props.data[i].centroid[0];
+				const clicked_marker_lng = this.props.data[i].centroid[1];
 				polygons.push(
 					<Polygon
 						ref = {refs}
@@ -226,6 +229,7 @@ class GMap extends Component {
 					<Marker
 						key={this.props.data[i].id}
 						position={{ lat: this.props.data[i].centroid[0], lng: this.props.data[i].centroid[1]}}
+						onClick={() => this.onMarkerClick(clicked_marker_lat, clicked_marker_lng) }
 					/>
 
 				);
@@ -245,7 +249,7 @@ class GMap extends Component {
 			this.zoomLevel = zoomLevel;
 		}
 
-		if ( zoomLevel < 12 && !this.showMarkers && this.showPolygons ){
+		if ( zoomLevel < 11 && !this.showMarkers && this.showPolygons ){
 			this.showMarkers =  true;	
 			this.showPolygons = false;
 
@@ -255,7 +259,7 @@ class GMap extends Component {
 				showPolyborder: false
 			})
 		}
-		else if ( zoomLevel >= 12 && this.showMarkers && !this.showPolygons){
+		else if ( zoomLevel >= 11 && this.showMarkers && !this.showPolygons){
 			this.showMarkers =  false;	
 			this.showPolygons = true;
 			
@@ -274,7 +278,22 @@ class GMap extends Component {
 			this.mapPosition = { lat: center.lat(), lng: center.lng() };
 		}
 	}
+
+	onMarkerClick(lat, lng) {
+
+		this.mapPosition = { lat: lat, lng: lng };
+		this.showMarkers =  false;	
+		this.showPolygons = true;
+		this.zoomLevel = 15;
+
+		this.setState({
+			showMarkers: false,	
+			showPolygons: true,
+			zoomLevel: 15
+		})
 		
+	}
+
 	render() {
 
 		var locations = this.drawPolygons();

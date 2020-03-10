@@ -3,7 +3,6 @@ import { Component } from 'react';
 import Datetime from 'react-datetime'
 import moment from 'moment'
 import "react-datetime/css/react-datetime.css"
-import axios from "axios";
 import InfoButton from "../Info/InfoButton";
 import ReactModal from 'react-modal';
 import "../../css/TimeRangeSelection.css";
@@ -54,7 +53,21 @@ class TimeRangeSelection extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.state.currentDate !== this.props.currentDate) {
-            this.setState({ currentDate:  this.props.currentDate });
+
+            // TODO: This following code might cause bugs?
+            this.last_selected_year = this.props.currentDate.start_year;
+            this.last_selected_month_and_year = {
+                start_year: this.props.currentDate.start_year,
+                start_month: this.props.currentDate.start_month,
+                end_year: this.props.currentDate.end_year,
+                end_month: this.props.currentDate.end_month,
+            };
+            if (this.props.currentDate.start_month !== null) {
+                this.setState({ currentDate: this.props.currentDate, showMonthPicker : true, showYearPicker : false });
+            }
+            else {
+                this.setState({ currentDate: this.props.currentDate, showMonthPicker : false, showYearPicker : true });
+            }
         }
     }
 
@@ -175,17 +188,17 @@ class TimeRangeSelection extends Component {
                     </ReactModal>
 
                     <div className="card-body">
-                        <div className="card-text">
-                            <div className="row mb-2">
-                                Currently Displaying: {current_date_display}
+                        <div className="card-text display-text">
+                            <div className="mb-2">
+                                Currently Displaying:<br/> {current_date_display}
                             </div>
-                            <div className="row">
+                            <div>
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showMonthPicker}  onChange={() => this.handleMonthPickerChange()} />
                                     Monthly
                                 </label>
                             </div>
-                            <div className="row">
+                            <div>
                                 <label>
                                     <input type="radio" className="m-1" name="datePicker" checked={this.state.showYearPicker} onChange={() => this.handleYearPickerChange()} />
                                     Yearly
@@ -193,17 +206,17 @@ class TimeRangeSelection extends Component {
                             </div>
                             {this.state.showMonthPicker &&
                                 <div>
-                                    <div className="row">
+                                    <div>
                                     Start Month: <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.start_month) + "-" + this.last_selected_month_and_year.start_year, "MM-YYYY" )} timeFormat={false} onChange={(e) => this.handleStartMonthSelection(e)} />
                                     </div>
                         
-                                    <div className="row">
+                                    <div>
                                     End Month: <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="MM-YYYY" defaultValue={moment(this.formatMonthString(this.last_selected_month_and_year.end_month) + "-" + this.last_selected_month_and_year.end_year, "MM-YYYY")} timeFormat={false} onChange={(e) => this.handleEndMonthSelection(e)} />
                                     </div>
                                 </div>
                             }
                             { this.state.showYearPicker && 
-                            <div className="row">
+                            <div>
                                 <Datetime inputProps={{ readOnly: true }} isValidDate={this.isValidDate} dateFormat="YYYY" defaultValue={ moment("" + this.last_selected_year, "YYYY") } timeFormat={false} onChange={(e) => this.handleYearSelection(e)}/>
                             </div>}
 
