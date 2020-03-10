@@ -106,7 +106,7 @@ class FeatureSelection extends Component {
                             </p>
                         </div>
                     </ReactModal>
-                    <div className="card-body">
+                    <div className="card-body display-text">
                         
                         {this.createFeatureRadioButtons()}
                         
