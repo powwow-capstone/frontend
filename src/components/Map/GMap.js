@@ -249,7 +249,7 @@ class GMap extends Component {
 			this.zoomLevel = zoomLevel;
 		}
 
-		if ( zoomLevel < 12 && !this.showMarkers && this.showPolygons ){
+		if ( zoomLevel < 11 && !this.showMarkers && this.showPolygons ){
 			this.showMarkers =  true;	
 			this.showPolygons = false;
 
@@ -259,7 +259,7 @@ class GMap extends Component {
 				showPolyborder: false
 			})
 		}
-		else if ( zoomLevel >= 12 && this.showMarkers && !this.showPolygons){
+		else if ( zoomLevel >= 11 && this.showMarkers && !this.showPolygons){
 			this.showMarkers =  false;	
 			this.showPolygons = true;
 			
