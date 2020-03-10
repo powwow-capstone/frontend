@@ -6,15 +6,9 @@ body {
 .img-column {
   float: left;
   width: 50%;
-  padding: 5px;
+  padding-right: 5px;
+  margin-top: 15px;
 }
-
-/* Clear floats after image containers */
-.img-row::after {
-  content: "";
-  clear: both;
-  display: table;
-} 
 
 .apply-button-container {
     margin-left: 15px;
@@ -22,5 +16,7 @@ body {
 }
 
 .signout-con {
-  margin: 5px;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  margin-left: 10px !important;
 }
