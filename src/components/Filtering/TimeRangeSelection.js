@@ -190,7 +190,7 @@ class TimeRangeSelection extends Component {
                     <div className="card-body">
                         <div className="card-text display-text">
                             <div className="mb-2">
-                                Currently Displaying: {current_date_display}
+                                Currently Displaying:<br/> {current_date_display}
                             </div>
                             <div>
                                 <label>
