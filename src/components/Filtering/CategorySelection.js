@@ -138,7 +138,7 @@ class CategorySelection extends Component {
     inputValidate(e) {
         var key = e.keyCode || e.which;
         // Disable all non digits except for backspace, delete, left arrow, and right arrow
-        if (((key < 48) || (key > 57)) && (key != 8) && (key != 46) && (key != 37) && (key != 39)) { 
+        if (((key < 48) || (key > 57)) && (key != 8) && (key != 46) && (key != 37) && (key != 39) && (e.keyCode < 96 || e.keyCode > 105)) { 
             if (e.preventDefault) e.preventDefault();
             e.returnValue = false;
         }
