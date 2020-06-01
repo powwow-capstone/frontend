@@ -1,0 +1,15 @@
+{
+  "applications": [
+    {
+      "application_name": "sample-app-1",
+      "dockerfile": "Dockerfile",
+      "replica_count": 1,
+      "port": 30000
+    }
+  ],
+  "registry": {
+    "address": "aartij17/runtimeautodeploy",
+    "username": "aartij17",
+    "password": "aarti@123"
+  }
+}
