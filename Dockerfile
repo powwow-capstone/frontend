@@ -5,7 +5,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # install and cache app dependencies
-COPY package.json  /usr/src/app/package.json
+COPY build/package.json  /usr/src/app/package.json
 
 RUN npm install
 
